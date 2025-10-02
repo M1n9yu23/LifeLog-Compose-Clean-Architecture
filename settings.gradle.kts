@@ -21,3 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "LifeLog"
 include(":app")
+include(":feature:home")
+include(":core:data")
+include(":core:domain")
+include(":core:designsystem")
+include(":core:testing")
