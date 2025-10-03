@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.compose)
     implementation(libs.bundles.compose.core)
 
     testImplementation(libs.bundles.unit.test)
