@@ -1,12 +1,13 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-    namespace = "com.bossmg.android.data"
+    namespace = "com.bossmg.android.memo"
     compileSdk = 36
 
     defaultConfig {
@@ -32,16 +33,25 @@ android {
     kotlin {
         jvmToolchain(21)
     }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
-    implementation(libs.bundles.room)
+    implementation(libs.bundles.compose.core)
+    implementation(libs.bundles.compose.navigation)
+    implementation(libs.bundles.compose.viewmodel)
     implementation(libs.bundles.android.hilt)
+    implementation(libs.coil.compose)
     ksp(libs.hilt.compiler)
-    ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.bundles.unit.test)
     androidTestImplementation(libs.bundles.android.test)
 
+    debugImplementation(libs.bundles.compose.tooling)
+
     implementation(libs.androidx.core.ktx)
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
 }
