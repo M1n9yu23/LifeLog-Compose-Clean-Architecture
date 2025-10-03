@@ -35,6 +35,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:domain"))
+
     implementation(libs.bundles.room)
     implementation(libs.bundles.android.hilt)
     ksp(libs.hilt.compiler)

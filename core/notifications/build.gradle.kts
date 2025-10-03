@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-    namespace = "com.bossmg.android.designsystem"
+    namespace = "com.bossmg.android.notifications"
     compileSdk = 36
 
     defaultConfig {
@@ -31,21 +32,15 @@ android {
     kotlin {
         jvmToolchain(21)
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-    implementation(project(":app"))
-
-    implementation(libs.bundles.compose.core)
+    implementation(libs.bundles.android.hilt)
+    implementation(libs.androidx.work.runtime.ktx)
+    ksp(libs.hilt.compiler)
 
     testImplementation(libs.bundles.unit.test)
-    androidTestImplementation(libs.bundles.android.test)
-    debugImplementation(libs.bundles.compose.tooling)
 
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.appcompat)
 }

@@ -21,12 +21,13 @@ dependencyResolutionManagement {
 
 rootProject.name = "LifeLog"
 include(":app")
-include(":feature:home")
 include(":core:data")
 include(":core:domain")
 include(":core:designsystem")
 include(":core:testing")
+include(":feature:home")
 include(":feature:calendar")
 include(":feature:mood")
 include(":feature:photo")
 include(":feature:memo")
+include(":core:notifications")
