@@ -37,8 +37,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":app"))
-
     implementation(libs.bundles.compose.core)
 
     testImplementation(libs.bundles.unit.test)

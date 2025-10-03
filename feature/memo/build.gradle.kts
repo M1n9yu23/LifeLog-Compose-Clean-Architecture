@@ -42,6 +42,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:designsystem"))
 
+    implementation(libs.bundles.androidx.camera)
     implementation(libs.bundles.compose.core)
     implementation(libs.bundles.compose.navigation)
     implementation(libs.bundles.compose.viewmodel)
