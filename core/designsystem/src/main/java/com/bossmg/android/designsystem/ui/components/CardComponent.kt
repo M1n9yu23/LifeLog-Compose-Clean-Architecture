@@ -120,7 +120,7 @@ fun MemoCardItem(
 
             Text(
                 text = title,
-                style = AppTypography.titleLarge,
+                style = AppTypography.titleLarge.copy(color = DarkGray2),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
