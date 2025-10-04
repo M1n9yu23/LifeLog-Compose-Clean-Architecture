@@ -115,6 +115,7 @@ val DP204: Dp = 204.dp
 val DP240: Dp = 240.dp
 val DP252: Dp = 252.dp
 val DP280: Dp = 280.dp
+val DP300: Dp = 300.dp
 val DP320: Dp = 320.dp
 val DP400: Dp = 400.dp
 val DP800: Dp = 800.dp
