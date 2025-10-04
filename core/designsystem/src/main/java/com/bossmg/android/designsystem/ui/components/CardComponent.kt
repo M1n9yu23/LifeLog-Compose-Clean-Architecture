@@ -33,6 +33,7 @@ import com.bossmg.android.designsystem.ui.theme.DP80
 import com.bossmg.android.designsystem.ui.theme.DarkGray2
 import com.bossmg.android.designsystem.ui.theme.DarkGray3
 import com.bossmg.android.designsystem.ui.theme.Gray2
+import com.bossmg.android.designsystem.ui.theme.White
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -41,7 +42,7 @@ import java.util.Locale
 @Composable
 fun CustomCard(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = Color.White,
+    backgroundColor: Color = White,
     shadowColor: Color = Color.Transparent,
     shapeTop: Dp = DP16,
     shapeBottom: Dp = DP16,
