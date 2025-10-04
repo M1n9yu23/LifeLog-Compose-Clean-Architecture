@@ -17,9 +17,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -37,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.bossmg.android.designsystem.ui.components.CustomCard
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
+import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.Background
 import com.bossmg.android.designsystem.ui.theme.Black
@@ -164,7 +162,7 @@ private fun CalenderHeader(
             }
         ) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                imageVector = LifeIcons.ArrowLeft,
                 contentDescription = "이전 달"
             )
         }
@@ -178,7 +176,7 @@ private fun CalenderHeader(
             onNextMonth()
         }) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                imageVector = LifeIcons.ArrowRight,
                 contentDescription = "다음 달"
             )
         }
