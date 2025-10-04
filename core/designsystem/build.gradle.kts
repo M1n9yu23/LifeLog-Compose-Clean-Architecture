@@ -39,6 +39,7 @@ android {
 dependencies {
     implementation(libs.coil.compose)
     implementation(libs.bundles.compose.core)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     testImplementation(libs.bundles.unit.test)
     androidTestImplementation(libs.bundles.android.test)
