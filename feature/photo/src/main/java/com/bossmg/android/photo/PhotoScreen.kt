@@ -19,21 +19,12 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 
 @Composable
 fun Photo() {
-    val dummyPhotos = listOf(
-        "https://picsum.photos/300/300?1",
-        "https://picsum.photos/300/300?2",
-        "https://picsum.photos/300/300?3",
-        "https://picsum.photos/300/300?4",
-        "https://picsum.photos/300/300?5",
-        "https://picsum.photos/300/300?6",
-    )
-
-    PhotoScreen(dummyPhotos)
+    PhotoScreen()
 }
 
 @Composable
 private fun PhotoScreen(
-    photos: List<String>
+    photos: List<String> = emptyList()
 ) {
     LazyVerticalGrid(
         modifier = Modifier
@@ -66,14 +57,7 @@ private fun PhotoScreen(
 @Preview
 @Composable
 private fun PhotoScreenPreview() {
-    PhotoScreen(
-        listOf(
-            "https://picsum.photos/300/300?1",
-            "https://picsum.photos/300/300?2",
-            "https://picsum.photos/300/300?3",
-            "https://picsum.photos/300/300?4",
-            "https://picsum.photos/300/300?5",
-            "https://picsum.photos/300/300?6",
-        )
-    )
+    PhotoScreen(List(12) {
+        ""
+    })
 }
