@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="memo_title_placeholder">제목</string>
+    <string name="memo_description_placeholder">나만의 소중한 일상을 기록해보세요 :)</string>
+    <string name="icon_camera">카메라 또는 갤러리</string>
+    <string name="icon_share">공유</string>
+    <string name="icon_delete">삭제</string>
+    <string name="icon_save">저장</string>
+    <string name="memo_image_description">관련 이미지</string>
+</resources>
