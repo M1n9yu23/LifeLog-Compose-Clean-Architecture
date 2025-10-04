@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.bossmg.android.designsystem.ui.components.CustomCard
@@ -104,7 +105,7 @@ private fun MoodScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 Text(
-                    text = "기분",
+                    text = stringResource(R.string.text_mood),
                     style = AppTypography.titleLarge.copy(color = DarkGray2)
                 )
 
