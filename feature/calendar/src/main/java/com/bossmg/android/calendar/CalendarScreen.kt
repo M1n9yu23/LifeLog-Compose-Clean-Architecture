@@ -42,6 +42,8 @@ import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP36
 import com.bossmg.android.designsystem.ui.theme.DP8
+import com.bossmg.android.designsystem.ui.theme.Primary
+import com.bossmg.android.designsystem.ui.theme.Secondary
 import com.bossmg.android.designsystem.ui.theme.White
 import java.time.LocalDate
 import kotlin.math.ceil
@@ -245,8 +247,8 @@ private fun CalendarGrid(
                                     .clip(CircleShape)
                                     .background(
                                         when {
-                                            isSelected -> Color.Cyan
-                                            isToday -> Color.LightGray
+                                            isSelected -> Primary
+                                            isToday -> Secondary
                                             else -> Color.Transparent
                                         }
                                     ),
