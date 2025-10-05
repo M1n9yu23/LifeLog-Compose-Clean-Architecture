@@ -21,5 +21,6 @@ internal object DatabaseModule {
         context,
         LifeLogDatabase::class.java,
         "life-log-database"
-    ).build()
+    ).fallbackToDestructiveMigration()
+        .build()
 }
