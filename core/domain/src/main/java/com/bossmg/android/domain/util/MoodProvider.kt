@@ -4,7 +4,7 @@ import com.bossmg.android.domain.enums.MoodType
 import com.bossmg.android.domain.model.Mood
 
 object MoodProvider {
-    val moods = listOf(
+    val Moods = listOf(
         Mood("\uD83D\uDCDD 메모", MoodType.MEMO),
 
         Mood("\uD83D\uDE0A 기쁨", MoodType.POSITIVE),
