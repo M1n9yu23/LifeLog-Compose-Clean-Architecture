@@ -7,4 +7,6 @@
     <string name="text_week_thursday">목</string>
     <string name="text_week_friday">금</string>
     <string name="text_week_saturday">토</string>
+    <string name="text_prev_month">이전 달</string>
+    <string name="text_next_month">다음 달</string>
 </resources>
