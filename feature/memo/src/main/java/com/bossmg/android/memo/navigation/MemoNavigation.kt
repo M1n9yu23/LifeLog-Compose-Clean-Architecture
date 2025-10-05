@@ -11,12 +11,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MemoRoute(val id: Int?)
 
-fun NavController.navigateToMemo(memoId: Int? = null, navOptions: NavOptions? = null) = navigate(MemoRoute(memoId), navOptions)
+fun NavController.navigateToMemo(memoId: Int? = null, navOptions: NavOptions? = null) =
+    navigate(MemoRoute(memoId), navOptions)
 
-fun NavGraphBuilder.memoScreen() {
+fun NavGraphBuilder.memoScreen(
+    onBack: () -> Unit
+) {
     composable<MemoRoute> {
         val id = it.toRoute<MemoRoute>().id
 
-        Memo(id = id)
+        Memo(id = id, onBack = onBack)
     }
 }

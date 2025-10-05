@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.bossmg.android.designsystem.ui.components.CalendarDialog
 import com.bossmg.android.designsystem.ui.components.CustomDivider
@@ -42,33 +45,60 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.DarkGray2
 import com.bossmg.android.designsystem.ui.theme.Gray5
 import com.bossmg.android.designsystem.ui.theme.Primary
+import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
 
 @Composable
-fun Memo(
-    id: Int?
+internal fun Memo(
+    onBack: () -> Unit,
+    id: Int? = null,
+    viewModel: MemoViewModel = hiltViewModel()
 ) {
-    val uiModel = MemoUIModel(
-        MemoItem()
-    )
+    val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
 
     var showDateDialog by remember { mutableStateOf(false) }
 
     if (showDateDialog) {
         CalendarDialog(
-            uiModel.memoItem.selectedDate
+            uiModel.selectedDate,
+            onConfirm = {
+                viewModel.updateDate(it)
+                showDateDialog = false
+            },
+            onCancel = {
+                showDateDialog = false
+            }
         )
     }
 
-    MemoScreen(uiModel, {
-        showDateDialog = it
-    })
+    LaunchedEffect(Unit) {
+        viewModel.load(id)
+    }
+
+    MemoScreen(
+        uiModel = uiModel,
+        onBack = onBack,
+        onShowDateDialogChange = { showDateDialog = it },
+        onTitleChange = { viewModel.updateTitle(it) },
+        onDescriptionChange = { viewModel.updateDescription(it) },
+        onMoodSelected = { viewModel.updateMood(it) },
+        onImageChange = { viewModel.updateImage(it) },
+        onSaveClick = { viewModel.saveMemo() },
+        onDeleteClick = { viewModel.deleteMemo(id) }
+    )
 }
 
 @Composable
 private fun MemoScreen(
     uiModel: MemoUIModel,
-    onShowDateDialogChange: (Boolean) -> Unit
+    onBack: () -> Unit,
+    onShowDateDialogChange: (Boolean) -> Unit,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onMoodSelected: (String) -> Unit,
+    onImageChange: (String?) -> Unit,
+    onSaveClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -80,24 +110,30 @@ private fun MemoScreen(
         LazyColumn {
             item {
                 Head(
-                    uiModel.memoItem.selectedDate,
-                    uiModel.memoItem.selectedMood,
+                    uiModel.selectedDate,
+                    uiModel.selectedMood,
                     onShowDateDialogChange,
-                    {})
+                    {
+                        onMoodSelected(it)
+                    })
 
                 Spacer(Modifier.height(DP12))
 
-                TitleInputField(uiModel.memoItem.title, {})
+                TitleInputField(uiModel.title, {
+                    onTitleChange(it)
+                })
 
                 Spacer(Modifier.height(DP8))
 
-                MemoImage(uiModel.memoItem.img)
+                MemoImage(uiModel.img)
 
                 Spacer(Modifier.height(DP12))
 
                 CustomDivider()
 
-                DescriptionInputField(uiModel.memoItem.description, {})
+                DescriptionInputField(uiModel.description, {
+                    onDescriptionChange(it)
+                })
             }
         }
 
@@ -129,14 +165,20 @@ private fun MemoScreen(
                         tint = Primary
                     )
                 }
-                IconButton(onClick = { /* 삭제 */ }) {
+                IconButton(onClick = {
+                    onDeleteClick()
+                    onBack()
+                }) {
                     Icon(
                         LifeIcons.Delete,
                         contentDescription = stringResource(R.string.icon_delete),
                         tint = Primary
                     )
                 }
-                IconButton(onClick = { /* 저장 */ }) {
+                IconButton(onClick = {
+                    onSaveClick()
+                    onBack()
+                }) {
                     Icon(
                         LifeIcons.Save,
                         contentDescription = stringResource(R.string.icon_save),
@@ -155,7 +197,7 @@ private fun Head(
     onShowDateDialogChange: (Boolean) -> Unit,
     onMoodSelected: (String) -> Unit
 ) {
-    val moods = listOf("😊 기쁨", "😢 슬픔", "😡 화남", "🥱 피곤", "😌 편안")
+    val moods = MoodProvider.Moods.map { it.str }
     var expanded by remember { mutableStateOf(false) }
 
     Row(
@@ -264,9 +306,14 @@ private fun MemoImage(
 @Composable
 private fun MemoScreenPreview() {
     MemoScreen(
-        MemoUIModel(
-            MemoItem()
-        ),
+        MemoUIModel(),
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
         {}
     )
 }
