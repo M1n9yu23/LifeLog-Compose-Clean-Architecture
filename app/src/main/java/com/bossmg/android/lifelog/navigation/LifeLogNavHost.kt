@@ -8,6 +8,7 @@ import com.bossmg.android.home.navigation.HomeRoute
 import com.bossmg.android.home.navigation.homeScreen
 import com.bossmg.android.lifelog.ui.LifeLogAppState
 import com.bossmg.android.memo.navigation.memoScreen
+import com.bossmg.android.memo.navigation.navigateToMemo
 import com.bossmg.android.mood.navigation.moodScreen
 import com.bossmg.android.photo.navigation.photoScreen
 
@@ -23,10 +24,12 @@ fun LifeLogNavHost(
         startDestination = HomeRoute,
         modifier = modifier,
     ) {
-        homeScreen()
+        homeScreen(navController::navigateToMemo)
         calendarScreen()
         moodScreen()
         photoScreen()
-        memoScreen()
+        memoScreen(
+            onBack = navController::popBackStack
+        )
     }
 }
