@@ -13,6 +13,10 @@ class LifeLogRepositoryImpl : LifeLogRepository {
         TODO("Not yet implemented")
     }
 
+    override fun getLifeLogsByMood(mood: String): Flow<List<LifeLog>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getLifeLogById(id: Int): LifeLog {
         TODO("Not yet implemented")
     }

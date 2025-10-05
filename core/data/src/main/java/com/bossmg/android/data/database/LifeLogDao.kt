@@ -21,6 +21,14 @@ interface LifeLogDao {
     )
     fun getLifeLogsByDate(date: String): Flow<List<LifeLog>>
 
+    @Query(
+        """
+            SELECT * FROM lifelogs
+            WHERE mood = :mood ORDER BY date DESC, id DESC
+        """
+    )
+    fun getLifeLogsByMood(mood:String): Flow<List<LifeLog>>
+
     @Query("SELECT * FROM lifelogs WHERE id = :lifeLogId")
     suspend fun getLifeLogById(lifeLogId: Int): LifeLog
 
