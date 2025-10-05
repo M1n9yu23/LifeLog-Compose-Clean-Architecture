@@ -4,6 +4,7 @@ data class LifeLog(
     val id: Int,
     val date: String,
     val title: String,
+    val description: String,
     val mood: String,
     val img: String?
 )
