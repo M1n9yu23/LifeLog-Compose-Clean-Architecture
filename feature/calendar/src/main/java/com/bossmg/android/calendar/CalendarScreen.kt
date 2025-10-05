@@ -22,9 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.components.CustomCard
+import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
@@ -49,60 +49,34 @@ import java.time.LocalDate
 import kotlin.math.ceil
 
 @Composable
-fun Calendar() {
-    var currentMonth by remember { mutableStateOf(LocalDate.now()) }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+internal fun Calendar(
+    viewModel: CalendarViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
+    val currentMonth by viewModel.currentMonth.collectAsStateWithLifecycle()
 
-    val uiMoel = CalendarUIModel(
-        listOf(
-            MemoItem(
-                id = 1,
-                date = LocalDate.of(2025, 10, 1),
-                title = "오늘의 아침",
-                mood = "행복"
-            ),
-            MemoItem(
-                id = 2,
-                date = LocalDate.of(2025, 10, 2),
-                title = "점심시간",
-                mood = "피곤"
-            ),
-            MemoItem(
-                id = 3,
-                date = LocalDate.of(2025, 10, 3),
-                title = "저녁 산책",
-                mood = "편안",
-                img = "https://picsum.photos/id/237/200/300"
-            ),
-            MemoItem(
-                id = 4,
-                date = LocalDate.of(2025, 10, 4),
-                title = "영화 감상",
-                mood = "즐거움"
-            ),
-            MemoItem(
-                id = 5,
-                date = LocalDate.of(2025, 10, 5),
-                title = "카페에서 작업",
-                mood = "집중"
-            )
-        )
-    )
-
-    CalendarScreen(
-        uiModel = uiMoel,
-        currentMonth = currentMonth,
-        selectedDate = selectedDate,
-        onDateSelected = {
-            selectedDate = it
-        },
-        onPrevMonth = {
-            currentMonth = currentMonth.minusMonths(1)
-        },
-        onNextMonth = {
-            currentMonth = currentMonth.plusMonths(1)
+    when (uiState) {
+        is CalendarUIState.Loading -> {
+            LoadingScreen()
         }
-    )
+
+        is CalendarUIState.Success -> {
+            CalendarScreen(
+                uiModel = (uiState as CalendarUIState.Success).uiModel,
+                currentMonth = currentMonth,
+                selectedDate = selectedDate,
+                onDateSelected = {
+                    viewModel.selectDate(it)
+                },
+                onPrevMonth = {
+                    viewModel.onPrevMonth()
+                }
+            ) {
+                viewModel.onNextMonth()
+            }
+        }
+    }
 }
 
 @Composable
@@ -165,7 +139,7 @@ private fun CalenderHeader(
         ) {
             Icon(
                 imageVector = LifeIcons.ArrowLeft,
-                contentDescription = "이전 달"
+                contentDescription = stringResource(R.string.text_prev_month)
             )
         }
 
@@ -179,7 +153,7 @@ private fun CalenderHeader(
         }) {
             Icon(
                 imageVector = LifeIcons.ArrowRight,
-                contentDescription = "다음 달"
+                contentDescription = stringResource(R.string.text_next_month)
             )
         }
     }
