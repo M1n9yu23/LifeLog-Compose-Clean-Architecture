@@ -14,7 +14,7 @@ object MoodProvider {
         Mood("\uD83D\uDE0E 뿌듯함", MoodType.POSITIVE),
 
         Mood("\uD83D\uDE10 무난함", MoodType.NEUTRAL),
-        Mood("\uD83E\uDD14 생각에 잠김", MoodType.NEUTRAL),
+        Mood("\uD83E\uDD14 고민", MoodType.NEUTRAL),
         Mood("\uD83D\uDE34 피곤", MoodType.NEUTRAL),
 
         Mood("\uD83D\uDE22 슬픔", MoodType.NEGATIVE),
