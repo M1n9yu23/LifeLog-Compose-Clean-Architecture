@@ -5,13 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Upsert
-import com.bossmg.android.data.model.LifeLog
+import com.bossmg.android.data.model.LifeLogEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LifeLogDao {
     @Query("SELECT * FROM lifelogs ORDER BY date DESC, id DESC")
-    fun getLifeLogs(): Flow<List<LifeLog>>
+    fun getLifeLogs(): Flow<List<LifeLogEntity>>
 
     @Query(
         """
@@ -19,7 +19,7 @@ interface LifeLogDao {
             WHERE date = :date ORDER BY date DESC, id DESC
             """
     )
-    fun getLifeLogsByDate(date: String): Flow<List<LifeLog>>
+    fun getLifeLogsByDate(date: String): Flow<List<LifeLogEntity>>
 
     @Query(
         """
@@ -27,16 +27,16 @@ interface LifeLogDao {
             WHERE mood = :mood ORDER BY date DESC, id DESC
         """
     )
-    fun getLifeLogsByMood(mood:String): Flow<List<LifeLog>>
+    fun getLifeLogsByMood(mood:String): Flow<List<LifeLogEntity>>
 
     @Query("SELECT * FROM lifelogs WHERE id = :lifeLogId")
-    suspend fun getLifeLogById(lifeLogId: Int): LifeLog
+    suspend fun getLifeLogById(lifeLogId: Int): LifeLogEntity
 
     @Insert(onConflict = REPLACE)
-    suspend fun insertLifeLog(lifeLog: LifeLog)
+    suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity)
 
     @Upsert
-    suspend fun upsertLifeLog(lifeLog: LifeLog)
+    suspend fun upsertLifeLog(lifeLogEntity: LifeLogEntity)
 
     @Query("DELETE FROM lifelogs WHERE id = :lifeLogId")
     suspend fun deleteLifeLogById(lifeLogId: Int)
