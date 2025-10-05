@@ -35,7 +35,7 @@ fun DefaultTextField(
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
+                contentAlignment = Alignment.TopStart
             ) {
                 if (value.isEmpty()) {
                     Text(
