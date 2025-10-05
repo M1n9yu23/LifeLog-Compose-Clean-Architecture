@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.bossmg.android.designsystem.ui.theme.LifeLogTheme
+import com.bossmg.android.lifelog.ui.LifeLogApp
+import com.bossmg.android.lifelog.ui.rememberLifeLogAppState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -14,7 +16,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LifeLogTheme {
-
+                val appState = rememberLifeLogAppState()
+                LifeLogApp(appState)
             }
         }
     }
