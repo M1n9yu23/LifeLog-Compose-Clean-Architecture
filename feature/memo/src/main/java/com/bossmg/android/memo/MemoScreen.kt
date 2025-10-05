@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,11 +41,12 @@ import com.bossmg.android.designsystem.ui.theme.DP300
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.DarkGray2
 import com.bossmg.android.designsystem.ui.theme.Gray5
+import com.bossmg.android.designsystem.ui.theme.Primary
 import java.time.LocalDate
 
 @Composable
 fun Memo(
-    id: Int = 0
+    id: Int?
 ) {
     val uiModel = MemoUIModel(
         MemoItem()
@@ -98,24 +101,48 @@ private fun MemoScreen(
             }
         }
 
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(vertical = DP8),
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .padding(bottom = DP12)
         ) {
-            IconButton(onClick = { /* 카메라/갤러리 */ }) {
-                Icon(LifeIcons.Photo, contentDescription = stringResource(R.string.icon_camera))
-            }
-            IconButton(onClick = { /* 공유 기능 */ }) {
-                Icon(LifeIcons.Share, contentDescription = stringResource(R.string.icon_share))
-            }
-            IconButton(onClick = { /* 삭제 */ }) {
-                Icon(LifeIcons.Delete, contentDescription = stringResource(R.string.icon_delete))
-            }
-            IconButton(onClick = { /* 저장 */ }) {
-                Icon(LifeIcons.Save, contentDescription = stringResource(R.string.icon_save))
+            CustomDivider()
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = DP8),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                IconButton(onClick = { /* 카메라/갤러리 */ }) {
+                    Icon(
+                        LifeIcons.Photo,
+                        contentDescription = stringResource(R.string.icon_camera),
+                        tint = Primary
+                    )
+                }
+                IconButton(onClick = { /* 공유 기능 */ }) {
+                    Icon(
+                        LifeIcons.Share,
+                        contentDescription = stringResource(R.string.icon_share),
+                        tint = Primary
+                    )
+                }
+                IconButton(onClick = { /* 삭제 */ }) {
+                    Icon(
+                        LifeIcons.Delete,
+                        contentDescription = stringResource(R.string.icon_delete),
+                        tint = Primary
+                    )
+                }
+                IconButton(onClick = { /* 저장 */ }) {
+                    Icon(
+                        LifeIcons.Save,
+                        contentDescription = stringResource(R.string.icon_save),
+                        tint = Primary
+                    )
+                }
             }
         }
     }
@@ -196,7 +223,9 @@ private fun DescriptionInputField(
         onValueChange = {
             onDescriptionChange(it)
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = DP300),
         placeholder = stringResource(R.string.memo_description_placeholder),
     )
 }
