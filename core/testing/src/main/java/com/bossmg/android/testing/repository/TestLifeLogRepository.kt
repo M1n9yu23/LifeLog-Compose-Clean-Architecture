@@ -20,6 +20,9 @@ class TestLifeLogRepository : LifeLogRepository {
     override fun getLifeLogsByMood(mood: String): Flow<List<LifeLog>> =
         logsFlow.map { list -> list.filter { it.mood == mood } }
 
+    override fun getImages(): Flow<List<String>> =
+        logsFlow.map { list -> list.mapNotNull { it.img } }
+
     override suspend fun getLifeLogById(id: Int): LifeLog {
         val logs = logsFlow.replayCache.firstOrNull() ?: emptyList()
         return logs.first { it.id == id }
