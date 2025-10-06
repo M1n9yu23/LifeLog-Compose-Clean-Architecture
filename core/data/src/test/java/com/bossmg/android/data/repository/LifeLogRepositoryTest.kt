@@ -95,6 +95,8 @@ class LifeLogRepositoryTest {
         repository.upsertLifeLog(newLog)
 
         val logs = repository.getLifeLogs().first()
+
+        assertEquals(4, logs.size)
         assertEquals(newLog.id, logs.last().id)
         assertEquals(newLog.title, logs.last().title)
         assertEquals(newLog.date, logs.last().date)
