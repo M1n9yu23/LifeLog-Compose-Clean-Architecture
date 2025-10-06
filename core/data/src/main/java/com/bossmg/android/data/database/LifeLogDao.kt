@@ -27,7 +27,15 @@ interface LifeLogDao {
             WHERE mood = :mood ORDER BY date DESC, id DESC
         """
     )
-    fun getLifeLogsByMood(mood:String): Flow<List<LifeLogEntity>>
+    fun getLifeLogsByMood(mood: String): Flow<List<LifeLogEntity>>
+
+    @Query(
+        """
+            SELECT img FROM lifelogs
+            WHERE img IS NOT NULL ORDER BY date DESC, id DESC 
+        """
+    )
+    fun getImages(): Flow<List<String>>
 
     @Query("SELECT * FROM lifelogs WHERE id = :lifeLogId")
     suspend fun getLifeLogById(lifeLogId: Int): LifeLogEntity
