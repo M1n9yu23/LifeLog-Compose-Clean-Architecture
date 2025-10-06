@@ -38,9 +38,9 @@ import com.bossmg.android.designsystem.ui.components.DefaultTextField
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.Background
-import com.bossmg.android.designsystem.ui.theme.Black
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP300
+import com.bossmg.android.designsystem.ui.theme.DP400
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.DarkGray2
 import com.bossmg.android.designsystem.ui.theme.Gray5
@@ -276,30 +276,15 @@ private fun DescriptionInputField(
 private fun MemoImage(
     img: String?
 ) {
-    if (img != null) {
+    img?.let {
         AsyncImage(
-            model = img,
-            contentDescription = stringResource(R.string.memo_image_description),
+            model = it,
+            contentDescription = "관련 이미지",
             modifier = Modifier
                 .fillMaxWidth()
-                .height(DP300)
-        )
-    } else {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(DP300)
-                .background(color = Black)
+                .height(DP400)
         )
     }
-
-//    img?.let {
-//        AsyncImage(
-//            model = it,
-//            contentDescription = "관련 이미지",
-//            modifier = Modifier.fillMaxWidth().height(DP400)
-//        )
-//    }
 }
 
 @Preview
