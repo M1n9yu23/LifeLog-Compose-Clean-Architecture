@@ -19,16 +19,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.components.CustomCard
+import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.Background
@@ -44,54 +45,40 @@ import com.bossmg.android.designsystem.ui.theme.Gray5
 import java.time.LocalDate
 
 @Composable
-fun Mood() {
-    val uiModel = MoodUIModel(
-        moods = mapOf(
-            "\uD83D\uDCDD 메모" to 1,
-            "\uD83D\uDE0A 기쁨" to 2,
-            "\uD83D\uDE22 슬픔" to 3,
-            "\uD83D\uDE04 즐거움" to 1,
-            "\uD83D\uDE2D 우울" to 2
-        ),
-        memoItem = listOf(
-            MemoItem(
-                id = 1,
-                date = LocalDate.of(2025, 10, 1),
-                title = "오늘의 아침",
-                mood = "행복"
-            ),
-            MemoItem(
-                id = 2,
-                date = LocalDate.of(2025, 10, 2),
-                title = "점심시간",
-                mood = "피곤"
-            ),
-            MemoItem(
-                id = 3,
-                date = LocalDate.of(2025, 10, 3),
-                title = "저녁 산책",
-                mood = "편안",
-                img = "https://picsum.photos/id/237/200/300"
-            )
-        )
-    )
+internal fun Mood(
+    onMemoItemClick: (Int) -> Unit,
+    viewModel: MoodViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var selectedMood by remember { mutableStateOf(uiModel.moods.keys.first()) }
+    LaunchedEffect(Unit) {
+        viewModel.load()
+    }
 
-    MoodScreen(
-        uiModel = uiModel,
-        selectedMood = selectedMood,
-        onMoodSelected = {
-            selectedMood = it
+    when {
+        uiState.isLoading -> {
+            LoadingScreen()
         }
-    )
+
+        else -> {
+            MoodScreen(
+                uiModel = uiState.uiModel,
+                selectedMood = uiState.selectedMood,
+                onMoodSelected = {
+                    viewModel.selectMood(it)
+                },
+                onMemoItemClick = onMemoItemClick
+            )
+        }
+    }
 }
 
 @Composable
 private fun MoodScreen(
     uiModel: MoodUIModel,
     selectedMood: String,
-    onMoodSelected: (String) -> Unit
+    onMoodSelected: (String) -> Unit,
+    onMemoItemClick: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -118,17 +105,20 @@ private fun MoodScreen(
         }
 
         items(uiModel.memoItem.filter { it.mood.contains(selectedMood) }) {
-            MemoItemCard(it)
+            MemoItemCard(it, onMemoItemClick)
         }
     }
 }
 
 
 @Composable
-private fun MemoItemCard(item: MemoItem) {
+private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
     CustomCard(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onMemoItemClick(item.id)
+            }
             .padding(vertical = DP8),
         backgroundColor = item.cardColor
     ) {
@@ -219,7 +209,8 @@ private fun MoodScreenPreview() {
                 )
             )
         ),
-        "\uD83D\uDE0A 기쁨"
+        "\uD83D\uDE0A 기쁨",
+        {}
     ) {
 
     }
