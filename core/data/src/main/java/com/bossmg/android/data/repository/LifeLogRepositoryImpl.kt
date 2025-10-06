@@ -27,6 +27,8 @@ class LifeLogRepositoryImpl @Inject constructor(
             entities.map { mapper.map(it) }
         }
 
+    override fun getImages(): Flow<List<String>> = dao.getImages()
+
     override suspend fun getLifeLogById(id: Int): LifeLog = dao.getLifeLogById(id).run {
         mapper.map(this)
     }
@@ -34,6 +36,7 @@ class LifeLogRepositoryImpl @Inject constructor(
     override suspend fun insertLifeLog(lifeLog: LifeLog) {
         dao.insertLifeLog(mapper.mapBack(lifeLog))
     }
+
     override suspend fun upsertLifeLog(lifeLog: LifeLog) {
         dao.upsertLifeLog(mapper.mapBack(lifeLog))
     }
