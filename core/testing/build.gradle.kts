@@ -41,6 +41,9 @@ dependencies {
 
     implementation(libs.bundles.room)
     implementation(libs.bundles.android.hilt)
+    implementation(libs.androidx.runner)
+    implementation(libs.hilt.android.testing)
+    implementation(libs.kotlinx.coroutines.test)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.bundles.unit.test)
