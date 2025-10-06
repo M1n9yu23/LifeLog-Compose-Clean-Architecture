@@ -25,8 +25,8 @@ fun LifeLogNavHost(
         modifier = modifier,
     ) {
         homeScreen(navController::navigateToMemo)
-        calendarScreen()
-        moodScreen()
+        calendarScreen(navController::navigateToMemo)
+        moodScreen(navController::navigateToMemo)
         photoScreen()
         memoScreen(
             onBack = navController::popBackStack
