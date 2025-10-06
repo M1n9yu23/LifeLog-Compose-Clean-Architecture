@@ -84,6 +84,30 @@ class LifeLogDatabaseTest {
     }
 
     @Test
+    fun upsertLifeLog_insertNewEntity() = runTest {
+        val newLog = LifeLogEntity(
+            id = 6,
+            title = "추가 되는 제목",
+            description = "추가 되는 내용",
+            date = "2025-10-06",
+            mood = "\uD83D\uDE0A 기쁨",
+            img = "추가.jpg"
+        )
+
+        dao.upsertLifeLog(newLog)
+
+        val logs = dao.getLifeLogs().first()
+        assertEquals(6, logs.size)
+
+        val insertLog = dao.getLifeLogById(newLog.id)
+
+        assertEquals(newLog.id, insertLog.id)
+        assertEquals(newLog.title, insertLog.title)
+        assertEquals(newLog.description, insertLog.description)
+        assertEquals(newLog.img, insertLog.img)
+    }
+
+    @Test
     fun deleteLifeLogById_removesEntity() = runTest {
         val logs = dao.getLifeLogs().first()
         val target = logs.first()
