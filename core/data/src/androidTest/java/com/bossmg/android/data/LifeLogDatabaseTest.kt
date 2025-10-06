@@ -39,7 +39,7 @@ class LifeLogDatabaseTest {
                 title = "제목 $i",
                 description = "내용 $i",
                 mood = if (i % 2 == 0) "\uD83D\uDE0A 기쁨" else "\uD83D\uDE22 슬픔",
-                img = null
+                img = if (i % 2 != 0) "image$i.jpg" else null
             )
             dao.insertLifeLog(log)
         }
@@ -116,5 +116,14 @@ class LifeLogDatabaseTest {
 
         assertEquals(List(happy.size) { "\uD83D\uDE0A 기쁨" }, happyMoods)
         assertEquals(List(sad.size) { "\uD83D\uDE22 슬픔" }, sadMoods)
+    }
+
+    @Test
+    fun getImages() = runTest {
+        val images = dao.getImages().first()
+
+        assertEquals(2, images.size)
+        assertEquals("image3.jpg", images[0])
+        assertEquals("image1.jpg", images[1])
     }
 }
