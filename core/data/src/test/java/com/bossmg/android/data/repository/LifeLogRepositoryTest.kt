@@ -22,9 +22,9 @@ class LifeLogRepositoryTest {
     private lateinit var repository: LifeLogRepositoryImpl
 
     private val dummyLogs = listOf(
-        LifeLogEntity(1, "2025-10-01", "아침 산책", "공원에서 산책", "\uD83D\uDE0A 기쁨"),
+        LifeLogEntity(1, "2025-10-01", "아침 산책", "공원에서 산책", "\uD83D\uDE0A 기쁨", "산책.jpg"),
         LifeLogEntity(2, "2025-10-02", "새 프로젝트 시작", "안드로이드 프로젝트 시작", "\uD83E\uDD29 설렘"),
-        LifeLogEntity(3, "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", "\uD83E\uDD70 행복"),
+        LifeLogEntity(3, "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", "\uD83E\uDD70 행복", "음식.jpg"),
     )
 
     @Before
@@ -126,5 +126,14 @@ class LifeLogRepositoryTest {
         assertEquals("\uD83D\uDE0A 기쁨", log.mood)
 
         assertEquals(0, logs.indexOf(log))
+    }
+
+    @Test
+    fun getImages_returnsOnlyNonNullImages() = scope.runTest {
+        val images = repository.getImages().first()
+
+        assertEquals(2, images.size)
+        assertEquals("산책.jpg", images[0])
+        assertEquals("음식.jpg", images[1])
     }
 }
