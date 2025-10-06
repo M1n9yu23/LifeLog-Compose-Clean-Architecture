@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ internal class CalendarViewModel @Inject constructor(
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate: StateFlow<LocalDate> = _selectedDate.asStateFlow()
 
-    private val _currentMonth = MutableStateFlow(LocalDate.now().withDayOfMonth(1))
+    private val _currentMonth = MutableStateFlow(LocalDate.now())
     val currentMonth: StateFlow<LocalDate> = _currentMonth.asStateFlow()
 
     val uiState: StateFlow<CalendarUIState> = selectedDate.flatMapLatest { date ->
@@ -44,11 +45,15 @@ internal class CalendarViewModel @Inject constructor(
     }
 
     fun onPrevMonth() {
-        _currentMonth.value = _currentMonth.value.minusMonths(1)
+        _currentMonth.update {
+            it.minusMonths(1)
+        }
     }
 
     fun onNextMonth() {
-        _currentMonth.value = _currentMonth.value.plusMonths(1)
+        _currentMonth.update {
+            it.plusMonths(1)
+        }
     }
 }
 
