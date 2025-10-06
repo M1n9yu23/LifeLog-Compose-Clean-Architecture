@@ -50,6 +50,7 @@ import kotlin.math.ceil
 
 @Composable
 internal fun Calendar(
+    onMemoItemClick: (Int) -> Unit,
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -71,10 +72,12 @@ internal fun Calendar(
                 },
                 onPrevMonth = {
                     viewModel.onPrevMonth()
-                }
-            ) {
-                viewModel.onNextMonth()
-            }
+                },
+                onNextMonth = {
+                    viewModel.onNextMonth()
+                },
+                onMemoItemClick = onMemoItemClick
+            )
         }
     }
 }
@@ -86,7 +89,8 @@ private fun CalendarScreen(
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
     onPrevMonth: () -> Unit,
-    onNextMonth: () -> Unit
+    onNextMonth: () -> Unit,
+    onMemoItemClick: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -116,7 +120,7 @@ private fun CalendarScreen(
         items(uiModel.memoItems, key = {
             it.id
         }) {
-            MemoItemCard(it)
+            MemoItemCard(it, onMemoItemClick)
         }
     }
 }
@@ -242,10 +246,13 @@ private fun CalendarGrid(
 }
 
 @Composable
-private fun MemoItemCard(item: MemoItem) {
+private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
     CustomCard(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onMemoItemClick(item.id)
+            }
             .padding(vertical = DP8),
         backgroundColor = item.cardColor
     ) {
@@ -282,6 +289,7 @@ private fun CalendarScreenPreview() {
         selectedDate = LocalDate.of(2025, 10, 10),
         onDateSelected = {},
         onPrevMonth = {},
-        onNextMonth = {}
+        onNextMonth = {},
+        onMemoItemClick = {}
     )
 }
