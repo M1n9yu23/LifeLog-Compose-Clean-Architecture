@@ -64,6 +64,7 @@ class LifeLogDatabaseTest {
 
         val logs = dao.getLifeLogs().first()
         val insert = logs.find { it.title == "제목 추가" }!!
+
         assertEquals("제목 추가", insert.title)
         assertEquals("내용 추가", insert.description)
         assertEquals("\uD83D\uDE34 피곤", insert.mood)
@@ -117,7 +118,6 @@ class LifeLogDatabaseTest {
 
         val deletedCount = result.count { it.id == target.id }
         assertEquals(0, deletedCount)
-
         assertEquals(logs.size - 1, result.size)
     }
 
