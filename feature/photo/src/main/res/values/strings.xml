@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="text_empty_title">텅 비었네요...</string>
+    <string name="text_empty_body">사진을 채워보세요!</string>
+</resources>
