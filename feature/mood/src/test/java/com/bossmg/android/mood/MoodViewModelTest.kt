@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MoodViewModelTest {
+
     @get:Rule
     val rule = MainDispatcherRule()
 
