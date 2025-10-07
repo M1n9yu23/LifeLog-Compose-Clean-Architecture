@@ -8,6 +8,7 @@ import org.junit.Before
 import org.junit.Test
 
 class LifeLogMapperTest {
+
     private lateinit var mapper: LifeLogMapper
 
     @Before
