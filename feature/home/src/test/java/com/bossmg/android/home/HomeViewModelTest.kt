@@ -38,7 +38,6 @@ class HomeViewModelTest {
         viewModel = HomeViewModel(getLifeLogsUseCase, mapper)
     }
 
-
     @Test
     fun uiState_shouldLoadingInit() {
         assertEquals(HomeUIState.Loading, viewModel.uiState.value)
