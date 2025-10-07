@@ -42,7 +42,7 @@ android {
 dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:designsystem"))
-    implementation(project(":core:testing"))
+    testImplementation(project(":core:testing"))
 
     implementation(libs.bundles.compose.core)
     implementation(libs.bundles.compose.navigation)
@@ -50,7 +50,6 @@ dependencies {
     implementation(libs.bundles.android.hilt)
     implementation(libs.coil.compose)
     ksp(libs.hilt.compiler)
-    implementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.bundles.unit.test)
     androidTestImplementation(libs.bundles.android.test)
 

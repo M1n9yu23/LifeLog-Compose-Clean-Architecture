@@ -42,6 +42,7 @@ android {
 dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:designsystem"))
+    testImplementation(project(":core:testing"))
 
     implementation(libs.bundles.compose.core)
     implementation(libs.bundles.compose.navigation)

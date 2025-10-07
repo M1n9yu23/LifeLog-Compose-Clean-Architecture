@@ -112,7 +112,8 @@ unit-test = [
     "junit",
     "mockito-core",
     "mockito-kotlin",
-    "robolectric"
+    "robolectric",
+    "kotlinx-coroutines-test"
 ]
 
 android-test = [
