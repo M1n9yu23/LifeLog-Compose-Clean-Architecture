@@ -18,6 +18,7 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModelTest {
+
     @get:Rule
     val rule = MainDispatcherRule()
 
