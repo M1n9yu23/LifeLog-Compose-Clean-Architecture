@@ -66,12 +66,12 @@ classDef android-test fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 
 ## Modules
 
-- **:app**: 모든 모듈에 접근할 수 있는 최상위 모듈 (여기서는 feature의 내비게이션 담당)
-- **:core:data**: 데이터 레이어 모듈, domain 모듈에만 접근 가능한 모듈
-- **:core:domain**: 레이어간 독립을 지원하는 모듈, 다른 모듈에 접근 할 수 없는 Kotlin 모듈
-- **:core:designsystem**: 컴포넌트와 모든 UI 관련(Icons, Theme, Util)을 담당하는 모듈
-- **:core:testing**: feature 모듈용 테스트 헬퍼(TestRepository, Rule, Runner 등) 제공하는 모듈
-- **:feature**: 기능 단위로 나눠진 모듈, domain, designsystem, testing에 접근 하는 모듈
+- **:app** - 모든 모듈에 접근할 수 있는 최상위 모듈 (여기서는 feature의 내비게이션 담당)
+- **:core:data** - 데이터 레이어 모듈, domain 모듈에만 접근 가능한 모듈
+- **:core:domain** - 레이어간 독립을 지원하는 모듈, 다른 모듈에 접근 할 수 없는 Kotlin 모듈
+- **:core:designsystem** - 컴포넌트와 모든 UI 관련(Icons, Theme, Util)을 담당하는 모듈
+- **:core:testing** - feature 모듈용 테스트 헬퍼(TestRepository, Rule, Runner 등) 제공하는 모듈
+- **:feature** - 기능 단위로 나눠진 모듈, domain, designsystem, testing에 접근 하는 모듈
 
 ## Testing
 
@@ -90,7 +90,7 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 - State 변화와 데이터 흐름이 의도대로 동작하는지 검증
 - 실제 인터페이스를 구현한 간단하지만 의도대로 동작하는 테스트용 Repository, Dao 등을 사용
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | **분류**            | **내용**                         |
 |-------------------|--------------------------------|
