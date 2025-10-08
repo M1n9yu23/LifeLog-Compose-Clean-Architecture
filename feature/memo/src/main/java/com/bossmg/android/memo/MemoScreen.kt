@@ -1,5 +1,8 @@
 package com.bossmg.android.memo
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -55,8 +59,23 @@ internal fun Memo(
     viewModel: MemoViewModel = hiltViewModel()
 ) {
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     var showDateDialog by remember { mutableStateOf(false) }
+    var showGallery by remember { mutableStateOf(false) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        it?.let {
+            context.contentResolver.takePersistableUriPermission(
+                it,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+
+            viewModel.updateImage(it.toString())
+        }
+    }
 
     if (showDateDialog) {
         CalendarDialog(
@@ -71,6 +90,13 @@ internal fun Memo(
         )
     }
 
+    LaunchedEffect(showGallery) {
+        if (showGallery) {
+            galleryLauncher.launch("image/*")
+            showGallery = false
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.load(id)
     }
@@ -79,10 +105,10 @@ internal fun Memo(
         uiModel = uiModel,
         onBack = onBack,
         onShowDateDialogChange = { showDateDialog = it },
+        onShowGallery = { showGallery = it },
         onTitleChange = { viewModel.updateTitle(it) },
         onDescriptionChange = { viewModel.updateDescription(it) },
         onMoodSelected = { viewModel.updateMood(it) },
-        onImageChange = { viewModel.updateImage(it) },
         onSaveClick = { viewModel.saveMemo() },
         onDeleteClick = { viewModel.deleteMemo(id) }
     )
@@ -93,10 +119,10 @@ private fun MemoScreen(
     uiModel: MemoUIModel,
     onBack: () -> Unit,
     onShowDateDialogChange: (Boolean) -> Unit,
+    onShowGallery: (Boolean) -> Unit,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onMoodSelected: (String) -> Unit,
-    onImageChange: (String?) -> Unit,
     onSaveClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -151,7 +177,7 @@ private fun MemoScreen(
                     .padding(vertical = DP8),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconButton(onClick = { /* 카메라/갤러리 */ }) {
+                IconButton(onClick = { onShowGallery(true) }) {
                     Icon(
                         LifeIcons.Photo,
                         contentDescription = stringResource(R.string.icon_camera),
