@@ -8,9 +8,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 @HiltViewModel
-internal class PhotoViewModel(
+internal class PhotoViewModel @Inject constructor(
     private val getImagesUseCase: GetImagesUseCase
 ) : ViewModel() {
 
@@ -21,7 +22,6 @@ internal class PhotoViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = PhotoUIState.Loading
     )
-
 }
 
 internal sealed interface PhotoUIState {

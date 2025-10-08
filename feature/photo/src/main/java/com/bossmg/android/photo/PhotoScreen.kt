@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,12 +59,13 @@ private fun PhotoScreen(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = Background)
+            .statusBarsPadding()
             .padding(DP12),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(DP8),
         horizontalArrangement = Arrangement.spacedBy(DP8)
     ) {
-        items(photos.size) {
+        items(photos) {
             AsyncImage(
                 model = it,
                 contentDescription = "사용한 이미지",
