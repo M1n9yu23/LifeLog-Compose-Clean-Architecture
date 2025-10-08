@@ -53,8 +53,8 @@ end
 :feature:mood -.-> :core:designsystem
 :feature:mood -.-> :core:domain
 :feature:mood -.-> :core:testing
-:feature:photo -.-> :core:testing
-:feature:photo -.-> :core:testing
+:feature:photo -.-> :core:designsystem
+:feature:photo -.-> :core:domain
 :feature:photo -.-> :core:testing
 
 classDef android-app fill:#FFD6D6,stroke:#000,stroke-width:2px,color:#000;
