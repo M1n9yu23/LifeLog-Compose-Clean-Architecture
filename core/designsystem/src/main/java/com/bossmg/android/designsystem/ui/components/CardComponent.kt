@@ -44,9 +44,9 @@ fun CustomCard(
     modifier: Modifier = Modifier,
     backgroundColor: Color = White,
     shadowColor: Color = Color.Transparent,
-    shapeTop: Dp = DP16,
-    shapeBottom: Dp = DP16,
-    elevation: Dp = DP16,
+    shapeTop: Dp = DP10,
+    shapeBottom: Dp = DP10,
+    elevation: Dp = DP10,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val shape = RoundedCornerShape(
