@@ -296,6 +296,7 @@ private fun DescriptionInputField(
             .fillMaxWidth()
             .heightIn(min = DP300),
         placeholder = stringResource(R.string.memo_description_placeholder),
+        singleLine = false
     )
 }
 
