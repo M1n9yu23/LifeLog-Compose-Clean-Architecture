@@ -101,3 +101,13 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 | **Database**      | Room                           |
 | **Image Loading** | Coil                           |
 | **DI**            | Hilt                           |
+
+## Previews
+
+<p align="center">
+<img src="https://github.com/user-attachments/assets/e7afe3c9-bc1d-456e-bf47-12de91d18d46" alt="img1" width="200" />
+<img src="https://github.com/user-attachments/assets/23b3baad-3861-4c10-a024-b61ae4990d95" alt="img2" width="200" /><br>
+<img src="https://github.com/user-attachments/assets/7977808c-6203-40eb-80db-5eef1aba9ac5" alt="img3" width="200" /><br>
+<img src="https://github.com/user-attachments/assets/15fa726d-f823-479c-a204-edad145a7ca0" alt="img4" width="200" />
+<img src="https://github.com/user-attachments/assets/ab4bfa92-f558-45ec-85a7-2d0481b9e672" alt="img5" width="200" />
+</p>
