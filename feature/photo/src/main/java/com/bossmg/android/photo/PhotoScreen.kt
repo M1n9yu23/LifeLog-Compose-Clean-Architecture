@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,7 +72,8 @@ private fun PhotoScreen(
                 model = it,
                 contentDescription = "사용한 이미지",
                 modifier = Modifier.aspectRatio(1f),
-                alignment = Alignment.Center
+                alignment = Alignment.Center,
+                contentScale = ContentScale.Crop
             )
         }
     }
