@@ -41,6 +41,7 @@ import com.bossmg.android.designsystem.ui.theme.Black
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP36
+import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.Primary
 import com.bossmg.android.designsystem.ui.theme.Secondary
@@ -56,6 +57,7 @@ internal fun Calendar(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
     val currentMonth by viewModel.currentMonth.collectAsStateWithLifecycle()
+    val markedDate by viewModel.markedDate.collectAsStateWithLifecycle()
 
     when (uiState) {
         is CalendarUIState.Loading -> {
@@ -65,6 +67,7 @@ internal fun Calendar(
         is CalendarUIState.Success -> {
             CalendarScreen(
                 uiModel = (uiState as CalendarUIState.Success).uiModel,
+                markedDate = markedDate,
                 currentMonth = currentMonth,
                 selectedDate = selectedDate,
                 onDateSelected = {
@@ -85,6 +88,7 @@ internal fun Calendar(
 @Composable
 private fun CalendarScreen(
     uiModel: CalendarUIModel,
+    markedDate: Set<LocalDate>,
     currentMonth: LocalDate,
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
@@ -111,6 +115,7 @@ private fun CalendarScreen(
             CalendarGrid(
                 month = currentMonth,
                 selectedDate = selectedDate,
+                markedDate = markedDate,
                 onDateSelected = onDateSelected
             )
 
@@ -167,6 +172,7 @@ private fun CalenderHeader(
 private fun CalendarGrid(
     month: LocalDate,
     selectedDate: LocalDate,
+    markedDate: Set<LocalDate>,
     onDateSelected: (LocalDate) -> Unit
 ) {
     val daysOfWeek = listOf(
@@ -237,6 +243,15 @@ private fun CalendarGrid(
                                     color = if (isSelected) White else Black
                                 )
                             }
+
+                            if (markedDate.contains(date)) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(DP4)
+                                        .background(Color.Cyan, CircleShape)
+                                        .align(Alignment.BottomCenter)
+                                )
+                            }
                         }
                     }
                 }
@@ -285,6 +300,7 @@ private fun CalendarScreenPreview() {
                 ),
             )
         ),
+        markedDate = setOf(LocalDate.of(2025, 10, 1)),
         currentMonth = LocalDate.of(2025, 10, 1),
         selectedDate = LocalDate.of(2025, 10, 10),
         onDateSelected = {},

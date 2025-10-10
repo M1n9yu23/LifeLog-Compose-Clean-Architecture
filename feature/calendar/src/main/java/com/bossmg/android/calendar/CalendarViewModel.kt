@@ -3,6 +3,7 @@ package com.bossmg.android.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.GetLifeLogsByDateUseCase
+import com.bossmg.android.domain.usecase.GetLifeLogsByMonthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class CalendarViewModel @Inject constructor(
     private val getLifeLogsByDateUseCase: GetLifeLogsByDateUseCase,
+    private val getLifeLogsByMonthUseCase: GetLifeLogsByMonthUseCase,
     private val mapper: CalendarMapper
 ) : ViewModel() {
 
@@ -26,6 +28,16 @@ internal class CalendarViewModel @Inject constructor(
 
     private val _currentMonth = MutableStateFlow(LocalDate.now())
     val currentMonth: StateFlow<LocalDate> = _currentMonth.asStateFlow()
+
+    val markedDate: StateFlow<Set<LocalDate>> = _currentMonth.flatMapLatest { date ->
+        getLifeLogsByMonthUseCase(date.year, date.monthValue).map { logs ->
+            logs.map { LocalDate.parse(it.date) }.toSet()
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptySet()
+    )
 
     val uiState: StateFlow<CalendarUIState> = selectedDate.flatMapLatest { date ->
         getLifeLogsByDateUseCase(date.toString()).map { lifeLogs ->
