@@ -1,7 +1,7 @@
 # LifeLog Android App
 
 LifeLog는 Kotlin과 Compose를 기반으로 구현된 안드로이드 앱입니다.
-Clean Architecture와 MVVM 패턴을 따르며, 대부분의 모듈은 테스트 코드로 검증된 안정적인 구조를 가지고 있습니다.
+Clean Architecture와 MVVM 패턴을 따르며, 모든 핵심 모듈이 단위 테스트와 통합 테스트로 검증되어, 안정적이고 신뢰할 수 있는 구조를 제공합니다.
 소중한 메모를 남기고, 다양한 일기를 기록하며 나만의 비밀 기록 애플리케이션으로 활용할 수 있습니다.
 
 ## Module dependency graph
