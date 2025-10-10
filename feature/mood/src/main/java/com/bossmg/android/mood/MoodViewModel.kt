@@ -44,13 +44,15 @@ internal class MoodViewModel @Inject constructor(
     }
 
     fun selectMood(mood: String) {
-        _uiState.update {
-            it.copy(
-                selectedMood = mood
-            )
-        }
+        if (_uiState.value.selectedMood != mood) {
+            _uiState.update {
+                it.copy(
+                    selectedMood = mood
+                )
+            }
 
-        getLifeLogsByMood()
+            getLifeLogsByMood()
+        }
     }
 
     private fun getLifeLogsByMood() {
