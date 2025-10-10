@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
     private fun showPermissionRationale() {
         AlertDialog.Builder(this)
             .setTitle("알림 권한 필요")
-            .setMessage("앱에서 알림을 보내려면 알림 권한이 필요합니다. 설정에서 허용해주세요.")
+            .setMessage("앱에서 알림을 보내려면 알림 권한이 필요해요. 설정에서 허용해주세요.")
             .setPositiveButton("설정") { _, _ ->
                 openAppSettings()
             }
