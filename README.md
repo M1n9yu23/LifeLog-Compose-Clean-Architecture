@@ -1,7 +1,7 @@
 # LifeLog Android App
 
-LifeLog는 Kotlin과 Compose를 기반으로 구현된 안드로이드 앱입니다.
-Clean Architecture와 MVVM 패턴을 따르며, 모든 핵심 모듈이 단위 테스트와 통합 테스트로 검증되어, 안정적이고 신뢰할 수 있는 구조를 제공합니다.
+LifeLog는 Kotlin과 Compose를 기반으로 구현된 안드로이드 앱입니다.<br>
+Clean Architecture와 MVVM 패턴을 따르며, 모든 핵심 모듈이 단위 테스트와 통합 테스트로 검증되어, 안정적이고 신뢰할 수 있는 구조를 제공합니다.<br>
 소중한 메모를 남기고, 다양한 일기를 기록하며 나만의 비밀 기록 애플리케이션으로 활용할 수 있습니다.
 
 ## Module dependency graph
@@ -66,11 +66,12 @@ classDef android-test fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 
 ## Modules
 
-- **:app** - 모든 모듈에 접근할 수 있는 최상위 모듈 (여기서는 feature의 내비게이션 담당)
+- **:app** - 모든 모듈에 접근할 수 있는 최상위 모듈 (여기서는 feature의 내비게이션 담당 및 알림 모듈 접근)
 - **:core:data** - 데이터 레이어 모듈, domain 모듈에만 접근 가능한 모듈
 - **:core:domain** - 레이어간 독립을 지원하는 모듈, 다른 모듈에 접근 할 수 없는 Kotlin 모듈
 - **:core:designsystem** - 컴포넌트와 모든 UI 관련(Icons, Theme, Util)을 담당하는 모듈
 - **:core:testing** - feature 모듈용 테스트 헬퍼(TestRepository, Rule, Runner 등) 제공하는 모듈
+- **:core:notifications** - 앱의 알림을 담당하는 모듈
 - **:feature** - 기능 단위로 나눠진 모듈, domain, designsystem, testing에 접근 하는 모듈
 
 ## Testing
@@ -92,15 +93,15 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 
 ## Tech Stack
 
-| **분류**            | **내용**                         |
-|-------------------|--------------------------------|
-| **Language**      | Kotlin                         |
-| **Jetpack**       | Compose, Navigation, ViewModel |
-| **Architecture**  | Clean Architecture, MVVM       |
-| **Asynchronous**  | Coroutine, Flow(cold, hot)     |
-| **Database**      | Room                           |
-| **Image Loading** | Coil                           |
-| **DI**            | Hilt                           |
+| **분류**            | **내용**                                      |
+|-------------------|---------------------------------------------|
+| **Language**      | Kotlin                                      |
+| **Jetpack**       | Compose, Navigation, ViewModel, WorkManager |
+| **Architecture**  | Clean Architecture, MVVM                    |
+| **Asynchronous**  | Coroutine, Flow(cold, hot)                  |
+| **Database**      | Room                                        |
+| **Image Loading** | Coil                                        |
+| **DI**            | Hilt                                        |
 
 ## Previews
 
@@ -109,6 +110,6 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 <img src="https://github.com/user-attachments/assets/23b3baad-3861-4c10-a024-b61ae4990d95" alt="img2" width="200" />
 <img src="https://github.com/user-attachments/assets/7977808c-6203-40eb-80db-5eef1aba9ac5" alt="img3" width="200" /><br>
 <img src="https://github.com/user-attachments/assets/15fa726d-f823-479c-a204-edad145a7ca0" alt="img4" width="200" />
-<img src="https://github.com/user-attachments/assets/ab4bfa92-f558-45ec-85a7-2d0481b9e672" alt="img5" width="200" />
+<img src="https://github.com/user-attachments/assets/beae9055-3664-433b-80fa-cbbcdc39a2b2" alt="img5" width="200" />
 <img src="https://github.com/user-attachments/assets/6b5ec8f8-bad2-4707-b938-842c3807b9be" alt="img6" width="200" />
 </p>
