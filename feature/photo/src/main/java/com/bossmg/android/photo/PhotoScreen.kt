@@ -28,6 +28,7 @@ import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.Background
 import com.bossmg.android.designsystem.ui.theme.DP12
+import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP8
 
 @Composable
@@ -62,8 +63,8 @@ private fun PhotoScreen(
             .statusBarsPadding()
             .padding(DP12),
         columns = GridCells.Fixed(3),
-        verticalArrangement = Arrangement.spacedBy(DP8),
-        horizontalArrangement = Arrangement.spacedBy(DP8)
+        verticalArrangement = Arrangement.spacedBy(DP4),
+        horizontalArrangement = Arrangement.spacedBy(DP4)
     ) {
         items(photos) {
             AsyncImage(
