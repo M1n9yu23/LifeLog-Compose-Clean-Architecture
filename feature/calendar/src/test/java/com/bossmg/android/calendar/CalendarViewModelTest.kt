@@ -1,6 +1,7 @@
 package com.bossmg.android.calendar
 
 import com.bossmg.android.domain.usecase.GetLifeLogsByDateUseCase
+import com.bossmg.android.domain.usecase.GetLifeLogsByMonthUseCase
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.MainDispatcherRule
@@ -24,6 +25,7 @@ class CalendarViewModelTest {
 
     private lateinit var testLifeLogRepository: TestLifeLogRepository
     private lateinit var getLifeLogsByDateUseCase: GetLifeLogsByDateUseCase
+    private lateinit var getLifeLogsByMonthUseCase: GetLifeLogsByMonthUseCase
     private lateinit var mapper: CalendarMapper
     private lateinit var viewModel: CalendarViewModel
 
@@ -33,8 +35,9 @@ class CalendarViewModelTest {
     fun setUp() {
         testLifeLogRepository = TestLifeLogRepository()
         getLifeLogsByDateUseCase = GetLifeLogsByDateUseCase(testLifeLogRepository)
+        getLifeLogsByMonthUseCase = GetLifeLogsByMonthUseCase(testLifeLogRepository)
         mapper = CalendarMapper()
-        viewModel = CalendarViewModel(getLifeLogsByDateUseCase, mapper)
+        viewModel = CalendarViewModel(getLifeLogsByDateUseCase, getLifeLogsByMonthUseCase, mapper)
     }
 
     @Test
@@ -52,7 +55,9 @@ class CalendarViewModelTest {
         assertTrue(state is CalendarUIState.Success)
         val lifeLogs = testLifeLogs.filter { it.date == viewModel.selectedDate.value.toString() }
         assertEquals(lifeLogs.size, (state as CalendarUIState.Success).uiModel.memoItems.size)
-        assertEquals(lifeLogs[0].title, state.uiModel.memoItems[0].title)
+        if (lifeLogs.isNotEmpty()) {
+            assertEquals(lifeLogs[0].title, state.uiModel.memoItems[0].title)
+        }
 
         job.cancel()
     }
@@ -110,6 +115,31 @@ class CalendarViewModelTest {
             assertEquals(lifeLog.mood, item.mood)
             assertEquals(lifeLog.img, item.img)
         }
+
+        job.cancel()
+    }
+
+    @Test
+    fun markedDate_shouldEmptyInit() {
+        assertTrue(viewModel.markedDate.value.isEmpty())
+    }
+
+    @Test
+    fun markedDate_shouldEmitCorrectDates_whenRepositoryHasData() = runTest {
+        val job = launch(UnconfinedTestDispatcher()) { viewModel.markedDate.collect() }
+
+        val currentMonth = viewModel.currentMonth.value
+
+        testLifeLogRepository.sendLogs(testLifeLogs)
+
+        val monthLogs = testLifeLogs.filter {
+            val date = LocalDate.parse(it.date)
+            date.year == currentMonth.year && date.monthValue == currentMonth.monthValue
+        }
+
+        val result = monthLogs.map { LocalDate.parse(it.date) }.toSet()
+
+        assertEquals(result, viewModel.markedDate.value)
 
         job.cancel()
     }
