@@ -4,6 +4,7 @@ import com.bossmg.android.domain.usecase.GetLifeLogsByDateUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsByMonthUseCase
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
+import com.bossmg.android.testing.rule.AndroidLogRule
 import com.bossmg.android.testing.rule.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -22,6 +23,9 @@ class CalendarViewModelTest {
 
     @get:Rule
     val rule = MainDispatcherRule()
+
+    @get:Rule
+    val logRule = AndroidLogRule()
 
     private lateinit var testLifeLogRepository: TestLifeLogRepository
     private lateinit var getLifeLogsByDateUseCase: GetLifeLogsByDateUseCase
@@ -42,7 +46,7 @@ class CalendarViewModelTest {
 
     @Test
     fun uiState_shouldLoadingInit() {
-        assertEquals(CalendarUIState.Loading, viewModel.uiState.value)
+        assertEquals(CalendarUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
@@ -52,11 +56,15 @@ class CalendarViewModelTest {
         testLifeLogRepository.sendLogs(testLifeLogs)
 
         val state = viewModel.uiState.value
-        assertTrue(state is CalendarUIState.Success)
-        val lifeLogs = testLifeLogs.filter { it.date == viewModel.selectedDate.value.toString() }
-        assertEquals(lifeLogs.size, (state as CalendarUIState.Success).uiModel.memoItems.size)
+        assertTrue(state is CalendarUiState.Success)
+
+        val successState = state as CalendarUiState.Success
+
+        val lifeLogs = testLifeLogs.filter { it.date == successState.selectedDate.toString() }
+
+        assertEquals(lifeLogs.size, successState.memoItems.size)
         if (lifeLogs.isNotEmpty()) {
-            assertEquals(lifeLogs[0].title, state.uiModel.memoItems[0].title)
+            assertEquals(lifeLogs[0].title, successState.memoItems[0].title)
         }
 
         job.cancel()
@@ -66,34 +74,57 @@ class CalendarViewModelTest {
     fun uiState_shouldUpdate_whenSelectedDateChanges() = runTest {
         val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
+        testLifeLogRepository.sendLogs(testLifeLogs)
+
         val newDate = LocalDate.of(2025, 10, 7)
-        viewModel.selectDate(newDate)
+        viewModel.onDateSelect(newDate)
 
         testLifeLogRepository.sendLogs(testLifeLogs.filter { it.date == newDate.toString() })
+
         val state = viewModel.uiState.value
-        assertEquals(1, (state as CalendarUIState.Success).uiModel.memoItems.size)
-        assertEquals(newDate, state.uiModel.memoItems[0].date)
+        assertTrue(state is CalendarUiState.Success)
+
+        val successState = state as CalendarUiState.Success
+
+        val expectedLogs = testLifeLogs.filter { it.date == newDate.toString() }
+        assertEquals(expectedLogs.size, successState.memoItems.size)
+        assertEquals(newDate, successState.memoItems[0].date)
 
         job.cancel()
     }
 
     @Test
-    fun selectedDate_shouldUpdateCorrectly() {
-        val newDate = LocalDate.of(2025, 10, 12)
-        viewModel.selectDate(newDate)
+    fun selectedDate_shouldUpdateCorrectly() = runTest {
+        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        testLifeLogRepository.sendLogs(testLifeLogs)
 
-        assertEquals(newDate, viewModel.selectedDate.value)
+        val newDate = LocalDate.of(2025, 10, 12)
+        viewModel.onDateSelect(newDate)
+
+        val state = viewModel.uiState.value as CalendarUiState.Success
+        assertEquals(newDate, state.selectedDate)
+
+        job.cancel()
     }
 
     @Test
-    fun currentMonth_shouldChangeOnPrevAndNextMonth() {
-        val initMonth = viewModel.currentMonth.value
-        viewModel.onPrevMonth()
-        assertEquals(initMonth.minusMonths(1), viewModel.currentMonth.value)
+    fun currentMonth_shouldChangeOnPrevAndNextMonth() = runTest {
+        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+        testLifeLogRepository.sendLogs(testLifeLogs)
 
-        viewModel.onNextMonth()
-        viewModel.onNextMonth()
-        assertEquals(initMonth.plusMonths(1), viewModel.currentMonth.value)
+        val stateBefore = viewModel.uiState.value as CalendarUiState.Success
+        val initMonth = stateBefore.currentMonth
+
+        viewModel.onClickPrevMonth()
+        val stateAfterPrev = viewModel.uiState.value as CalendarUiState.Success
+        assertEquals(initMonth.minusMonths(1), stateAfterPrev.currentMonth)
+
+        viewModel.onClickNextMonth()
+        viewModel.onClickNextMonth()
+        val stateAfterNext = viewModel.uiState.value as CalendarUiState.Success
+        assertEquals(initMonth.plusMonths(1), stateAfterNext.currentMonth)
+
+        job.cancel()
     }
 
     @Test
@@ -102,12 +133,12 @@ class CalendarViewModelTest {
 
         testLifeLogRepository.sendLogs(testLifeLogs)
         val state = viewModel.uiState.value
-        assertTrue(state is CalendarUIState.Success)
+        assertTrue(state is CalendarUiState.Success)
 
-        val successState = state as CalendarUIState.Success
-        val lifeLogs = testLifeLogs.filter { it.date == viewModel.selectedDate.value.toString() }
+        val successState = state as CalendarUiState.Success
+        val lifeLogs = testLifeLogs.filter { it.date == successState.selectedDate.toString() }
 
-        successState.uiModel.memoItems.forEachIndexed { index, item ->
+        successState.memoItems.forEachIndexed { index, item ->
             val lifeLog = lifeLogs[index]
             assertEquals(lifeLog.id, item.id)
             assertEquals(LocalDate.parse(lifeLog.date), item.date)
@@ -120,17 +151,16 @@ class CalendarViewModelTest {
     }
 
     @Test
-    fun markedDate_shouldEmptyInit() {
-        assertTrue(viewModel.markedDate.value.isEmpty())
-    }
-
-    @Test
     fun markedDate_shouldEmitCorrectDates_whenRepositoryHasData() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.markedDate.collect() }
-
-        val currentMonth = viewModel.currentMonth.value
+        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
         testLifeLogRepository.sendLogs(testLifeLogs)
+
+        val state = viewModel.uiState.value
+        assertTrue(state is CalendarUiState.Success)
+        val successState = state as CalendarUiState.Success
+
+        val currentMonth = successState.currentMonth
 
         val monthLogs = testLifeLogs.filter {
             val date = LocalDate.parse(it.date)
@@ -139,7 +169,7 @@ class CalendarViewModelTest {
 
         val result = monthLogs.map { LocalDate.parse(it.date) }.toSet()
 
-        assertEquals(result, viewModel.markedDate.value)
+        assertEquals(result, successState.markedDates.toSet())
 
         job.cancel()
     }
