@@ -1,14 +1,17 @@
 package com.bossmg.android.calendar
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.GetLifeLogsByDateUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsByMonthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -24,54 +27,64 @@ internal class CalendarViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _selectedDate = MutableStateFlow(LocalDate.now())
-    val selectedDate: StateFlow<LocalDate> = _selectedDate.asStateFlow()
 
     private val _currentMonth = MutableStateFlow(LocalDate.now())
-    val currentMonth: StateFlow<LocalDate> = _currentMonth.asStateFlow()
 
-    val markedDate: StateFlow<Set<LocalDate>> = _currentMonth.flatMapLatest { date ->
-        getLifeLogsByMonthUseCase(date.year, date.monthValue).map { logs ->
-            logs.map { LocalDate.parse(it.date) }.toSet()
+    val uiState: StateFlow<CalendarUiState> = combine(
+        _selectedDate,
+        _currentMonth,
+        _currentMonth.flatMapLatest { month ->
+            getLifeLogsByMonthUseCase(month.year, month.monthValue)
+                .map { logs ->
+                    logs.mapNotNull { log ->
+                        runCatching { LocalDate.parse(log.date) }
+                            .onFailure { Log.e(TAG, "Date parse error: ${log.date}", it) }
+                            .getOrNull()
+                    }.toImmutableList()
+                }
+        },
+        _selectedDate.flatMapLatest { date ->
+            getLifeLogsByDateUseCase(date.toString())
+                .map { logs ->
+                    logs.map { mapper.map(it) }.toImmutableList()
+                }
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = emptySet()
-    )
-
-    val uiState: StateFlow<CalendarUIState> = selectedDate.flatMapLatest { date ->
-        getLifeLogsByDateUseCase(date.toString()).map { lifeLogs ->
-            val uiModel = CalendarUIModel(
-                memoItems = lifeLogs.map { mapper.map(it) }
-            )
-            CalendarUIState.Success(uiModel)
+    ) { selectedDate, currentMonth, markedDates, memoItems ->
+        Log.d(TAG, "UI State Updated: Date=$selectedDate, Items=${memoItems.size}")
+        CalendarUiState.Success(
+            currentMonth = currentMonth,
+            selectedDate = selectedDate,
+            markedDates = markedDates,
+            memoItems = memoItems
+        ) as CalendarUiState
+    }
+        .catch { e ->
+            Log.e(TAG, "Error in UI State Flow", e)
+            emit(CalendarUiState.Error(e.message ?: "알 수 없는 오류가 발생했습니다."))
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = CalendarUIState.Loading
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = CalendarUiState.Loading
+        )
 
-    fun selectDate(date: LocalDate) {
+    fun onDateSelect(date: LocalDate) {
         _selectedDate.value = date
     }
 
-    fun onPrevMonth() {
+    fun onClickPrevMonth() {
         _currentMonth.update {
             it.minusMonths(1)
         }
     }
 
-    fun onNextMonth() {
+    fun onClickNextMonth() {
         _currentMonth.update {
             it.plusMonths(1)
         }
     }
-}
 
-internal sealed interface CalendarUIState {
-    object Loading : CalendarUIState
-    data class Success(
-        val uiModel: CalendarUIModel
-    ) : CalendarUIState
+    companion object {
+        private const val TAG = "CalendarViewModel"
+    }
 }
