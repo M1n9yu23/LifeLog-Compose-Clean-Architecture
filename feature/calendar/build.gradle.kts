@@ -44,6 +44,8 @@ dependencies {
     implementation(project(":core:designsystem"))
     testImplementation(project(":core:testing"))
 
+    implementation(libs.kotlinx.collections.immutable)
+
     implementation(libs.bundles.compose.core)
     implementation(libs.bundles.compose.navigation)
     implementation(libs.bundles.compose.viewmodel)
