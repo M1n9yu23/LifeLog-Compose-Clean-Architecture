@@ -46,6 +46,8 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.Primary
 import com.bossmg.android.designsystem.ui.theme.Secondary
 import com.bossmg.android.designsystem.ui.theme.White
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
 import kotlin.math.ceil
 
@@ -55,43 +57,38 @@ internal fun Calendar(
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
-    val currentMonth by viewModel.currentMonth.collectAsStateWithLifecycle()
-    val markedDate by viewModel.markedDate.collectAsStateWithLifecycle()
 
     when (uiState) {
-        is CalendarUIState.Loading -> {
+        is CalendarUiState.Loading -> {
             LoadingScreen()
         }
 
-        is CalendarUIState.Success -> {
+        is CalendarUiState.Success -> {
             CalendarScreen(
-                uiModel = (uiState as CalendarUIState.Success).uiModel,
-                markedDate = markedDate,
-                currentMonth = currentMonth,
-                selectedDate = selectedDate,
-                onDateSelected = {
-                    viewModel.selectDate(it)
+                state = uiState as CalendarUiState.Success,
+                onDateSelect = {
+                    viewModel.onDateSelect(it)
                 },
                 onPrevMonth = {
-                    viewModel.onPrevMonth()
+                    viewModel.onClickPrevMonth()
                 },
                 onNextMonth = {
-                    viewModel.onNextMonth()
+                    viewModel.onClickNextMonth()
                 },
                 onMemoItemClick = onMemoItemClick
             )
+        }
+
+        is CalendarUiState.Error -> {
+
         }
     }
 }
 
 @Composable
 private fun CalendarScreen(
-    uiModel: CalendarUIModel,
-    markedDate: Set<LocalDate>,
-    currentMonth: LocalDate,
-    selectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit,
+    state: CalendarUiState.Success,
+    onDateSelect: (LocalDate) -> Unit,
     onPrevMonth: () -> Unit,
     onNextMonth: () -> Unit,
     onMemoItemClick: (Int) -> Unit
@@ -105,7 +102,7 @@ private fun CalendarScreen(
     ) {
         item {
             CalenderHeader(
-                month = currentMonth,
+                month = state.currentMonth,
                 onPrevMonth = onPrevMonth,
                 onNextMonth = onNextMonth
             )
@@ -113,16 +110,16 @@ private fun CalendarScreen(
             Spacer(Modifier.height(DP12))
 
             CalendarGrid(
-                month = currentMonth,
-                selectedDate = selectedDate,
-                markedDate = markedDate,
-                onDateSelected = onDateSelected
+                month = state.currentMonth,
+                selectedDate = state.selectedDate,
+                markedDate = state.markedDates,
+                onDateSelect = onDateSelect
             )
 
             Spacer(Modifier.height(DP16))
         }
 
-        items(uiModel.memoItems, key = {
+        items(state.memoItems, key = {
             it.id
         }) {
             MemoItemCard(it, onMemoItemClick)
@@ -172,8 +169,8 @@ private fun CalenderHeader(
 private fun CalendarGrid(
     month: LocalDate,
     selectedDate: LocalDate,
-    markedDate: Set<LocalDate>,
-    onDateSelected: (LocalDate) -> Unit
+    markedDate: ImmutableList<LocalDate>,
+    onDateSelect: (LocalDate) -> Unit
 ) {
     val daysOfWeek = listOf(
         stringResource(R.string.text_week_sunday),
@@ -221,7 +218,7 @@ private fun CalendarGrid(
                                 .weight(1f)
                                 .aspectRatio(1f)
                                 .clickable {
-                                    onDateSelected(date)
+                                    onDateSelect(date)
                                 },
                             contentAlignment = Alignment.Center
                         ) {
@@ -283,12 +280,16 @@ private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
 @Preview
 @Composable
 private fun CalendarScreenPreview() {
+    val sampleDate = LocalDate.of(2025, 10, 10)
     CalendarScreen(
-        uiModel = CalendarUIModel(
-            listOf(
+        state = CalendarUiState.Success(
+            currentMonth = LocalDate.of(2025, 10, 1),
+            selectedDate = sampleDate,
+            markedDates = persistentListOf(sampleDate),
+            memoItems = persistentListOf(
                 MemoItem(
                     id = 1,
-                    date = LocalDate.of(2025, 10, 1),
+                    date = sampleDate,
                     title = "오늘의 아침",
                     mood = "행복"
                 ),
@@ -300,10 +301,7 @@ private fun CalendarScreenPreview() {
                 ),
             )
         ),
-        markedDate = setOf(LocalDate.of(2025, 10, 1)),
-        currentMonth = LocalDate.of(2025, 10, 1),
-        selectedDate = LocalDate.of(2025, 10, 10),
-        onDateSelected = {},
+        onDateSelect = {},
         onPrevMonth = {},
         onNextMonth = {},
         onMemoItemClick = {}
