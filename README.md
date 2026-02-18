@@ -76,7 +76,7 @@ classDef android-test fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
 
 ## Testing
 
-LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이브러리를 사용하지 않고 Hilt Test Api와 수동 주입을 활용합니다.
+LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이브러리를 사용하지 않고 Fake 객체와 수동 주입을 활용합니다.
 
 - **모든 계층**에 대한 테스트 수행:
     - :core:data -> DatabaseTest(Room, Dao 검증)
