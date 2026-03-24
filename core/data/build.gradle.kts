@@ -1,21 +1,12 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.bossmg.android.library)
+    alias(libs.plugins.bossmg.android.hilt)
+    alias(libs.plugins.bossmg.android.room)
 }
 
 android {
     namespace = "com.bossmg.android.data"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 26
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
+    
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -25,25 +16,8 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-    kotlin {
-        jvmToolchain(21)
-    }
 }
 
 dependencies {
     implementation(project(":core:domain"))
-
-    implementation(libs.bundles.room)
-    implementation(libs.bundles.android.hilt)
-    ksp(libs.hilt.compiler)
-    ksp(libs.androidx.room.compiler)
-
-    testImplementation(libs.bundles.unit.test)
-    androidTestImplementation(libs.bundles.android.test)
-
-    implementation(libs.androidx.core.ktx)
 }
