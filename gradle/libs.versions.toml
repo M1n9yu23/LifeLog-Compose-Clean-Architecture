@@ -33,6 +33,7 @@ runner = "1.7.0"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxImmutable = "0.4.0"
 mockkVersion = "1.14.7"
+spotlessVersion = "8.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +80,14 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockkVersion" }
 
+# Dependencies for build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-compiler-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+hilt-gradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hiltVersion" }
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotlessVersion" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -88,6 +97,15 @@ kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# Custom Plugins
+bossmg-android-application = { id = "bossmg.android.application", version = "unspecified" }
+bossmg-android-library = { id = "bossmg.android.library", version = "unspecified" }
+bossmg-android-feature = { id = "bossmg.android.feature", version = "unspecified" }
+bossmg-android-hilt = { id = "bossmg.android.hilt", version = "unspecified" }
+bossmg-android-room = { id = "bossmg.android.room", version = "unspecified" }
+bossmg-jvm-library = { id = "bossmg.jvm.library", version = "unspecified" }
+bossmg-jvm-hilt = { id = "bossmg.jvm.hilt", version = "unspecified" }
 
 [bundles]
 
