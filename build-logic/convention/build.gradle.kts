@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.compose.compiler.gradlePlugin)
     implementation(libs.ksp.gradlePlugin)
     implementation(libs.hilt.gradlePlugin)
+    implementation(libs.spotless.gradlePlugin)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

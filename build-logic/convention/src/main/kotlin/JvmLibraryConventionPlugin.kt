@@ -11,6 +11,7 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
             }
 
             configureKotlinJvm()
+            configureSpotless()
 
             dependencies {
                 add("testImplementation", libs.findBundle("unit.test").get())

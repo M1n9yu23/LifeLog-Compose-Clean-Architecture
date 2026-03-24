@@ -17,6 +17,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 configureAndroidCompose(this)
                 defaultConfig.targetSdk = 36
             }
+            configureSpotless()
         }
     }
 }
