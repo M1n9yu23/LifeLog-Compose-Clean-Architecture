@@ -15,5 +15,6 @@ dependencies {
     implementation(libs.bundles.room)
     implementation(libs.androidx.runner)
     implementation(libs.hilt.android.testing)
+    implementation(libs.mockk)
     implementation(libs.kotlinx.coroutines.test)
 }

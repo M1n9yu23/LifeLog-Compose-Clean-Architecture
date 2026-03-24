@@ -6,8 +6,6 @@ plugins {
 
 group = "com.bossmg.android.buildlogic"
 
-// Need to allow references to Version Catalogs inside precompiled script plugins.
-// The syntax alias(libs.plugins...) is supported when we declare them here.
 dependencies {
     implementation(libs.android.gradlePlugin)
     implementation(libs.kotlin.gradlePlugin)
@@ -20,8 +18,40 @@ tasks.withType<KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
 }
 
-// Ensure Java compatibility is set
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+gradlePlugin {
+    plugins {
+        register("androidApplication") {
+            id = "bossmg.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
+        register("androidLibrary") {
+            id = "bossmg.android.library"
+            implementationClass = "AndroidLibraryConventionPlugin"
+        }
+        register("androidFeature") {
+            id = "bossmg.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
+        register("androidHilt") {
+            id = "bossmg.android.hilt"
+            implementationClass = "AndroidHiltConventionPlugin"
+        }
+        register("androidRoom") {
+            id = "bossmg.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
+        }
+        register("jvmLibrary") {
+            id = "bossmg.jvm.library"
+            implementationClass = "JvmLibraryConventionPlugin"
+        }
+        register("jvmHilt") {
+            id = "bossmg.jvm.hilt"
+            implementationClass = "JvmHiltConventionPlugin"
+        }
+    }
 }
