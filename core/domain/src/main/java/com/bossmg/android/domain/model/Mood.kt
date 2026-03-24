@@ -4,5 +4,5 @@ import com.bossmg.android.domain.enums.MoodType
 
 data class Mood(
     val str: String,
-    val type: MoodType
+    val type: MoodType,
 )

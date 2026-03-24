@@ -4,5 +4,5 @@ enum class MoodType {
     POSITIVE,
     NEUTRAL,
     NEGATIVE,
-    MEMO
+    MEMO,
 }
