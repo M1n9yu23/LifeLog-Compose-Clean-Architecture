@@ -10,18 +10,19 @@ import javax.inject.Singleton
 
 @Singleton
 class GetLifeLogsByMonthUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository
+    private val lifeLogRepository: LifeLogRepository,
 ) {
     operator fun invoke(year: Int, month: Int): Flow<List<LifeLog>> {
         val yearMonth = YearMonth.of(year, month)
-        val allDateInMonth = (1..yearMonth.lengthOfMonth()).map {
-            "%04d-%02d-%02d".format(year, month, it)
-        }
+        val allDateInMonth =
+            (1..yearMonth.lengthOfMonth()).map {
+                "%04d-%02d-%02d".format(year, month, it)
+            }
 
         return combine(
             allDateInMonth.map {
                 lifeLogRepository.getLifeLogsByDate(it)
-            }
+            },
         ) { result ->
             result.toList().flatten()
         }

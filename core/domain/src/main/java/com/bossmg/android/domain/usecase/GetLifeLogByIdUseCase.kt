@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetLifeLogByIdUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository
+    private val lifeLogRepository: LifeLogRepository,
 ) {
     suspend operator fun invoke(id: Int): LifeLog = lifeLogRepository.getLifeLogById(id)
 }

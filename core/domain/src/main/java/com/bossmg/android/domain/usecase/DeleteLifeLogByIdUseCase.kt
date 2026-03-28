@@ -6,7 +6,7 @@ import javax.inject.Singleton
 
 @Singleton
 class DeleteLifeLogByIdUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository
-){
+    private val lifeLogRepository: LifeLogRepository,
+) {
     suspend operator fun invoke(id: Int) = lifeLogRepository.deleteLifeLogById(id)
 }

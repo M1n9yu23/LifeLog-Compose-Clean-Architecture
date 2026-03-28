@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetLifeLogsByDateUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository
+    private val lifeLogRepository: LifeLogRepository,
 ) {
     operator fun invoke(date: String): Flow<List<LifeLog>> = lifeLogRepository.getLifeLogsByDate(date)
 }

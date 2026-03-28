@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class InsertLifeLogUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository
+    private val lifeLogRepository: LifeLogRepository,
 ) {
     suspend operator fun invoke(lifeLog: LifeLog) = lifeLogRepository.insertLifeLog(lifeLog)
 }

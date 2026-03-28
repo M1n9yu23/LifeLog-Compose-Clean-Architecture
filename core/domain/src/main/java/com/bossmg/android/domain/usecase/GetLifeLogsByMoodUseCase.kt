@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetLifeLogsByMoodUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository
+    private val lifeLogRepository: LifeLogRepository,
 ) {
     operator fun invoke(mood: String): Flow<List<LifeLog>> = lifeLogRepository.getLifeLogsByMood(mood)
 }
