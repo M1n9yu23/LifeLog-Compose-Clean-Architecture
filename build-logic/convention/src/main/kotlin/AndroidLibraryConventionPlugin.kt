@@ -19,9 +19,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             configureSpotless()
 
             dependencies {
-                add("implementation", libs.findLibrary("androidx.core.ktx").get())
-                add("testImplementation", libs.findBundle("unit.test").get())
-                add("androidTestImplementation", libs.findBundle("android.test").get())
+                add("implementation", versionCatalog.findLibrary("androidx.core.ktx").get())
+                add("testImplementation", versionCatalog.findBundle("unit.test").get())
+                add("androidTestImplementation", versionCatalog.findBundle("android.test").get())
             }
         }
     }

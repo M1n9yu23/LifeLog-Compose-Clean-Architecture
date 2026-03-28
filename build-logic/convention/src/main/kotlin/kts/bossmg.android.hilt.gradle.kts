@@ -6,6 +6,6 @@ plugins {
 }
 
 dependencies {
-    add("implementation", libs.findBundle("android.hilt").get())
-    add("ksp", libs.findLibrary("hilt.compiler").get())
+    add("implementation", versionCatalog.findBundle("android.hilt").get())
+    add("ksp", versionCatalog.findLibrary("hilt.compiler").get())
 }

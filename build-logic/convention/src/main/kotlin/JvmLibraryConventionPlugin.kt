@@ -14,7 +14,7 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
             configureSpotless()
 
             dependencies {
-                add("testImplementation", libs.findBundle("unit.test").get())
+                add("testImplementation", versionCatalog.findBundle("unit.test").get())
             }
         }
     }

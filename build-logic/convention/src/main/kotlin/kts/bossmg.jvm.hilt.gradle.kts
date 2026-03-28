@@ -5,6 +5,6 @@ plugins {
 }
 
 dependencies {
-    add("implementation", libs.findLibrary("hilt.core").get())
-    add("ksp", libs.findLibrary("hilt.compiler").get())
+    add("implementation", versionCatalog.findLibrary("hilt.core").get())
+    add("ksp", versionCatalog.findLibrary("hilt.compiler").get())
 }
