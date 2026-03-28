@@ -17,8 +17,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                add("implementation", libs.findBundle("compose.navigation").get())
-                add("implementation", libs.findBundle("compose.viewmodel").get())
+                add("implementation", versionCatalog.findBundle("compose.navigation").get())
+                add("implementation", versionCatalog.findBundle("compose.viewmodel").get())
             }
         }
     }
