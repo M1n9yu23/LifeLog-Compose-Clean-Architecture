@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 internal data class MoodUIModel(
     val moods: Map<String, Int> = emptyMap(),
-    val memoItem: List<MemoItem> = emptyList()
+    val memoItem: List<MemoItem> = emptyList(),
 )
 
 internal data class MemoItem(
@@ -15,5 +15,5 @@ internal data class MemoItem(
     val title: String,
     val mood: String,
     val cardColor: Color = White,
-    val img: String? = null
+    val img: String? = null,
 )

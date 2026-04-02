@@ -16,7 +16,7 @@ import javax.inject.Inject
 internal class MoodViewModel @Inject constructor(
     private val mapper: MoodMapper,
     private val getLifeLogsByMoodUseCase: GetLifeLogsByMoodUseCase,
-    private val getLifeLogsUseCase: GetLifeLogsUseCase
+    private val getLifeLogsUseCase: GetLifeLogsUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MoodUIState())
     val uiState = _uiState.asStateFlow()
@@ -24,7 +24,7 @@ internal class MoodViewModel @Inject constructor(
     fun load() {
         _uiState.update {
             it.copy(
-                isLoading = true
+                isLoading = true,
             )
         }
         viewModelScope.launch {
@@ -34,9 +34,10 @@ internal class MoodViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        uiModel = it.uiModel.copy(
-                            moods = moods
-                        )
+                        uiModel =
+                            it.uiModel.copy(
+                                moods = moods,
+                            ),
                     )
                 }
             }
@@ -47,7 +48,7 @@ internal class MoodViewModel @Inject constructor(
         if (_uiState.value.selectedMood != mood) {
             _uiState.update {
                 it.copy(
-                    selectedMood = mood
+                    selectedMood = mood,
                 )
             }
 
@@ -58,7 +59,7 @@ internal class MoodViewModel @Inject constructor(
     private fun getLifeLogsByMood() {
         _uiState.update {
             it.copy(
-                isLoading = true
+                isLoading = true,
             )
         }
         viewModelScope.launch {
@@ -67,9 +68,10 @@ internal class MoodViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        uiModel = it.uiModel.copy(
-                            memoItem = items
-                        )
+                        uiModel =
+                            it.uiModel.copy(
+                                memoItem = items,
+                            ),
                     )
                 }
             }
@@ -80,5 +82,5 @@ internal class MoodViewModel @Inject constructor(
 internal data class MoodUIState(
     val isLoading: Boolean = false,
     val uiModel: MoodUIModel = MoodUIModel(),
-    val selectedMood: String = ""
+    val selectedMood: String = "",
 )

@@ -29,23 +29,24 @@ fun DefaultTextField(
         onValueChange = onValueChange,
         singleLine = singleLine,
         textStyle = textStyle,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(8.dp),
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopStart
+                contentAlignment = Alignment.TopStart,
             ) {
                 if (value.isEmpty()) {
                     Text(
                         text = placeholder,
-                        style = hintStyle
+                        style = hintStyle,
                     )
                 }
                 innerTextField()
             }
-        }
+        },
     )
 }
 
@@ -55,6 +56,6 @@ private fun TextFieldPreview() {
     DefaultTextField(
         "",
         {},
-        placeholder = "힌트입니다"
+        placeholder = "힌트입니다",
     )
 }

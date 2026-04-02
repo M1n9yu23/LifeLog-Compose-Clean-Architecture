@@ -14,7 +14,7 @@ fun NavController.navigateToCalendar(navOptions: NavOptions) =
     navigate(route = CalendarRoute, navOptions)
 
 fun NavGraphBuilder.calendarScreen(
-    onMemoItemClick: (Int) -> Unit
+    onMemoItemClick: (Int) -> Unit,
 ) {
     composable<CalendarRoute> {
         Calendar(onMemoItemClick)

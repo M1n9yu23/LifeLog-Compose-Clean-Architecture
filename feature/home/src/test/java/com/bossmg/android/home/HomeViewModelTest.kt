@@ -19,7 +19,6 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
-
     @get:Rule
     val rule = MainDispatcherRule()
 
@@ -44,52 +43,55 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun uiState_shouldEmitSuccess_whenRepositoryHasData() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+    fun uiState_shouldEmitSuccess_whenRepositoryHasData() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        testLifeLogRepository.sendLogs(testLifeLogs)
+            testLifeLogRepository.sendLogs(testLifeLogs)
 
-        val state = viewModel.uiState.value
-        assertTrue(state is HomeUIState.Success)
-        assertEquals(testLifeLogs.size, (state as HomeUIState.Success).uiModels.size)
-        assertEquals(testLifeLogs[0].title, state.uiModels[0].title)
+            val state = viewModel.uiState.value
+            assertTrue(state is HomeUIState.Success)
+            assertEquals(testLifeLogs.size, (state as HomeUIState.Success).uiModels.size)
+            assertEquals(testLifeLogs[0].title, state.uiModels[0].title)
 
-        job.cancel()
-    }
-
-    @Test
-    fun uiState_shouldUpdate_whenRepositoryEmitsNewData() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-
-        testLifeLogRepository.sendLogs(listOf(testLifeLogs[0]))
-        var state = viewModel.uiState.value
-        assertEquals(1, (state as HomeUIState.Success).uiModels.size)
-
-        testLifeLogRepository.sendLogs(testLifeLogs)
-        state = viewModel.uiState.value
-        assertEquals(testLifeLogs.size, (state as HomeUIState.Success).uiModels.size)
-
-        job.cancel()
-    }
-
-    @Test
-    fun uiState_shouldMapLifeLogToHomeUIModelCorrectly() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-
-        testLifeLogRepository.sendLogs(testLifeLogs)
-        val state = viewModel.uiState.value
-        assertTrue(state is HomeUIState.Success)
-        val successState = state as HomeUIState.Success
-
-        successState.uiModels.forEachIndexed { index, uiModel ->
-            val lifeLog = testLifeLogs[index]
-            assertEquals(lifeLog.id, uiModel.id)
-            assertEquals(LocalDate.parse(lifeLog.date), uiModel.date)
-            assertEquals(lifeLog.title, uiModel.title)
-            assertEquals(lifeLog.mood, uiModel.mood)
-            assertEquals(lifeLog.img, uiModel.img)
+            job.cancel()
         }
 
-        job.cancel()
-    }
+    @Test
+    fun uiState_shouldUpdate_whenRepositoryEmitsNewData() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+
+            testLifeLogRepository.sendLogs(listOf(testLifeLogs[0]))
+            var state = viewModel.uiState.value
+            assertEquals(1, (state as HomeUIState.Success).uiModels.size)
+
+            testLifeLogRepository.sendLogs(testLifeLogs)
+            state = viewModel.uiState.value
+            assertEquals(testLifeLogs.size, (state as HomeUIState.Success).uiModels.size)
+
+            job.cancel()
+        }
+
+    @Test
+    fun uiState_shouldMapLifeLogToHomeUIModelCorrectly() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+
+            testLifeLogRepository.sendLogs(testLifeLogs)
+            val state = viewModel.uiState.value
+            assertTrue(state is HomeUIState.Success)
+            val successState = state as HomeUIState.Success
+
+            successState.uiModels.forEachIndexed { index, uiModel ->
+                val lifeLog = testLifeLogs[index]
+                assertEquals(lifeLog.id, uiModel.id)
+                assertEquals(LocalDate.parse(lifeLog.date), uiModel.date)
+                assertEquals(lifeLog.title, uiModel.title)
+                assertEquals(lifeLog.mood, uiModel.mood)
+                assertEquals(lifeLog.img, uiModel.img)
+            }
+
+            job.cancel()
+        }
 }

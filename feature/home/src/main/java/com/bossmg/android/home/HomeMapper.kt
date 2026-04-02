@@ -7,12 +7,13 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 internal class HomeMapper @Inject constructor() : Mapper<LifeLog, HomeUIModel> {
-    override fun map(input: LifeLog): HomeUIModel = HomeUIModel(
-        id = input.id,
-        date = LocalDate.parse(input.date),
-        title = input.title,
-        mood = input.mood,
-        cardColor = cardColor(input.mood),
-        img = input.img
-    )
+    override fun map(input: LifeLog): HomeUIModel =
+        HomeUIModel(
+            id = input.id,
+            date = LocalDate.parse(input.date),
+            title = input.title,
+            mood = input.mood,
+            cardColor = cardColor(input.mood),
+            img = input.img,
+        )
 }

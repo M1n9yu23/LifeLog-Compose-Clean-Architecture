@@ -7,12 +7,13 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 internal class CalendarMapper @Inject constructor() : Mapper<LifeLog, MemoItem> {
-    override fun map(input: LifeLog): MemoItem = MemoItem(
-        id = input.id,
-        date = LocalDate.parse(input.date),
-        title = input.title,
-        mood = input.mood,
-        cardColor = cardColor(input.mood),
-        img = input.img
-    )
+    override fun map(input: LifeLog): MemoItem =
+        MemoItem(
+            id = input.id,
+            date = LocalDate.parse(input.date),
+            title = input.title,
+            mood = input.mood,
+            cardColor = cardColor(input.mood),
+            img = input.img,
+        )
 }

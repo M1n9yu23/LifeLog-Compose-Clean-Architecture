@@ -54,7 +54,7 @@ import kotlin.math.ceil
 @Composable
 internal fun Calendar(
     onMemoItemClick: (Int) -> Unit,
-    viewModel: CalendarViewModel = hiltViewModel()
+    viewModel: CalendarViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -75,12 +75,11 @@ internal fun Calendar(
                 onNextMonth = {
                     viewModel.onClickNextMonth()
                 },
-                onMemoItemClick = onMemoItemClick
+                onMemoItemClick = onMemoItemClick,
             )
         }
 
         is CalendarUiState.Error -> {
-
         }
     }
 }
@@ -91,20 +90,21 @@ private fun CalendarScreen(
     onDateSelect: (LocalDate) -> Unit,
     onPrevMonth: () -> Unit,
     onNextMonth: () -> Unit,
-    onMemoItemClick: (Int) -> Unit
+    onMemoItemClick: (Int) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-            .statusBarsPadding()
-            .padding(DP12)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Background)
+                .statusBarsPadding()
+                .padding(DP12),
     ) {
         item {
             CalenderHeader(
                 month = state.currentMonth,
                 onPrevMonth = onPrevMonth,
-                onNextMonth = onNextMonth
+                onNextMonth = onNextMonth,
             )
 
             Spacer(Modifier.height(DP12))
@@ -113,7 +113,7 @@ private fun CalendarScreen(
                 month = state.currentMonth,
                 selectedDate = state.selectedDate,
                 markedDate = state.markedDates,
-                onDateSelect = onDateSelect
+                onDateSelect = onDateSelect,
             )
 
             Spacer(Modifier.height(DP16))
@@ -131,27 +131,27 @@ private fun CalendarScreen(
 private fun CalenderHeader(
     month: LocalDate,
     onPrevMonth: () -> Unit,
-    onNextMonth: () -> Unit
+    onNextMonth: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
             onClick = {
                 onPrevMonth()
-            }
+            },
         ) {
             Icon(
                 imageVector = LifeIcons.ArrowLeft,
-                contentDescription = stringResource(R.string.text_prev_month)
+                contentDescription = stringResource(R.string.text_prev_month),
             )
         }
 
         Text(
             text = "${month.monthValue}월 ${month.year}",
-            style = AppTypography.titleMedium
+            style = AppTypography.titleMedium,
         )
 
         IconButton({
@@ -159,7 +159,7 @@ private fun CalenderHeader(
         }) {
             Icon(
                 imageVector = LifeIcons.ArrowRight,
-                contentDescription = stringResource(R.string.text_next_month)
+                contentDescription = stringResource(R.string.text_next_month),
             )
         }
     }
@@ -170,17 +170,18 @@ private fun CalendarGrid(
     month: LocalDate,
     selectedDate: LocalDate,
     markedDate: ImmutableList<LocalDate>,
-    onDateSelect: (LocalDate) -> Unit
+    onDateSelect: (LocalDate) -> Unit,
 ) {
-    val daysOfWeek = listOf(
-        stringResource(R.string.text_week_sunday),
-        stringResource(R.string.text_week_monday),
-        stringResource(R.string.text_week_tuesday),
-        stringResource(R.string.text_week_wednesday),
-        stringResource(R.string.text_week_thursday),
-        stringResource(R.string.text_week_friday),
-        stringResource(R.string.text_week_saturday)
-    )
+    val daysOfWeek =
+        listOf(
+            stringResource(R.string.text_week_sunday),
+            stringResource(R.string.text_week_monday),
+            stringResource(R.string.text_week_tuesday),
+            stringResource(R.string.text_week_wednesday),
+            stringResource(R.string.text_week_thursday),
+            stringResource(R.string.text_week_friday),
+            stringResource(R.string.text_week_saturday),
+        )
 
     val firstDay = month.withDayOfMonth(1)
     val daysInMonth = month.lengthOfMonth()
@@ -193,7 +194,7 @@ private fun CalendarGrid(
                     text = day,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    style = AppTypography.bodyMedium
+                    style = AppTypography.bodyMedium,
                 )
             }
         }
@@ -214,39 +215,42 @@ private fun CalendarGrid(
                         val isToday = date == LocalDate.now()
 
                         Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .clickable {
-                                    onDateSelect(date)
-                                },
-                            contentAlignment = Alignment.Center
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f)
+                                    .clickable {
+                                        onDateSelect(date)
+                                    },
+                            contentAlignment = Alignment.Center,
                         ) {
                             Box(
-                                modifier = Modifier
-                                    .size(DP36)
-                                    .clip(CircleShape)
-                                    .background(
-                                        when {
-                                            isSelected -> Primary
-                                            isToday -> Secondary
-                                            else -> Color.Transparent
-                                        }
-                                    ),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier
+                                        .size(DP36)
+                                        .clip(CircleShape)
+                                        .background(
+                                            when {
+                                                isSelected -> Primary
+                                                isToday -> Secondary
+                                                else -> Color.Transparent
+                                            },
+                                        ),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Text(
                                     text = day.toString(),
-                                    color = if (isSelected) White else Black
+                                    color = if (isSelected) White else Black,
                                 )
                             }
 
                             if (markedDate.contains(date)) {
                                 Box(
-                                    modifier = Modifier
-                                        .size(DP4)
-                                        .background(Color.Cyan, CircleShape)
-                                        .align(Alignment.BottomCenter)
+                                    modifier =
+                                        Modifier
+                                            .size(DP4)
+                                            .background(Color.Cyan, CircleShape)
+                                            .align(Alignment.BottomCenter),
                                 )
                             }
                         }
@@ -260,19 +264,20 @@ private fun CalendarGrid(
 @Composable
 private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
     CustomCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onMemoItemClick(item.id)
-            }
-            .padding(vertical = DP8),
-        backgroundColor = item.cardColor
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onMemoItemClick(item.id)
+                }
+                .padding(vertical = DP8),
+        backgroundColor = item.cardColor,
     ) {
         MemoCardItem(
             date = item.date,
             title = item.title,
             mood = item.mood,
-            img = item.img
+            img = item.img,
         )
     }
 }
@@ -282,28 +287,30 @@ private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
 private fun CalendarScreenPreview() {
     val sampleDate = LocalDate.of(2025, 10, 10)
     CalendarScreen(
-        state = CalendarUiState.Success(
-            currentMonth = LocalDate.of(2025, 10, 1),
-            selectedDate = sampleDate,
-            markedDates = persistentListOf(sampleDate),
-            memoItems = persistentListOf(
-                MemoItem(
-                    id = 1,
-                    date = sampleDate,
-                    title = "오늘의 아침",
-                    mood = "행복"
-                ),
-                MemoItem(
-                    id = 2,
-                    date = LocalDate.of(2025, 10, 2),
-                    title = "점심시간",
-                    mood = "피곤"
-                ),
-            )
-        ),
+        state =
+            CalendarUiState.Success(
+                currentMonth = LocalDate.of(2025, 10, 1),
+                selectedDate = sampleDate,
+                markedDates = persistentListOf(sampleDate),
+                memoItems =
+                    persistentListOf(
+                        MemoItem(
+                            id = 1,
+                            date = sampleDate,
+                            title = "오늘의 아침",
+                            mood = "행복",
+                        ),
+                        MemoItem(
+                            id = 2,
+                            date = LocalDate.of(2025, 10, 2),
+                            title = "점심시간",
+                            mood = "피곤",
+                        ),
+                    ),
+            ),
         onDateSelect = {},
         onPrevMonth = {},
         onNextMonth = {},
-        onMemoItemClick = {}
+        onMemoItemClick = {},
     )
 }

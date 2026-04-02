@@ -16,12 +16,12 @@ internal sealed interface CalendarUiState {
         val currentMonth: LocalDate,
         val selectedDate: LocalDate,
         val markedDates: ImmutableList<LocalDate> = persistentListOf(),
-        val memoItems: ImmutableList<MemoItem> = persistentListOf()
+        val memoItems: ImmutableList<MemoItem> = persistentListOf(),
     ) : CalendarUiState
 
     @Immutable
     data class Error(
-        val message: String
+        val message: String,
     ) : CalendarUiState
 }
 
@@ -32,5 +32,5 @@ internal data class MemoItem(
     val title: String,
     val mood: String,
     val cardColor: Color = White,
-    val img: String? = null
+    val img: String? = null,
 )

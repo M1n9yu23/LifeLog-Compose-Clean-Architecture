@@ -18,7 +18,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PhotoViewModelTest {
-
     @get:Rule
     val rule = MainDispatcherRule()
 
@@ -41,37 +40,39 @@ class PhotoViewModelTest {
     }
 
     @Test
-    fun uiState_shouldEmitSuccess_whenRepositoryHasData() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+    fun uiState_shouldEmitSuccess_whenRepositoryHasData() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        testLifeLogRepository.sendLogs(testLifeLogs)
+            testLifeLogRepository.sendLogs(testLifeLogs)
 
-        val state = viewModel.uiState.value
-        val testImages = testLifeLogs.mapNotNull { it.img }
+            val state = viewModel.uiState.value
+            val testImages = testLifeLogs.mapNotNull { it.img }
 
-        assertTrue(state is PhotoUIState.Success)
-        assertEquals(testImages, (state as PhotoUIState.Success).uiModel.photos)
-        assertEquals(testImages[0], state.uiModel.photos[0])
+            assertTrue(state is PhotoUIState.Success)
+            assertEquals(testImages, (state as PhotoUIState.Success).uiModel.photos)
+            assertEquals(testImages[0], state.uiModel.photos[0])
 
-        job.cancel()
-    }
+            job.cancel()
+        }
 
     @Test
-    fun uiState_shouldUpdate_whenRepositoryEmitsNewData() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+    fun uiState_shouldUpdate_whenRepositoryEmitsNewData() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        testLifeLogRepository.sendLogs(listOf(testLifeLogs.first()))
+            testLifeLogRepository.sendLogs(listOf(testLifeLogs.first()))
 
-        var state = viewModel.uiState.value
-        assertEquals(1, (state as PhotoUIState.Success).uiModel.photos.size)
-        assertEquals(testLifeLogs.first().img, state.uiModel.photos.first())
+            var state = viewModel.uiState.value
+            assertEquals(1, (state as PhotoUIState.Success).uiModel.photos.size)
+            assertEquals(testLifeLogs.first().img, state.uiModel.photos.first())
 
-        testLifeLogRepository.sendLogs(testLifeLogs)
-        state = viewModel.uiState.value
-        val testImages = testLifeLogs.mapNotNull { it.img }
+            testLifeLogRepository.sendLogs(testLifeLogs)
+            state = viewModel.uiState.value
+            val testImages = testLifeLogs.mapNotNull { it.img }
 
-        assertEquals(testImages, (state as PhotoUIState.Success).uiModel.photos)
+            assertEquals(testImages, (state as PhotoUIState.Success).uiModel.photos)
 
-        job.cancel()
-    }
+            job.cancel()
+        }
 }

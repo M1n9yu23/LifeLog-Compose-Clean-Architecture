@@ -27,7 +27,7 @@ fun LifeLogScaffold(
         bottomBar = bottomBar,
         floatingActionButton = floatingActionButton,
         floatingActionButtonPosition = floatingActionButtonPosition,
-        containerColor = containerColor
+        containerColor = containerColor,
     ) { paddingValues ->
         content.invoke(paddingValues)
     }

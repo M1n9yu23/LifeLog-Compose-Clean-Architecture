@@ -14,6 +14,6 @@ internal object DaoModule {
     @Provides
     @Singleton
     fun providesLifeLogDao(
-        database: LifeLogDatabase
+        database: LifeLogDatabase,
     ): LifeLogDao = database.lifeLogDao()
 }

@@ -14,12 +14,13 @@ import com.bossmg.android.designsystem.ui.theme.Gray5
 @Composable
 fun CustomDivider(
     height: Dp = DP1,
-    backgroundColor: Color = Gray5
+    backgroundColor: Color = Gray5,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(height)
-            .background(color = backgroundColor)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(height)
+                .background(color = backgroundColor),
     )
 }

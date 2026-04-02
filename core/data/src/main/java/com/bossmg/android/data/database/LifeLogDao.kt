@@ -17,7 +17,7 @@ interface LifeLogDao {
         """
             SELECT * FROM lifelogs
             WHERE date = :date ORDER BY date DESC, id DESC
-            """
+            """,
     )
     fun getLifeLogsByDate(date: String): Flow<List<LifeLogEntity>>
 
@@ -25,7 +25,7 @@ interface LifeLogDao {
         """
             SELECT * FROM lifelogs
             WHERE mood = :mood ORDER BY date DESC, id DESC
-        """
+        """,
     )
     fun getLifeLogsByMood(mood: String): Flow<List<LifeLogEntity>>
 
@@ -33,7 +33,7 @@ interface LifeLogDao {
         """
             SELECT img FROM lifelogs
             WHERE img IS NOT NULL ORDER BY date DESC, id DESC 
-        """
+        """,
     )
     fun getImages(): Flow<List<String>>
 

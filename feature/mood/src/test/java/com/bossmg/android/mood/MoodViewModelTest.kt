@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MoodViewModelTest {
-
     @get:Rule
     val rule = MainDispatcherRule()
 
@@ -42,62 +41,65 @@ class MoodViewModelTest {
     }
 
     @Test
-    fun load_whenCalled_shouldUpdateLoadingStateAndEmitMoodCounts() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+    fun load_whenCalled_shouldUpdateLoadingStateAndEmitMoodCounts() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        viewModel.load()
+            viewModel.load()
 
-        assertTrue(viewModel.uiState.value.isLoading)
+            assertTrue(viewModel.uiState.value.isLoading)
 
-        testRepository.sendLogs(testLifeLogs)
+            testRepository.sendLogs(testLifeLogs)
 
-        val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
+            val state = viewModel.uiState.value
+            assertFalse(state.isLoading)
 
-        val moodCount = testLifeLogs.groupingBy { it.mood }.eachCount()
-        assertEquals(moodCount, state.uiModel.moods)
+            val moodCount = testLifeLogs.groupingBy { it.mood }.eachCount()
+            assertEquals(moodCount, state.uiModel.moods)
 
-        job.cancel()
-    }
-
-    @Test
-    fun selectMood_whenCalled_shouldUpdateSelectedMoodAndFetchFilteredLogs() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-        val mood = "\uD83E\uDD29 설렘"
-
-        viewModel.selectMood(mood)
-        assertEquals(mood, viewModel.uiState.value.selectedMood)
-
-        testRepository.sendLogs(testLifeLogs.filter { it.mood == mood })
-
-        val state = viewModel.uiState.value
-        assertTrue(state.uiModel.memoItem.all { it.mood == mood })
-
-        job.cancel()
-    }
-
-    @Test
-    fun getLifeLogsByMoodUseCase_whenEmitsLogs_shouldMapToUiModelCorrectly() = runTest {
-        val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-        val mood = "\uD83D\uDE0A 기쁨"
-        viewModel.selectMood(mood)
-
-        val filterLogs = testLifeLogs.filter { it.mood == mood}
-        testRepository.sendLogs(filterLogs)
-
-        val state = viewModel.uiState.value
-        val memoItems = state.uiModel.memoItem
-        assertEquals(filterLogs.size, memoItems.size)
-
-        memoItems.forEachIndexed { index, item ->
-            val log = filterLogs[index]
-            assertEquals(log.id, item.id)
-            assertEquals(LocalDate.parse(log.date), item.date)
-            assertEquals(log.title, item.title)
-            assertEquals(log.mood, item.mood)
-            assertEquals(log.img, item.img)
+            job.cancel()
         }
 
-        job.cancel()
-    }
+    @Test
+    fun selectMood_whenCalled_shouldUpdateSelectedMoodAndFetchFilteredLogs() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+            val mood = "\uD83E\uDD29 설렘"
+
+            viewModel.selectMood(mood)
+            assertEquals(mood, viewModel.uiState.value.selectedMood)
+
+            testRepository.sendLogs(testLifeLogs.filter { it.mood == mood })
+
+            val state = viewModel.uiState.value
+            assertTrue(state.uiModel.memoItem.all { it.mood == mood })
+
+            job.cancel()
+        }
+
+    @Test
+    fun getLifeLogsByMoodUseCase_whenEmitsLogs_shouldMapToUiModelCorrectly() =
+        runTest {
+            val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+            val mood = "\uD83D\uDE0A 기쁨"
+            viewModel.selectMood(mood)
+
+            val filterLogs = testLifeLogs.filter { it.mood == mood }
+            testRepository.sendLogs(filterLogs)
+
+            val state = viewModel.uiState.value
+            val memoItems = state.uiModel.memoItem
+            assertEquals(filterLogs.size, memoItems.size)
+
+            memoItems.forEachIndexed { index, item ->
+                val log = filterLogs[index]
+                assertEquals(log.id, item.id)
+                assertEquals(LocalDate.parse(log.date), item.date)
+                assertEquals(log.title, item.title)
+                assertEquals(log.mood, item.mood)
+                assertEquals(log.img, item.img)
+            }
+
+            job.cancel()
+        }
 }

@@ -7,4 +7,18 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.kotlin.ksp) apply false
+    alias(libs.plugins.spotless)
+}
+
+spotless {
+    kotlin {
+        target("**/*.kt")
+        targetExclude("**/build/**/*.kt", "**/bin/**/*.kt")
+        ktlint("1.8.0")
+    }
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        targetExclude("**/build/**/*.gradle.kts", "**/bin/**/*.gradle.kts")
+        ktlint("1.8.0")
+    }
 }

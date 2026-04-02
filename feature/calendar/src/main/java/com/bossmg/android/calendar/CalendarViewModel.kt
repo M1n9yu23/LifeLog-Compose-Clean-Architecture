@@ -23,50 +23,50 @@ import javax.inject.Inject
 internal class CalendarViewModel @Inject constructor(
     private val getLifeLogsByDateUseCase: GetLifeLogsByDateUseCase,
     private val getLifeLogsByMonthUseCase: GetLifeLogsByMonthUseCase,
-    private val mapper: CalendarMapper
+    private val mapper: CalendarMapper,
 ) : ViewModel() {
-
     private val _selectedDate = MutableStateFlow(LocalDate.now())
 
     private val _currentMonth = MutableStateFlow(LocalDate.now())
 
-    val uiState: StateFlow<CalendarUiState> = combine(
-        _selectedDate,
-        _currentMonth,
-        _currentMonth.flatMapLatest { month ->
-            getLifeLogsByMonthUseCase(month.year, month.monthValue)
-                .map { logs ->
-                    logs.mapNotNull { log ->
-                        runCatching { LocalDate.parse(log.date) }
-                            .onFailure { Log.e(TAG, "Date parse error: ${log.date}", it) }
-                            .getOrNull()
-                    }.toImmutableList()
-                }
-        },
-        _selectedDate.flatMapLatest { date ->
-            getLifeLogsByDateUseCase(date.toString())
-                .map { logs ->
-                    logs.map { mapper.map(it) }.toImmutableList()
-                }
+    val uiState: StateFlow<CalendarUiState> =
+        combine(
+            _selectedDate,
+            _currentMonth,
+            _currentMonth.flatMapLatest { month ->
+                getLifeLogsByMonthUseCase(month.year, month.monthValue)
+                    .map { logs ->
+                        logs.mapNotNull { log ->
+                            runCatching { LocalDate.parse(log.date) }
+                                .onFailure { Log.e(TAG, "Date parse error: ${log.date}", it) }
+                                .getOrNull()
+                        }.toImmutableList()
+                    }
+            },
+            _selectedDate.flatMapLatest { date ->
+                getLifeLogsByDateUseCase(date.toString())
+                    .map { logs ->
+                        logs.map { mapper.map(it) }.toImmutableList()
+                    }
+            },
+        ) { selectedDate, currentMonth, markedDates, memoItems ->
+            Log.d(TAG, "UI State Updated: Date=$selectedDate, Items=${memoItems.size}")
+            CalendarUiState.Success(
+                currentMonth = currentMonth,
+                selectedDate = selectedDate,
+                markedDates = markedDates,
+                memoItems = memoItems,
+            ) as CalendarUiState
         }
-    ) { selectedDate, currentMonth, markedDates, memoItems ->
-        Log.d(TAG, "UI State Updated: Date=$selectedDate, Items=${memoItems.size}")
-        CalendarUiState.Success(
-            currentMonth = currentMonth,
-            selectedDate = selectedDate,
-            markedDates = markedDates,
-            memoItems = memoItems
-        ) as CalendarUiState
-    }
-        .catch { e ->
-            Log.e(TAG, "Error in UI State Flow", e)
-            emit(CalendarUiState.Error(e.message ?: "알 수 없는 오류가 발생했습니다."))
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = CalendarUiState.Loading
-        )
+            .catch { e ->
+                Log.e(TAG, "Error in UI State Flow", e)
+                emit(CalendarUiState.Error(e.message ?: "알 수 없는 오류가 발생했습니다."))
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = CalendarUiState.Loading,
+            )
 
     fun onDateSelect(date: LocalDate) {
         _selectedDate.value = date

@@ -47,7 +47,7 @@ import java.time.LocalDate
 @Composable
 internal fun Mood(
     onMemoItemClick: (Int) -> Unit,
-    viewModel: MoodViewModel = hiltViewModel()
+    viewModel: MoodViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -67,7 +67,7 @@ internal fun Mood(
                 onMoodSelected = {
                     viewModel.selectMood(it)
                 },
-                onMemoItemClick = onMemoItemClick
+                onMemoItemClick = onMemoItemClick,
             )
         }
     }
@@ -78,22 +78,23 @@ private fun MoodScreen(
     uiModel: MoodUIModel,
     selectedMood: String,
     onMoodSelected: (String) -> Unit,
-    onMemoItemClick: (Int) -> Unit
+    onMemoItemClick: (Int) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-            .statusBarsPadding()
-            .padding(DP12)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Background)
+                .statusBarsPadding()
+                .padding(DP12),
     ) {
         item {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 Text(
                     text = stringResource(R.string.text_mood),
-                    style = AppTypography.titleLarge.copy(color = DarkGray2)
+                    style = AppTypography.titleLarge.copy(color = DarkGray2),
                 )
 
                 Spacer(Modifier.height(DP16))
@@ -110,23 +111,23 @@ private fun MoodScreen(
     }
 }
 
-
 @Composable
 private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
     CustomCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onMemoItemClick(item.id)
-            }
-            .padding(vertical = DP8),
-        backgroundColor = item.cardColor
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onMemoItemClick(item.id)
+                }
+                .padding(vertical = DP8),
+        backgroundColor = item.cardColor,
     ) {
         MemoCardItem(
             date = item.date,
             title = item.title,
             mood = item.mood,
-            img = item.img
+            img = item.img,
         )
     }
 }
@@ -134,22 +135,24 @@ private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
 @Composable
 private fun MoodsBox(
     moods: Map<String, Int>,
-    onMoodSelected: (String) -> Unit
+    onMoodSelected: (String) -> Unit,
 ) {
     CustomCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(width = DP1, color = Gray5, shape = RoundedCornerShape(DP10)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .border(width = DP1, color = Gray5, shape = RoundedCornerShape(DP10)),
         shapeTop = DP10,
         shapeBottom = DP10,
-        elevation = DP10
+        elevation = DP10,
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = DP800)
-                .padding(DP12)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = DP800)
+                    .padding(DP12),
         ) {
             items(moods.entries.toList()) { entry ->
                 val emoji = entry.key.split(" ")[0]
@@ -157,17 +160,18 @@ private fun MoodsBox(
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .clickable { onMoodSelected(entry.key) }
-                        .padding(DP16)
+                    modifier =
+                        Modifier
+                            .clickable { onMoodSelected(entry.key) }
+                            .padding(DP16),
                 ) {
                     Text(
                         text = emoji,
-                        fontSize = 40.sp
+                        fontSize = 40.sp,
                     )
                     Text(
                         text = count.toString(),
-                        fontSize = 30.sp
+                        fontSize = 30.sp,
                     )
                 }
             }
@@ -180,38 +184,39 @@ private fun MoodsBox(
 private fun MoodScreenPreview() {
     MoodScreen(
         MoodUIModel(
-            moods = mapOf(
-                "\uD83D\uDCDD 메모" to 1,
-                "\uD83D\uDE0A 기쁨" to 2,
-                "\uD83D\uDE22 슬픔" to 3,
-                "\uD83D\uDE04 즐거움" to 1,
-                "\uD83D\uDE2D 우울" to 2
-            ),
-            memoItem = listOf(
-                MemoItem(
-                    id = 1,
-                    date = LocalDate.of(2025, 10, 1),
-                    title = "오늘의 아침",
-                    mood = "\uD83D\uDE0A 기쁨"
+            moods =
+                mapOf(
+                    "\uD83D\uDCDD 메모" to 1,
+                    "\uD83D\uDE0A 기쁨" to 2,
+                    "\uD83D\uDE22 슬픔" to 3,
+                    "\uD83D\uDE04 즐거움" to 1,
+                    "\uD83D\uDE2D 우울" to 2,
                 ),
-                MemoItem(
-                    id = 2,
-                    date = LocalDate.of(2025, 10, 2),
-                    title = "점심시간",
-                    mood = "피곤"
+            memoItem =
+                listOf(
+                    MemoItem(
+                        id = 1,
+                        date = LocalDate.of(2025, 10, 1),
+                        title = "오늘의 아침",
+                        mood = "\uD83D\uDE0A 기쁨",
+                    ),
+                    MemoItem(
+                        id = 2,
+                        date = LocalDate.of(2025, 10, 2),
+                        title = "점심시간",
+                        mood = "피곤",
+                    ),
+                    MemoItem(
+                        id = 3,
+                        date = LocalDate.of(2025, 10, 3),
+                        title = "저녁 산책",
+                        mood = "\uD83D\uDE0A 기쁨",
+                        img = "https://picsum.photos/id/237/200/300",
+                    ),
                 ),
-                MemoItem(
-                    id = 3,
-                    date = LocalDate.of(2025, 10, 3),
-                    title = "저녁 산책",
-                    mood = "\uD83D\uDE0A 기쁨",
-                    img = "https://picsum.photos/id/237/200/300"
-                )
-            )
         ),
         "\uD83D\uDE0A 기쁨",
-        {}
+        {},
     ) {
-
     }
 }

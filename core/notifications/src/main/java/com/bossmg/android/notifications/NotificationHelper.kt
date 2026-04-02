@@ -13,9 +13,8 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 
 class NotificationHelper(
-    private val context: Context
+    private val context: Context,
 ) : NotificationSender {
-
     companion object {
         private const val TAG = "NotificationHelper"
     }
@@ -30,9 +29,10 @@ class NotificationHelper(
         val name = "Morning Alarm"
         val description = "Daily morning notifications at 8 AM"
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(channelId, name, importance).apply {
-            this.description = description
-        }
+        val channel =
+            NotificationChannel(channelId, name, importance).apply {
+                this.description = description
+            }
         val manager = context.getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)
     }
@@ -41,7 +41,7 @@ class NotificationHelper(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
                     context,
-                    Manifest.permission.POST_NOTIFICATIONS
+                    Manifest.permission.POST_NOTIFICATIONS,
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 Log.d(TAG, "Notification permission not granted")
@@ -49,13 +49,13 @@ class NotificationHelper(
             }
         }
 
-        val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_notification_overlay)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setAutoCancel(true)
-            .build()
-
+        val notification =
+            NotificationCompat.Builder(context, channelId)
+                .setSmallIcon(R.drawable.ic_notification_overlay)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .build()
 
         try {
             NotificationManagerCompat.from(context)
@@ -63,6 +63,5 @@ class NotificationHelper(
         } catch (e: SecurityException) {
             Log.e(TAG, "Permission denied for notification", e)
         }
-
     }
 }

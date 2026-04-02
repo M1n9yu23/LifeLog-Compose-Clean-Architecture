@@ -16,11 +16,12 @@ internal object DatabaseModule {
     @Provides
     @Singleton
     fun providesLifeLogDatabase(
-        @ApplicationContext context: Context
-    ): LifeLogDatabase = Room.databaseBuilder(
-        context,
-        LifeLogDatabase::class.java,
-        "life-log-database"
-    ).fallbackToDestructiveMigration()
-        .build()
+        @ApplicationContext context: Context,
+    ): LifeLogDatabase =
+        Room.databaseBuilder(
+            context,
+            LifeLogDatabase::class.java,
+            "life-log-database",
+        ).fallbackToDestructiveMigration()
+            .build()
 }

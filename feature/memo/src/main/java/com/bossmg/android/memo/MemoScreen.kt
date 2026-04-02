@@ -57,7 +57,7 @@ import java.time.LocalDate
 internal fun Memo(
     onBack: () -> Unit,
     id: Int? = null,
-    viewModel: MemoViewModel = hiltViewModel()
+    viewModel: MemoViewModel = hiltViewModel(),
 ) {
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -65,18 +65,19 @@ internal fun Memo(
     var showDateDialog by remember { mutableStateOf(false) }
     var showGallery by remember { mutableStateOf(false) }
 
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) {
-        it?.let {
-            context.contentResolver.takePersistableUriPermission(
-                it,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
+    val galleryLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+        ) {
+            it?.let {
+                context.contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION,
+                )
 
-            viewModel.updateImage(it.toString())
+                viewModel.updateImage(it.toString())
+            }
         }
-    }
 
     if (showDateDialog) {
         CalendarDialog(
@@ -87,7 +88,7 @@ internal fun Memo(
             },
             onCancel = {
                 showDateDialog = false
-            }
+            },
         )
     }
 
@@ -111,7 +112,7 @@ internal fun Memo(
         onDescriptionChange = { viewModel.updateDescription(it) },
         onMoodSelected = { viewModel.updateMood(it) },
         onSaveClick = { viewModel.saveMemo() },
-        onDeleteClick = { viewModel.deleteMemo(id) }
+        onDeleteClick = { viewModel.deleteMemo(id) },
     )
 }
 
@@ -125,14 +126,15 @@ private fun MemoScreen(
     onDescriptionChange: (String) -> Unit,
     onMoodSelected: (String) -> Unit,
     onSaveClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-            .statusBarsPadding()
-            .padding(DP12)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Background)
+                .statusBarsPadding()
+                .padding(DP12),
     ) {
         LazyColumn {
             item {
@@ -142,7 +144,8 @@ private fun MemoScreen(
                     onShowDateDialogChange,
                     {
                         onMoodSelected(it)
-                    })
+                    },
+                )
 
                 Spacer(Modifier.height(DP12))
 
@@ -165,31 +168,33 @@ private fun MemoScreen(
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = DP12)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = DP12),
         ) {
             CustomDivider()
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = DP8),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = DP8),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 IconButton(onClick = { onShowGallery(true) }) {
                     Icon(
                         LifeIcons.Photo,
                         contentDescription = stringResource(R.string.icon_camera),
-                        tint = Primary
+                        tint = Primary,
                     )
                 }
                 IconButton(onClick = { /* 공유 기능 */ }) {
                     Icon(
                         LifeIcons.Share,
                         contentDescription = stringResource(R.string.icon_share),
-                        tint = Primary
+                        tint = Primary,
                     )
                 }
                 IconButton(onClick = {
@@ -199,7 +204,7 @@ private fun MemoScreen(
                     Icon(
                         LifeIcons.Delete,
                         contentDescription = stringResource(R.string.icon_delete),
-                        tint = Primary
+                        tint = Primary,
                     )
                 }
                 IconButton(onClick = {
@@ -209,7 +214,7 @@ private fun MemoScreen(
                     Icon(
                         LifeIcons.Save,
                         contentDescription = stringResource(R.string.icon_save),
-                        tint = Primary
+                        tint = Primary,
                     )
                 }
             }
@@ -222,7 +227,7 @@ private fun Head(
     selectedDate: LocalDate,
     selectedMood: String,
     onShowDateDialogChange: (Boolean) -> Unit,
-    onMoodSelected: (String) -> Unit
+    onMoodSelected: (String) -> Unit,
 ) {
     val moods = MoodProvider.Moods.map { it.str }
     var expanded by remember { mutableStateOf(false) }
@@ -230,26 +235,28 @@ private fun Head(
     Row(
         modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = selectedDate.toString(),
-            modifier = Modifier.clickable {
-                onShowDateDialogChange(true)
-            },
-            style = AppTypography.bodyLarge
+            modifier =
+                Modifier.clickable {
+                    onShowDateDialogChange(true)
+                },
+            style = AppTypography.bodyLarge,
         )
 
         Box {
             Text(
                 text = selectedMood,
-                modifier = Modifier
-                    .clickable { expanded = true },
-                style = AppTypography.bodyLarge
+                modifier =
+                    Modifier
+                        .clickable { expanded = true },
+                style = AppTypography.bodyLarge,
             )
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                onDismissRequest = { expanded = false },
             ) {
                 moods.forEach { mood ->
                     DropdownMenuItem(
@@ -257,7 +264,7 @@ private fun Head(
                         onClick = {
                             onMoodSelected(mood)
                             expanded = false
-                        }
+                        },
                     )
                 }
             }
@@ -268,7 +275,7 @@ private fun Head(
 @Composable
 private fun TitleInputField(
     title: String,
-    onTitleChange: (String) -> Unit
+    onTitleChange: (String) -> Unit,
 ) {
     DefaultTextField(
         value = title,
@@ -278,40 +285,42 @@ private fun TitleInputField(
         modifier = Modifier.fillMaxWidth(),
         placeholder = stringResource(R.string.memo_title_placeholder),
         textStyle = AppTypography.titleLarge.copy(color = DarkGray2),
-        hintStyle = AppTypography.titleLarge.copy(color = Gray5)
+        hintStyle = AppTypography.titleLarge.copy(color = Gray5),
     )
 }
 
 @Composable
 private fun DescriptionInputField(
     description: String,
-    onDescriptionChange: (String) -> Unit
+    onDescriptionChange: (String) -> Unit,
 ) {
     DefaultTextField(
         value = description,
         onValueChange = {
             onDescriptionChange(it)
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = DP300),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = DP300),
         placeholder = stringResource(R.string.memo_description_placeholder),
-        singleLine = false
+        singleLine = false,
     )
 }
 
 @Composable
 private fun MemoImage(
-    img: String?
+    img: String?,
 ) {
     img?.let {
         AsyncImage(
             model = it,
             contentDescription = "관련 이미지",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(DP400),
-            contentScale = ContentScale.Crop
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(DP400),
+            contentScale = ContentScale.Crop,
         )
     }
 }
@@ -328,6 +337,6 @@ private fun MemoScreenPreview() {
         {},
         {},
         {},
-        {}
+        {},
     )
 }

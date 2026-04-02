@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class LifeLogRepositoryImpl @Inject constructor(
     private val dao: LifeLogDao,
-    private val mapper: LifeLogMapper
+    private val mapper: LifeLogMapper,
 ) : LifeLogRepository {
     override fun getLifeLogs(): Flow<List<LifeLog>> =
         dao.getLifeLogs().map { entities ->
@@ -29,9 +29,10 @@ class LifeLogRepositoryImpl @Inject constructor(
 
     override fun getImages(): Flow<List<String>> = dao.getImages()
 
-    override suspend fun getLifeLogById(id: Int): LifeLog = dao.getLifeLogById(id).run {
-        mapper.map(this)
-    }
+    override suspend fun getLifeLogById(id: Int): LifeLog =
+        dao.getLifeLogById(id).run {
+            mapper.map(this)
+        }
 
     override suspend fun insertLifeLog(lifeLog: LifeLog) {
         dao.insertLifeLog(mapper.mapBack(lifeLog))

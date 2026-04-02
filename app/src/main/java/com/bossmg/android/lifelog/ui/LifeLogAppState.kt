@@ -22,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun rememberLifeLogAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ): LifeLogAppState {
     return remember(navController, coroutineScope) {
         LifeLogAppState(
@@ -35,30 +35,33 @@ fun rememberLifeLogAppState(
 @Stable
 class LifeLogAppState(
     val navController: NavHostController,
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) {
     val topLevelDestinations = TopLevelDestination.entries
 
     val currentDestination: NavDestination?
-        @Composable get() = navController
-            .currentBackStackEntryFlow
-            .collectAsState(initial = null)
-            .value?.destination
+        @Composable get() =
+            navController
+                .currentBackStackEntryFlow
+                .collectAsState(initial = null)
+                .value?.destination
 
     val currentTopLevelDestination: TopLevelDestination?
-        @Composable get() = TopLevelDestination.entries
-            .firstOrNull { destination ->
-                currentDestination?.hasRoute(destination.route) == true
-            }
+        @Composable get() =
+            TopLevelDestination.entries
+                .firstOrNull { destination ->
+                    currentDestination?.hasRoute(destination.route) == true
+                }
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        val topLevelNavOptions = navOptions {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
+        val topLevelNavOptions =
+            navOptions {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
-            launchSingleTop = true
-            restoreState = true
-        }
 
         when (topLevelDestination) {
             TopLevelDestination.Home -> navController.navigateToHome(topLevelNavOptions)
