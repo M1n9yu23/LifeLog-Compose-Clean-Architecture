@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
 class TestLifeLogDao : LifeLogDao {
-
     private val logsFlow = MutableStateFlow<List<LifeLogEntity>>(emptyList())
 
     override fun getLifeLogs(): Flow<List<LifeLogEntity>> = logsFlow
@@ -21,7 +20,6 @@ class TestLifeLogDao : LifeLogDao {
 
     override fun getImages(): Flow<List<String>> =
         logsFlow.map { list -> list.mapNotNull { it.img } }
-
 
     override suspend fun getLifeLogById(lifeLogId: Int): LifeLogEntity =
         logsFlow.value.first { it.id == lifeLogId }

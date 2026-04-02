@@ -38,41 +38,45 @@ class MemoViewModelTest {
         upsertLifeLogUseCase = UpsertLifeLogUseCase(testRepository)
         deleteLifeLogByIdUseCase = DeleteLifeLogByIdUseCase(testRepository)
         mapper = MemoMapper()
-        viewModel = MemoViewModel(
-            mapper,
-            getLifeLogByIdUseCase,
-            insertLifeLogUseCase,
-            upsertLifeLogUseCase,
-            deleteLifeLogByIdUseCase
-        )
+        viewModel =
+            MemoViewModel(
+                mapper,
+                getLifeLogByIdUseCase,
+                insertLifeLogUseCase,
+                upsertLifeLogUseCase,
+                deleteLifeLogByIdUseCase,
+            )
     }
 
     @Test
-    fun given_nullId_when_load_then_uiModelIsDefault() = runTest {
-        viewModel.load(null)
-        assertEquals(MemoUIModel(), viewModel.uiModel.value)
-    }
+    fun given_nullId_when_load_then_uiModelIsDefault() =
+        runTest {
+            viewModel.load(null)
+            assertEquals(MemoUIModel(), viewModel.uiModel.value)
+        }
 
     @Test
-    fun given_validId_when_load_then_uiModelReflectsLifeLog() = runTest {
-        testRepository.sendLogs(listOf(testLifeLog))
+    fun given_validId_when_load_then_uiModelReflectsLifeLog() =
+        runTest {
+            testRepository.sendLogs(listOf(testLifeLog))
 
-        viewModel.load(testLifeLog.id)
+            viewModel.load(testLifeLog.id)
 
-        val state = viewModel.uiModel.value
-        assertEquals(testLifeLog.id, state.id)
-        assertEquals(testLifeLog.title, state.title)
-        assertEquals(testLifeLog.description, state.description)
-        assertEquals(LocalDate.parse(testLifeLog.date), state.selectedDate)
-        assertEquals(testLifeLog.mood, state.selectedMood)
-        assertEquals(testLifeLog.img, state.img)
-    }
+            val state = viewModel.uiModel.value
+            assertEquals(testLifeLog.id, state.id)
+            assertEquals(testLifeLog.title, state.title)
+            assertEquals(testLifeLog.description, state.description)
+            assertEquals(LocalDate.parse(testLifeLog.date), state.selectedDate)
+            assertEquals(testLifeLog.mood, state.selectedMood)
+            assertEquals(testLifeLog.img, state.img)
+        }
 
     @Test
-    fun given_invalidId_when_load_then_uiModelIsDefault() = runTest {
-        viewModel.load(-1)
-        assertEquals(MemoUIModel(), viewModel.uiModel.value)
-    }
+    fun given_invalidId_when_load_then_uiModelIsDefault() =
+        runTest {
+            viewModel.load(-1)
+            assertEquals(MemoUIModel(), viewModel.uiModel.value)
+        }
 
     @Test
     fun given_title_when_updateTitle_then_uiModelUpdated() {
@@ -108,30 +112,32 @@ class MemoViewModelTest {
     }
 
     @Test
-    fun given_uiModel_when_saveMemo_then_repositoryContainsData() = runTest {
-        viewModel.updateTitle("제목 입력")
-        viewModel.updateDescription("내용 입력")
-        viewModel.updateDate(LocalDate.of(2025, 10, 7))
-        viewModel.updateMood("\uD83E\uDD29 설렘")
-        viewModel.updateImage("이미지추가.jpg")
+    fun given_uiModel_when_saveMemo_then_repositoryContainsData() =
+        runTest {
+            viewModel.updateTitle("제목 입력")
+            viewModel.updateDescription("내용 입력")
+            viewModel.updateDate(LocalDate.of(2025, 10, 7))
+            viewModel.updateMood("\uD83E\uDD29 설렘")
+            viewModel.updateImage("이미지추가.jpg")
 
-        viewModel.saveMemo()
+            viewModel.saveMemo()
 
-        val saveLog = testRepository.getLifeLogs().first().find { it.title == "제목 입력" }
-        assertNotNull(saveLog)
-        assertEquals("제목 입력", saveLog?.title)
-        assertEquals("이미지추가.jpg", saveLog?.img)
-        assertEquals("내용 입력", saveLog?.description)
-    }
+            val saveLog = testRepository.getLifeLogs().first().find { it.title == "제목 입력" }
+            assertNotNull(saveLog)
+            assertEquals("제목 입력", saveLog?.title)
+            assertEquals("이미지추가.jpg", saveLog?.img)
+            assertEquals("내용 입력", saveLog?.description)
+        }
 
     @Test
-    fun given_validId_when_deleteMemo_then_repositoryDataRemoved() = runTest {
-        testRepository.sendLogs(listOf(testLifeLog))
+    fun given_validId_when_deleteMemo_then_repositoryDataRemoved() =
+        runTest {
+            testRepository.sendLogs(listOf(testLifeLog))
 
-        viewModel.deleteMemo(testLifeLog.id)
+            viewModel.deleteMemo(testLifeLog.id)
 
-        viewModel.load(testLifeLog.id)
+            viewModel.load(testLifeLog.id)
 
-        assertEquals(MemoUIModel(), viewModel.uiModel.value)
-    }
+            assertEquals(MemoUIModel(), viewModel.uiModel.value)
+        }
 }

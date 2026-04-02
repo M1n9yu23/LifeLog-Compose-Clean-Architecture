@@ -20,9 +20,8 @@ internal class MemoViewModel @Inject constructor(
     private val getLifeLogByIdUseCase: GetLifeLogByIdUseCase,
     private val insertLifeLogUseCase: InsertLifeLogUseCase,
     private val upsertLifeLogUseCase: UpsertLifeLogUseCase,
-    private val deleteLifeLogByIdUseCase: DeleteLifeLogByIdUseCase
+    private val deleteLifeLogByIdUseCase: DeleteLifeLogByIdUseCase,
 ) : ViewModel() {
-
     private val _uiModel = MutableStateFlow(MemoUIModel())
     val uiModel = _uiModel.asStateFlow()
 

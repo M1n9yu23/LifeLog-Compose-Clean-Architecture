@@ -34,7 +34,7 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 
 @Composable
 internal fun Photo(
-    viewModel: PhotoViewModel = hiltViewModel()
+    viewModel: PhotoViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -55,17 +55,18 @@ internal fun Photo(
 
 @Composable
 private fun PhotoScreen(
-    photos: List<String> = emptyList()
+    photos: List<String> = emptyList(),
 ) {
     LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Background)
-            .statusBarsPadding()
-            .padding(DP12),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(color = Background)
+                .statusBarsPadding()
+                .padding(DP12),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(DP6),
-        horizontalArrangement = Arrangement.spacedBy(DP6)
+        horizontalArrangement = Arrangement.spacedBy(DP6),
     ) {
         items(photos) {
             AsyncImage(
@@ -73,7 +74,7 @@ private fun PhotoScreen(
                 contentDescription = "사용한 이미지",
                 modifier = Modifier.aspectRatio(1f),
                 alignment = Alignment.Center,
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
         }
     }
@@ -82,9 +83,10 @@ private fun PhotoScreen(
 @Composable
 private fun EmptyScreen() {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = Background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -92,7 +94,7 @@ private fun EmptyScreen() {
             text = stringResource(R.string.text_empty_title),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            style = AppTypography.titleMedium
+            style = AppTypography.titleMedium,
         )
 
         Spacer(modifier = Modifier.height(DP8))
@@ -115,7 +117,9 @@ private fun EmptyScreenPreview() {
 @Preview
 @Composable
 private fun PhotoScreenPreview() {
-    PhotoScreen(List(12) {
-        ""
-    })
+    PhotoScreen(
+        List(12) {
+            ""
+        },
+    )
 }

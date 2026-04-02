@@ -18,13 +18,14 @@ import com.bossmg.android.lifelog.navigation.LifeLogNavHost
 
 @Composable
 fun LifeLogApp(
-    appState: LifeLogAppState
+    appState: LifeLogAppState,
 ) {
     val currentDestination = appState.currentDestination
 
-    val isTopLevelScreen = appState.topLevelDestinations.any {
-        currentDestination?.hasRoute(it.route) == true
-    }
+    val isTopLevelScreen =
+        appState.topLevelDestinations.any {
+            currentDestination?.hasRoute(it.route) == true
+        }
 
     LifeLogScaffold(
         bottomBar = {
@@ -37,16 +38,17 @@ fun LifeLogApp(
                             icon = {
                                 Icon(
                                     imageVector = if (selected) destination.selectedIcon else destination.unselectedIcon,
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
                             },
                             onClick = {
                                 appState.navigateToTopLevelDestination(destination)
                             },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Primary,
-                                indicatorColor = Color.Transparent
-                            )
+                            colors =
+                                NavigationBarItemDefaults.colors(
+                                    selectedIconColor = Primary,
+                                    indicatorColor = Color.Transparent,
+                                ),
                         )
                     }
                 }
@@ -57,15 +59,15 @@ fun LifeLogApp(
                 FloatingActionButton(
                     onClick = { appState.navigateToMemo() },
                     containerColor = Primary,
-                    contentColor = Secondary
+                    contentColor = Secondary,
                 ) {
                     Icon(
                         imageVector = LifeIcons.Add,
-                        contentDescription = "새 메모"
+                        contentDescription = "새 메모",
                     )
                 }
             }
-        }
+        },
     ) {
         LifeLogNavHost(appState, Modifier.padding(it))
     }

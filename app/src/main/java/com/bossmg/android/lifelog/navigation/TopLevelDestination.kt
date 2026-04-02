@@ -17,21 +17,21 @@ enum class TopLevelDestination(
     Home(
         selectedIcon = LifeIcons.Home,
         unselectedIcon = LifeIcons.Home,
-        route = HomeRoute::class
+        route = HomeRoute::class,
     ),
     Calendar(
         selectedIcon = LifeIcons.Calendar,
         unselectedIcon = LifeIcons.Calendar,
-        route = CalendarRoute::class
+        route = CalendarRoute::class,
     ),
     Mood(
         selectedIcon = LifeIcons.Mood,
         unselectedIcon = LifeIcons.Mood,
-        route = MoodRoute::class
+        route = MoodRoute::class,
     ),
     Photo(
         selectedIcon = LifeIcons.PhotoTab,
         unselectedIcon = LifeIcons.PhotoTab,
-        route = PhotoRoute::class
-    )
+        route = PhotoRoute::class,
+    ),
 }

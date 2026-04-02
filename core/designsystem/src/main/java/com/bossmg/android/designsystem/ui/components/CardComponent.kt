@@ -47,26 +47,29 @@ fun CustomCard(
     shapeTop: Dp = DP10,
     shapeBottom: Dp = DP10,
     elevation: Dp = DP10,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
-    val shape = RoundedCornerShape(
-        topStart = shapeTop,
-        topEnd = shapeTop,
-        bottomStart = shapeBottom,
-        bottomEnd = shapeBottom
-    )
+    val shape =
+        RoundedCornerShape(
+            topStart = shapeTop,
+            topEnd = shapeTop,
+            bottomStart = shapeBottom,
+            bottomEnd = shapeBottom,
+        )
 
     Box(
-        modifier = modifier
-            .shadow(
-                elevation = elevation,
-                shape = shape,
-                ambientColor = shadowColor,
-                spotColor = shadowColor
-            )
-            .background(
-                backgroundColor, shape = shape
-            )
+        modifier =
+            modifier
+                .shadow(
+                    elevation = elevation,
+                    shape = shape,
+                    ambientColor = shadowColor,
+                    spotColor = shadowColor,
+                )
+                .background(
+                    backgroundColor,
+                    shape = shape,
+                ),
     ) {
         Column(content = content)
     }
@@ -77,13 +80,14 @@ fun MemoCardItem(
     date: LocalDate,
     title: String,
     mood: String,
-    img: String?
+    img: String?,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(DP16),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(DP16),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,28 +97,32 @@ fun MemoCardItem(
                 style = AppTypography.titleLarge.copy(color = DarkGray2),
             )
             Text(
-                text = date.dayOfWeek.getDisplayName(
-                    TextStyle.FULL,
-                    Locale.KOREAN
-                ),
-                style = AppTypography.bodyMedium.copy(color = DarkGray3)
+                text =
+                    date.dayOfWeek.getDisplayName(
+                        TextStyle.FULL,
+                        Locale.KOREAN,
+                    ),
+                style = AppTypography.bodyMedium.copy(color = DarkGray3),
             )
         }
 
         Spacer(Modifier.width(DP16))
 
         Column(
-            modifier = Modifier
-                .weight(1f)
+            modifier =
+                Modifier
+                    .weight(1f),
         ) {
             Text(
-                text = date.format(
-                    DateTimeFormatter.ofPattern("yyyy년 M월 d일 E요일")
-                ),
-                style = AppTypography.bodyLarge.copy(
-                    color = DarkGray2,
-                    fontStyle = FontStyle.Italic
-                ),
+                text =
+                    date.format(
+                        DateTimeFormatter.ofPattern("yyyy년 M월 d일 E요일"),
+                    ),
+                style =
+                    AppTypography.bodyLarge.copy(
+                        color = DarkGray2,
+                        fontStyle = FontStyle.Italic,
+                    ),
             )
 
             Spacer(modifier = Modifier.height(DP4))
@@ -123,13 +131,13 @@ fun MemoCardItem(
                 text = title,
                 style = AppTypography.titleLarge.copy(color = DarkGray2),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.height(DP4))
 
             Text(
                 text = mood,
-                style = AppTypography.bodyMedium.copy(color = Gray2)
+                style = AppTypography.bodyMedium.copy(color = Gray2),
             )
         }
 
@@ -137,10 +145,11 @@ fun MemoCardItem(
             AsyncImage(
                 model = it,
                 contentDescription = null,
-                modifier = Modifier
-                    .size(DP80)
-                    .clip(RoundedCornerShape(DP10)),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .size(DP80)
+                        .clip(RoundedCornerShape(DP10)),
+                contentScale = ContentScale.Crop,
             )
         }
     }
@@ -154,7 +163,7 @@ private fun CustomCardPreview() {
             date = LocalDate.of(2025, 10, 3),
             title = "저녁 산책",
             mood = "편안",
-            img = "https://picsum.photos/id/237/200/300"
+            img = "https://picsum.photos/id/237/200/300",
         )
     }
 }

@@ -34,7 +34,7 @@ import java.time.LocalDate
 @Composable
 internal fun Home(
     onMemoItemClick: (Int) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -56,14 +56,15 @@ internal fun Home(
 @Composable
 private fun HomeScreen(
     uiModels: List<HomeUIModel>,
-    onMemoItemClick: (Int) -> Unit
+    onMemoItemClick: (Int) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-            .statusBarsPadding()
-            .padding(DP12)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Background)
+                .statusBarsPadding()
+                .padding(DP12),
     ) {
         items(uiModels, key = {
             it.id
@@ -76,19 +77,20 @@ private fun HomeScreen(
 @Composable
 private fun HomeCard(uiModel: HomeUIModel, onMemoItemClick: (Int) -> Unit) {
     CustomCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onMemoItemClick(uiModel.id)
-            }
-            .padding(vertical = DP8),
-        backgroundColor = uiModel.cardColor
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onMemoItemClick(uiModel.id)
+                }
+                .padding(vertical = DP8),
+        backgroundColor = uiModel.cardColor,
     ) {
         MemoCardItem(
             date = uiModel.date,
             title = uiModel.title,
             mood = uiModel.mood,
-            img = uiModel.img
+            img = uiModel.img,
         )
     }
 }
@@ -96,9 +98,10 @@ private fun HomeCard(uiModel: HomeUIModel, onMemoItemClick: (Int) -> Unit) {
 @Composable
 private fun EmptyScreen() {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = Background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -106,7 +109,7 @@ private fun EmptyScreen() {
             text = stringResource(R.string.text_empty_title),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            style = AppTypography.titleMedium
+            style = AppTypography.titleMedium,
         )
 
         Spacer(modifier = Modifier.height(DP8))
@@ -135,20 +138,20 @@ private fun HomeScreenPreview() {
                 id = 1,
                 date = LocalDate.of(2025, 10, 1),
                 title = "오늘의 아침",
-                mood = "행복"
+                mood = "행복",
             ),
             HomeUIModel(
                 id = 2,
                 date = LocalDate.of(2025, 10, 2),
                 title = "점심시간",
-                mood = "피곤"
+                mood = "피곤",
             ),
             HomeUIModel(
                 id = 3,
                 date = LocalDate.of(2025, 10, 3),
                 title = "저녁 산책",
                 mood = "편안",
-                img = "https://picsum.photos/id/237/200/300"
+                img = "https://picsum.photos/id/237/200/300",
             ),
             HomeUIModel(
                 id = 4,
@@ -160,8 +163,8 @@ private fun HomeScreenPreview() {
                 id = 5,
                 date = LocalDate.of(2025, 10, 5),
                 title = "카페에서 작업",
-                mood = "집중"
-            )
-        )
+                mood = "집중",
+            ),
+        ),
     ) {}
 }

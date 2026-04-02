@@ -17,13 +17,14 @@ fun LoadingScreen(
     indicatorColor: Color = Primary,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = backgroundColor),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = backgroundColor),
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
-            color = indicatorColor
+            color = indicatorColor,
         )
     }
 }

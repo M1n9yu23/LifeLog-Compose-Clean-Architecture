@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 class LifeLogMapperTest {
-
     private lateinit var mapper: LifeLogMapper
 
     @Before
@@ -18,15 +17,15 @@ class LifeLogMapperTest {
 
     @Test
     fun mapEntityToDomain() {
-        val entity = LifeLogEntity(
-            id = 1,
-            date = "2025-10-05",
-            title = "Test Title",
-            description = "Test Description",
-            mood = "\uD83D\uDE0A 기쁨",
-            img = "image.png"
-        )
-
+        val entity =
+            LifeLogEntity(
+                id = 1,
+                date = "2025-10-05",
+                title = "Test Title",
+                description = "Test Description",
+                mood = "\uD83D\uDE0A 기쁨",
+                img = "image.png",
+            )
 
         val domainModel = mapper.map(entity)
 
@@ -40,14 +39,15 @@ class LifeLogMapperTest {
 
     @Test
     fun mapBackDomainToEntity() {
-        val domainModel = LifeLog(
-            id = 2,
-            date = "2025-10-06",
-            title = "Domain Title",
-            description = "Domain Description",
-            mood = "\uD83D\uDE22 슬픔",
-            img = "test.png"
-        )
+        val domainModel =
+            LifeLog(
+                id = 2,
+                date = "2025-10-06",
+                title = "Domain Title",
+                description = "Domain Description",
+                mood = "\uD83D\uDE22 슬픔",
+                img = "test.png",
+            )
 
         val entity = mapper.mapBack(domainModel)
 

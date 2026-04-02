@@ -4,9 +4,9 @@ import java.time.LocalDate
 
 internal data class MemoUIModel(
     val id: Int = 0,
-    val title: String ="",
+    val title: String = "",
     val description: String = "",
     val selectedDate: LocalDate = LocalDate.now(),
     val selectedMood: String = "\uD83D\uDE0A 기쁨",
-    val img: String? = null
+    val img: String? = null,
 )

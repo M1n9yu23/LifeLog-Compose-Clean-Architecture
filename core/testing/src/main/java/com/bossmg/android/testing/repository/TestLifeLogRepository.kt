@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 
 class TestLifeLogRepository : LifeLogRepository {
-
     private val logsFlow: MutableSharedFlow<List<LifeLog>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 

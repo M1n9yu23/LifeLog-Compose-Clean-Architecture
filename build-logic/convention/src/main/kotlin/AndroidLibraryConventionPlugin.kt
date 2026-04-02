@@ -16,12 +16,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = 36
             }
-            configureSpotless()
 
             dependencies {
                 add("implementation", versionCatalog.findLibrary("androidx.core.ktx").get())
-                add("testImplementation", versionCatalog.findBundle("unit.test").get())
-                add("androidTestImplementation", versionCatalog.findBundle("android.test").get())
             }
         }
     }

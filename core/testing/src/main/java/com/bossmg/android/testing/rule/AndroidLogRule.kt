@@ -6,7 +6,7 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import org.junit.rules.ExternalResource
 
-class AndroidLogRule: ExternalResource() {
+class AndroidLogRule : ExternalResource() {
     override fun before() {
         mockkStatic(Log::class)
 

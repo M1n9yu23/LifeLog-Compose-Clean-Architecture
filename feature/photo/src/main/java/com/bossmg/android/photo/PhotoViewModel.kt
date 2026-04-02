@@ -12,21 +12,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class PhotoViewModel @Inject constructor(
-    private val getImagesUseCase: GetImagesUseCase
+    private val getImagesUseCase: GetImagesUseCase,
 ) : ViewModel() {
-
-    val uiState: StateFlow<PhotoUIState> = getImagesUseCase().map { imgs ->
-        PhotoUIState.Success(PhotoUIModel(imgs))
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = PhotoUIState.Loading
-    )
+    val uiState: StateFlow<PhotoUIState> =
+        getImagesUseCase().map { imgs ->
+            PhotoUIState.Success(PhotoUIModel(imgs))
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = PhotoUIState.Loading,
+        )
 }
 
 internal sealed interface PhotoUIState {
     object Loading : PhotoUIState
+
     data class Success(
-        val uiModel: PhotoUIModel
+        val uiModel: PhotoUIModel,
     ) : PhotoUIState
 }

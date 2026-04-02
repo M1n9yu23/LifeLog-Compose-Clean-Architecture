@@ -10,4 +10,6 @@ android {
 dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.appcompat)
+
+    testImplementation(libs.junit)
 }

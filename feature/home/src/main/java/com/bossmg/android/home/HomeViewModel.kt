@@ -13,25 +13,25 @@ import javax.inject.Inject
 @HiltViewModel
 internal class HomeViewModel @Inject constructor(
     private val getLifeLogsUseCase: GetLifeLogsUseCase,
-    private val mapper: HomeMapper
+    private val mapper: HomeMapper,
 ) : ViewModel() {
-
-    val uiState: StateFlow<HomeUIState> = getLifeLogsUseCase()
-        .map { lifeLogs ->
-            val uiModels = lifeLogs.map { mapper.map(it) }
-            HomeUIState.Success(uiModels)
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = HomeUIState.Loading
-        )
-
+    val uiState: StateFlow<HomeUIState> =
+        getLifeLogsUseCase()
+            .map { lifeLogs ->
+                val uiModels = lifeLogs.map { mapper.map(it) }
+                HomeUIState.Success(uiModels)
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = HomeUIState.Loading,
+            )
 }
 
 internal sealed interface HomeUIState {
     data object Loading : HomeUIState
+
     data class Success(
-        val uiModels: List<HomeUIModel> = emptyList()
+        val uiModels: List<HomeUIModel> = emptyList(),
     ) : HomeUIState
 }

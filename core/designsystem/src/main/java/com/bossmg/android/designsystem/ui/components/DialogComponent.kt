@@ -52,32 +52,34 @@ import kotlin.math.ceil
 fun CalendarDialog(
     initialDate: LocalDate = LocalDate.now(),
     onConfirm: (LocalDate) -> Unit = {},
-    onCancel: () -> Unit = {}
+    onCancel: () -> Unit = {},
 ) {
     var displayedMonth by remember { mutableStateOf(initialDate.withDayOfMonth(1)) }
     var selectedDate by remember { mutableStateOf(initialDate) }
 
     Dialog(
         onDismissRequest = onCancel,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
-        )
+        properties =
+            DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+            ),
     ) {
         CustomCard(
             shapeTop = DP10,
             shapeBottom = DP10,
-            elevation = DP10
+            elevation = DP10,
         ) {
             Column(
-                modifier = Modifier
-                    .width(DP320)
-                    .padding(DP16)
-                    .wrapContentSize()
+                modifier =
+                    Modifier
+                        .width(DP320)
+                        .padding(DP16)
+                        .wrapContentSize(),
             ) {
                 Text(
                     text = "${selectedDate.year}년 ${selectedDate.monthValue}월 ${selectedDate.dayOfMonth}일",
-                    style = AppTypography.titleMedium.copy(DarkGray2)
+                    style = AppTypography.titleMedium.copy(DarkGray2),
                 )
 
                 Spacer(Modifier.height(DP10))
@@ -87,7 +89,7 @@ fun CalendarDialog(
                 CalenderHeader(
                     month = displayedMonth,
                     onPrevMonth = { displayedMonth = displayedMonth.minusMonths(1) },
-                    onNextMonth = { displayedMonth = displayedMonth.plusMonths(1) }
+                    onNextMonth = { displayedMonth = displayedMonth.plusMonths(1) },
                 )
 
                 Spacer(Modifier.height(DP12))
@@ -98,7 +100,7 @@ fun CalendarDialog(
                             text = day,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center,
-                            style = AppTypography.bodyMedium
+                            style = AppTypography.bodyMedium,
                         )
                     }
                 }
@@ -108,30 +110,34 @@ fun CalendarDialog(
                 CalendarGrid(
                     month = displayedMonth,
                     selectedDate = selectedDate,
-                    onDateSelected = { selectedDate = it }
+                    onDateSelected = { selectedDate = it },
                 )
 
                 Spacer(Modifier.height(DP16))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     TextButton(
-                        onClick = onCancel, colors = ButtonDefaults.buttonColors(
-                            containerColor = Secondary,
-                            contentColor = Black
-                        )
+                        onClick = onCancel,
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = Secondary,
+                                contentColor = Black,
+                            ),
                     ) {
                         Text("취소")
                     }
                     Spacer(Modifier.width(DP8))
 
                     TextButton(
-                        onClick = { onConfirm(selectedDate) }, colors = ButtonDefaults.buttonColors(
-                            containerColor = Primary,
-                            contentColor = White
-                        )
+                        onClick = { onConfirm(selectedDate) },
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = Primary,
+                                contentColor = White,
+                            ),
                     ) {
                         Text("확인")
                     }
@@ -145,12 +151,12 @@ fun CalendarDialog(
 private fun CalenderHeader(
     month: LocalDate,
     onPrevMonth: () -> Unit,
-    onNextMonth: () -> Unit
+    onNextMonth: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onPrevMonth) {
             Icon(LifeIcons.ArrowLeft, contentDescription = "이전 달")
@@ -159,7 +165,7 @@ private fun CalenderHeader(
         Text(
             text = "${month.year}년 ${month.monthValue}월",
             style = AppTypography.titleMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         IconButton(onClick = onNextMonth) {
@@ -172,7 +178,7 @@ private fun CalenderHeader(
 private fun CalendarGrid(
     month: LocalDate,
     selectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
 ) {
     val firstDay = month.withDayOfMonth(1)
     val daysInMonth = month.lengthOfMonth()
@@ -195,24 +201,25 @@ private fun CalendarGrid(
                         val isToday = date == LocalDate.now()
 
                         Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .padding(DP2)
-                                .clip(CircleShape)
-                                .background(
-                                    when {
-                                        isSelected -> Primary
-                                        isToday -> Secondary
-                                        else -> Color.Transparent
-                                    }
-                                )
-                                .clickable { onDateSelected(date) },
-                            contentAlignment = Alignment.Center
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f)
+                                    .padding(DP2)
+                                    .clip(CircleShape)
+                                    .background(
+                                        when {
+                                            isSelected -> Primary
+                                            isToday -> Secondary
+                                            else -> Color.Transparent
+                                        },
+                                    )
+                                    .clickable { onDateSelected(date) },
+                            contentAlignment = Alignment.Center,
                         ) {
                             Text(
                                 text = day.toString(),
-                                color = if (isSelected) White else Black
+                                color = if (isSelected) White else Black,
                             )
                         }
                     }

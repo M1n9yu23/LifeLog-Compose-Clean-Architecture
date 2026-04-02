@@ -21,7 +21,7 @@ internal fun Project.configureKotlinAndroid(
             targetCompatibility = JavaVersion.VERSION_21
         }
     }
-    
+
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }

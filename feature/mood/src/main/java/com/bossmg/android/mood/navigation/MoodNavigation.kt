@@ -13,7 +13,7 @@ object MoodRoute
 fun NavController.navigateToMood(navOptions: NavOptions) = navigate(MoodRoute, navOptions)
 
 fun NavGraphBuilder.moodScreen(
-    onMemoItemClick: (Int) -> Unit
+    onMemoItemClick: (Int) -> Unit,
 ) {
     composable<MoodRoute> {
         Mood(onMemoItemClick)

@@ -10,5 +10,5 @@ internal data class HomeUIModel(
     val title: String,
     val mood: String,
     val cardColor: Color = White,
-    val img: String? = null
+    val img: String? = null,
 )

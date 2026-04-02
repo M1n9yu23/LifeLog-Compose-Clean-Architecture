@@ -29,7 +29,7 @@ fun LifeLogNavHost(
         moodScreen(navController::navigateToMemo)
         photoScreen()
         memoScreen(
-            onBack = navController::popBackStack
+            onBack = navController::popBackStack,
         )
     }
 }
