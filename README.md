@@ -1,8 +1,14 @@
 # LifeLog Android App
 
-LifeLog는 Kotlin과 Compose를 기반으로 구현된 안드로이드 앱입니다.<br>
-Clean Architecture와 MVVM 패턴을 따르며, 모든 핵심 모듈이 단위 테스트와 통합 테스트로 검증되어, 안정적이고 신뢰할 수 있는 구조를 제공합니다.<br>
-소중한 메모를 남기고, 다양한 일기를 기록하며 나만의 비밀 기록 애플리케이션으로 활용할 수 있습니다.
+[![Build & Test](https://github.com/M1n9yu23/LifeLog-Compose-Clean-Architecture/actions/workflows/Build.yml/badge.svg)](https://github.com/M1n9yu23/LifeLog-Compose-Clean-Architecture/actions/workflows/Build.yml)
+
+하루의 메모, 감정, 사진, 일정을 한 곳에서 기록하는 **Android 일상 기록 앱**입니다.  
+캘린더로 날짜별 기록을 한눈에 보고, 감정 변화를 추적하며, 사진 일기와 텍스트 메모를 자유롭게 남길 수 있습니다.
+
+- **테스트** — 모든 레이어 모듈은 단위 테스트와 통합 테스트로 검증 됐습니다.
+- **빌드 시스템** — Gradle Convention Plugin으로 모든 모듈의 빌드 설정을 관리합니다.
+- **Native FTS** — 한국어 검색을 위해 Android NDK(C++17)로 Full-Text Search 엔진을 직접
+  구현했습니다. → [자세히보기](native/README.md)
 
 ## Module dependency graph
 
@@ -31,13 +37,20 @@ direction TB
 :feature:photo[photo]:::android-feature
 end
 :app[app]:::android-app
+:native[native]:::native-lib
 
 :app -.-> :feature:home
 :app -.-> :feature:calendar
 :app -.-> :feature:memo
 :app -.-> :feature:mood
 :app -.-> :feature:photo
+:app -.-> :core:data
+:app -.-> :core:domain
+:app -.-> :core:designsystem
+:app -.-> :core:notifications
 :core:data -.-> :core:domain
+:core:data -.-> :native
+:core:designsystem -.-> :core:domain
 :core:testing -.-> :core:domain
 :core:testing -.-> :core:data
 :core:testing -.-> :core:notifications
@@ -62,17 +75,21 @@ classDef android-feature fill:#FFDDA6,stroke:#000,stroke-width:2px,color:#000;
 classDef android-core fill:#A6E3E9,stroke:#000,stroke-width:2px,color:#000;
 classDef kotlin-library fill:#CDB4DB,stroke:#000,stroke-width:2px,color:#000;
 classDef android-test fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
+classDef native-lib fill:#B5EAD7,stroke:#000,stroke-width:2px,color:#000;
 ```
 
 ## Modules
 
-- **:app** - 모든 모듈에 접근할 수 있는 최상위 모듈 (여기서는 feature의 내비게이션 담당 및 알림 모듈 접근)
-- **:core:data** - 데이터 레이어 모듈, domain 모듈에만 접근 가능한 모듈
+- **:app** - 모든 모듈에 접근할 수 있는 최상위 모듈
+- **:core:data** - 데이터 레이어 모듈, domain 및 native 모듈에 접근하는 모듈
 - **:core:domain** - 레이어간 독립을 지원하는 모듈, 다른 모듈에 접근 할 수 없는 Kotlin 모듈
 - **:core:designsystem** - 컴포넌트와 모든 UI 관련(Icons, Theme, Util)을 담당하는 모듈
 - **:core:testing** - feature 모듈용 테스트 헬퍼(TestRepository, Rule, Runner 등) 제공하는 모듈
 - **:core:notifications** - 앱의 알림을 담당하는 모듈
 - **:feature** - 기능 단위로 나눠진 모듈, domain, designsystem, testing에 접근 하는 모듈
+- **:native** - Android NDK(C++17) 기반 Full-Text Search 엔진을 제공하는 모듈 → [자세히보기](native/README.md)
+- **:build-logic** - Gradle Convention Plugin으로 모듈별 빌드 설정을 통합 관리하는
+  모듈 → [자세히보기](build-logic/README.md)
 
 ## Testing
 
@@ -83,25 +100,57 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
     - :core:data -> RepositoryTest(TestDao를 이용한 Repository 단위 테스트를 통해 검증)
     - :core:data -> MapperTest(변환 로직 검증)
     - :feature -> 모든 feature 모듈의 각 ViewModel 테스트 완료
-        - ViewModel이 의존하는 UseCase 역시 함께 검증됨
-        - 따라서 domain 모듈은 따로 테스트를 진행하지 않음
+        - 분리 원칙에 알맞게 각 레이어는 독립적으로 테스트되어야 하나, 현재 도메인 계층의 UseCase는 단순한 데이터 전달 성격이 강해
+          ViewModel 테스트 시 Fake 객체를 통해 통합적으로 검증하고 있습니다.
+        - 향후 도메인의 비즈니스 로직이 복잡해질 경우, `:core:domain` 전용 독립 단위 테스트를 추가할 예정입니다.
 - `Given | When | Then` 방식으로 작성
 - 비동기 처리 코드는 TestDispatcher 활용하여 검증
 - 가능한 모든 단위 테스트와 통합 테스트를 진행
 - State 변화와 데이터 흐름이 의도대로 동작하는지 검증
 - 실제 인터페이스를 구현한 간단하지만 의도대로 동작하는 테스트용 Repository, Dao 등을 사용
 
+## Code Quality
+
+브랜치 push 및 PR 생성 시 자동으로 아래 단계를 실행합니다.
+
+| 단계                | 내용                                             |
+|-------------------|------------------------------------------------|
+| **spotlessCheck** | ktlint 1.8.0으로 코드 스타일 및 라이선스 헤더 검사 (C++ 파일 포함) |
+| **lintDebug**     | Android Lint로 코드 품질 정적 분석                      |
+| **testDebug**     | 전체 로컬 유닛 테스트 실행                                |
+
+코드 스타일과 저작권 헤더를 강제합니다.  
+로컬에서 포맷을 자동 수정하려면 `./gradlew spotlessApply`를 실행하세요.
+
+## Native Full-Text Search
+
+`:core:data` 모듈은 한국어·영어 혼합 텍스트 검색을 위해 Android NDK(C++17)로 구현된 FTS 엔진을 사용합니다.
+
+|                    |                                          |
+|--------------------|------------------------------------------|
+| **한국어 바이그램 토크나이저** | 형태소 분석기 없이 유니코드 코드포인트 기반 2-gram 토큰 생성    |
+| **TF-IDF 랭킹**      | 제목(3×) · 본문(1×) 필드 가중치 스코어링              |
+| **프리픽스 검색**        | `"산"` 입력 시 `"산책"`, `"산보"` 등 자동 매칭        |
+| **영속 인덱스**         | 컴팩트 바이너리 직렬화                             |
+| **스레드 안전**         | `std::shared_mutex`: 읽기 동시 허용, 쓰기 배타적 접근 |
+| **외부 의존 없음**       | 순수 C++17 STL                             |
+
+Room FTS의 한국어 토크나이저 미지원, Kotlin 구현의 GC 부담 등 각 대안의 한계를 검토한 결과 NDK C++ 구현을 채택했습니다.  
+내부 구현, 아키텍처, 자료구조, 직렬화 포맷 등 상세 내용은 **[native/README.md](native/README.md)** 를 참고하세요.
+
 ## Tech Stack
 
 | **분류**            | **내용**                                      |
 |-------------------|---------------------------------------------|
-| **Language**      | Kotlin                                      |
+| **Language**      | Kotlin, C++17 (NDK)                         |
 | **Jetpack**       | Compose, Navigation, ViewModel, WorkManager |
 | **Architecture**  | Clean Architecture, MVVM                    |
 | **Asynchronous**  | Coroutine, Flow(cold, hot)                  |
 | **Database**      | Room                                        |
+| **Search**        | Custom FTS Engine                           |
 | **Image Loading** | Coil                                        |
 | **DI**            | Hilt                                        |
+| **Build**         | Gradle Convention Plugin                    |
 
 ## Previews
 
