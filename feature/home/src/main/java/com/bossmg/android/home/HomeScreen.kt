@@ -3,8 +3,10 @@ package com.bossmg.android.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,9 +14,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,9 +35,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.components.CustomCard
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
+import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.Background
+import com.bossmg.android.designsystem.ui.theme.DP0
 import com.bossmg.android.designsystem.ui.theme.DP12
+import com.bossmg.android.designsystem.ui.theme.DP16
+import com.bossmg.android.designsystem.ui.theme.DP32
 import com.bossmg.android.designsystem.ui.theme.DP8
 import java.time.LocalDate
 
@@ -37,6 +51,8 @@ internal fun Home(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
 
     when (uiState) {
         HomeUIState.Loading -> {
@@ -44,32 +60,162 @@ internal fun Home(
         }
 
         is HomeUIState.Success -> {
-            if ((uiState as HomeUIState.Success).uiModels.isNotEmpty()) {
-                HomeScreen(uiModels = (uiState as HomeUIState.Success).uiModels, onMemoItemClick)
+            HomeScreen(
+                uiModels = (uiState as HomeUIState.Success).uiModels,
+                searchQuery = searchQuery,
+                searchResults = searchResults,
+                onSearchQueryChange = viewModel::onSearchQueryChange,
+                onMemoItemClick = onMemoItemClick,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeScreen(
+    uiModels: List<HomeUIModel>,
+    searchQuery: String,
+    searchResults: List<HomeUIModel>,
+    onSearchQueryChange: (String) -> Unit,
+    onMemoItemClick: (Int) -> Unit,
+) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Background)
+                .statusBarsPadding(),
+    ) {
+        SearchBar(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .then(
+                        if (!expanded) {
+                            Modifier.padding(horizontal = DP16, vertical = DP8)
+                        } else {
+                            Modifier
+                        },
+                    ),
+            windowInsets = WindowInsets(left = DP0, top = DP0, right = DP0, bottom = DP0),
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+            inputField = {
+                SearchBarDefaults.InputField(
+                    query = searchQuery,
+                    onQueryChange = onSearchQueryChange,
+                    onSearch = {},
+                    expanded = expanded,
+                    onExpandedChange = { expanded = it },
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.text_search_placeholder),
+                            style = AppTypography.bodyLarge,
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = LifeIcons.Search,
+                            contentDescription = null,
+                        )
+                    },
+                    trailingIcon = {
+                        if (expanded) {
+                            IconButton(
+                                onClick = {
+                                    if (searchQuery.isNotEmpty()) {
+                                        onSearchQueryChange("")
+                                    } else {
+                                        expanded = false
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = LifeIcons.Close,
+                                    contentDescription = stringResource(R.string.cd_close_search),
+                                )
+                            }
+                        } else {
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    imageVector = LifeIcons.Settings,
+                                    contentDescription = stringResource(R.string.cd_settings),
+                                )
+                            }
+                        }
+                    },
+                )
+            },
+        ) {
+            SearchContent(
+                searchQuery = searchQuery,
+                searchResults = searchResults,
+                onMemoItemClick = onMemoItemClick,
+            )
+        }
+
+        if (!expanded) {
+            if (uiModels.isNotEmpty()) {
+                LazyColumn(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(horizontal = DP12),
+                ) {
+                    items(uiModels, key = { it.id }) {
+                        HomeCard(it, onMemoItemClick)
+                    }
+                }
             } else {
-                EmptyScreen()
+                EmptyScreen(modifier = Modifier.weight(1f))
             }
         }
     }
 }
 
 @Composable
-private fun HomeScreen(
-    uiModels: List<HomeUIModel>,
+private fun SearchContent(
+    searchQuery: String,
+    searchResults: List<HomeUIModel>,
     onMemoItemClick: (Int) -> Unit,
 ) {
-    LazyColumn(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Background)
-                .statusBarsPadding()
-                .padding(DP12),
-    ) {
-        items(uiModels, key = {
-            it.id
-        }) {
-            HomeCard(it, onMemoItemClick)
+    if (searchQuery.isBlank()) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(DP32),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.text_search_hint),
+                style = AppTypography.bodyMedium,
+            )
+        }
+    } else if (searchResults.isEmpty()) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(DP32),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.text_search_empty, searchQuery),
+                style = AppTypography.bodyMedium,
+                textAlign = TextAlign.Center,
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = DP12),
+        ) {
+            items(searchResults, key = { it.id }) { result ->
+                HomeCard(result, onMemoItemClick)
+            }
         }
     }
 }
@@ -80,9 +226,7 @@ private fun HomeCard(uiModel: HomeUIModel, onMemoItemClick: (Int) -> Unit) {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clickable {
-                    onMemoItemClick(uiModel.id)
-                }
+                .clickable { onMemoItemClick(uiModel.id) }
                 .padding(vertical = DP8),
         backgroundColor = uiModel.cardColor,
     ) {
@@ -96,10 +240,10 @@ private fun HomeCard(uiModel: HomeUIModel, onMemoItemClick: (Int) -> Unit) {
 }
 
 @Composable
-private fun EmptyScreen() {
+private fun EmptyScreen(modifier: Modifier = Modifier) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .background(color = Background),
         verticalArrangement = Arrangement.Center,
@@ -111,9 +255,7 @@ private fun EmptyScreen() {
             textAlign = TextAlign.Center,
             style = AppTypography.titleMedium,
         )
-
         Spacer(modifier = Modifier.height(DP8))
-
         Text(
             text = stringResource(R.string.text_empty_body),
             modifier = Modifier.fillMaxWidth(),
@@ -133,38 +275,15 @@ private fun EmptyScreenPreview() {
 @Composable
 private fun HomeScreenPreview() {
     HomeScreen(
-        listOf(
-            HomeUIModel(
-                id = 1,
-                date = LocalDate.of(2025, 10, 1),
-                title = "오늘의 아침",
-                mood = "행복",
+        uiModels =
+            listOf(
+                HomeUIModel(id = 1, date = LocalDate.of(2025, 10, 1), title = "오늘의 아침", mood = "행복"),
+                HomeUIModel(id = 2, date = LocalDate.of(2025, 10, 2), title = "점심시간", mood = "피곤"),
+                HomeUIModel(id = 3, date = LocalDate.of(2025, 10, 3), title = "저녁 산책", mood = "편안"),
             ),
-            HomeUIModel(
-                id = 2,
-                date = LocalDate.of(2025, 10, 2),
-                title = "점심시간",
-                mood = "피곤",
-            ),
-            HomeUIModel(
-                id = 3,
-                date = LocalDate.of(2025, 10, 3),
-                title = "저녁 산책",
-                mood = "편안",
-                img = "https://picsum.photos/id/237/200/300",
-            ),
-            HomeUIModel(
-                id = 4,
-                date = LocalDate.of(2025, 10, 4),
-                title = "영화 감상",
-                mood = "즐거움",
-            ),
-            HomeUIModel(
-                id = 5,
-                date = LocalDate.of(2025, 10, 5),
-                title = "카페에서 작업",
-                mood = "집중",
-            ),
-        ),
-    ) {}
+        searchQuery = "",
+        searchResults = emptyList(),
+        onSearchQueryChange = {},
+        onMemoItemClick = {},
+    )
 }

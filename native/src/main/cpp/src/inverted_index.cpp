@@ -98,19 +98,29 @@ std::vector<SearchResult> InvertedIndex::search(const std::string& query,
     std::unordered_map<int, float> scores;
     scores.reserve(docs_.size());
 
+    static constexpr int MAX_PREFIX_TERMS = 64;
+
     for (const auto& token : query_tokens) {
-        auto it = index_.find(token);
-        if (it == index_.end()) continue;
+        int prefix_count = 0;
+        auto it = index_.lower_bound(token);
+        while (it != index_.end() && prefix_count < MAX_PREFIX_TERMS) {
+            if (it->first.size() < token.size() ||
+                it->first.compare(0, token.size(), token) != 0) {
+                break;
+            }
 
-        auto df_it = doc_freq_.find(token);
-        int df = (df_it != doc_freq_.end()) ? df_it->second : 1;
+            auto df_it = doc_freq_.find(it->first);
+            int df = (df_it != doc_freq_.end()) ? df_it->second : 1;
 
-        for (const auto& posting : it->second) {
-            auto doc_it = docs_.find(posting.doc_id);
-            if (doc_it == docs_.end()) continue;
-            scores[posting.doc_id] += termScore(posting.term_freq,
-                                                 doc_it->second.total_terms,
-                                                 df);
+            for (const auto& posting : it->second) {
+                auto doc_it = docs_.find(posting.doc_id);
+                if (doc_it == docs_.end()) continue;
+                scores[posting.doc_id] += termScore(posting.term_freq,
+                                                     doc_it->second.total_terms,
+                                                     df);
+            }
+            ++it;
+            ++prefix_count;
         }
     }
 
@@ -200,7 +210,6 @@ bool InvertedIndex::load(const std::string& path) {
 
     uint32_t num_terms = 0;
     if (!read32(num_terms)) { fclose(f); return false; }
-    index_.reserve(num_terms);
     doc_freq_.reserve(num_terms);
     for (uint32_t i = 0; i < num_terms; ++i) {
         uint16_t term_len = 0;

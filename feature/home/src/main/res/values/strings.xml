@@ -2,4 +2,9 @@
 <resources>
     <string name="text_empty_title">텅 비었네요...</string>
     <string name="text_empty_body">먼저 기록해볼까요?</string>
+    <string name="text_search_placeholder">내 일기 검색</string>
+    <string name="text_search_hint">검색어를 입력하세요</string>
+    <string name="text_search_empty">\'%s\' 검색 결과가 없습니다</string>
+    <string name="cd_close_search">검색 닫기</string>
+    <string name="cd_settings">설정</string>
 </resources>
