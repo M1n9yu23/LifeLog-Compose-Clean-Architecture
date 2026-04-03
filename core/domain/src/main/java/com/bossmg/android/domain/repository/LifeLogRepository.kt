@@ -19,4 +19,6 @@ interface LifeLogRepository {
     suspend fun upsertLifeLog(lifeLog: LifeLog)
 
     suspend fun deleteLifeLogById(id: Int)
+
+    suspend fun searchLifeLogs(query: String): List<LifeLog>
 }
