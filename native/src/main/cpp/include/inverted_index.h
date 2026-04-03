@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <unordered_map>
 #include <cstdint>
 
@@ -38,7 +39,7 @@ namespace fts {
             int total_terms;
         };
 
-        std::unordered_map<std::string, std::vector<Posting>> index_;
+        std::map<std::string, std::vector<Posting>> index_;
         std::unordered_map<int, DocInfo> docs_;
         std::unordered_map<std::string, int> doc_freq_;
 

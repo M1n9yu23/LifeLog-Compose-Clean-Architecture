@@ -9,8 +9,11 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CameraAlt
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Mood
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
 
 object LifeIcons {
@@ -25,4 +28,7 @@ object LifeIcons {
     val Mood = Icons.Rounded.Mood
     val PhotoTab = Icons.Outlined.Photo
     val Add = Icons.Rounded.Add
+    val Search = Icons.Rounded.Search
+    val Close = Icons.Rounded.Close
+    val Settings = Icons.Rounded.Settings
 }
