@@ -15,10 +15,17 @@ spotless {
         target("**/*.kt")
         targetExclude("**/build/**/*.kt", "**/bin/**/*.kt")
         ktlint("1.8.0")
+        licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
     }
     kotlinGradle {
         target("**/*.gradle.kts")
         targetExclude("**/build/**/*.gradle.kts", "**/bin/**/*.gradle.kts")
         ktlint("1.8.0")
+        licenseHeaderFile(rootProject.file("spotless/copyright.kt"), "(^(?!.*\\/\\/).*$)")
+    }
+    format("cpp") {
+        target("**/*.cpp", "**/*.h")
+        targetExclude("**/build/**")
+        licenseHeaderFile(rootProject.file("spotless/copyright.cpp"), "(#pragma|#include|namespace)")
     }
 }
