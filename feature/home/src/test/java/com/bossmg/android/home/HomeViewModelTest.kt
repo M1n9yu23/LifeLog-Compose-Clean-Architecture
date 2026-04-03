@@ -2,6 +2,7 @@ package com.bossmg.android.home
 
 import com.bossmg.android.domain.model.LifeLog
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
+import com.bossmg.android.domain.usecase.SearchLifeLogsUseCase
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.MainDispatcherRule
@@ -24,6 +25,7 @@ class HomeViewModelTest {
 
     private lateinit var testLifeLogRepository: TestLifeLogRepository
     private lateinit var getLifeLogsUseCase: GetLifeLogsUseCase
+    private lateinit var searchLifeLogsUseCase: SearchLifeLogsUseCase
     private lateinit var mapper: HomeMapper
     private lateinit var viewModel: HomeViewModel
 
@@ -33,8 +35,9 @@ class HomeViewModelTest {
     fun setUp() {
         testLifeLogRepository = TestLifeLogRepository()
         getLifeLogsUseCase = GetLifeLogsUseCase(testLifeLogRepository)
+        searchLifeLogsUseCase = SearchLifeLogsUseCase(testLifeLogRepository)
         mapper = HomeMapper()
-        viewModel = HomeViewModel(getLifeLogsUseCase, mapper)
+        viewModel = HomeViewModel(getLifeLogsUseCase, searchLifeLogsUseCase, mapper)
     }
 
     @Test
