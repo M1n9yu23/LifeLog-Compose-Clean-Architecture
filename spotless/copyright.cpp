@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 Gyugle
+ * Copyright $YEAR Gyugle
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.domain.usecase
-
-import com.bossmg.android.domain.repository.LifeLogRepository
-import javax.inject.Inject
-import javax.inject.Singleton
-
-@Singleton
-class GetImagesUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository,
-) {
-    operator fun invoke() = lifeLogRepository.getImages()
-}

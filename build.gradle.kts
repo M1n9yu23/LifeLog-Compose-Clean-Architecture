@@ -13,12 +13,17 @@ plugins {
 spotless {
     kotlin {
         target("**/*.kt")
-        targetExclude("**/build/**/*.kt", "**/bin/**/*.kt")
+        targetExclude("**/build/**/*.kt", "**/bin/**/*.kt", "spotless/**")
         ktlint("1.8.0")
+        licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
     }
     kotlinGradle {
         target("**/*.gradle.kts")
-        targetExclude("**/build/**/*.gradle.kts", "**/bin/**/*.gradle.kts")
+        targetExclude("**/build/**/*.gradle.kts", "**/bin/**/*.gradle.kts", "spotless/**")
         ktlint("1.8.0")
+    }
+    format("cpp") {
+        target("native/src/**/*.cpp", "native/src/**/*.h")
+        licenseHeaderFile(rootProject.file("spotless/copyright.cpp"), "(#pragma|#include|namespace)")
     }
 }
