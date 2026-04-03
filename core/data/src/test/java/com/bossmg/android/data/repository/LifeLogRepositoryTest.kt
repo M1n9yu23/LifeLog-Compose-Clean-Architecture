@@ -32,7 +32,7 @@ class LifeLogRepositoryTest {
         runTest {
             dao = TestLifeLogDao()
             mapper = LifeLogMapper()
-            repository = LifeLogRepositoryImpl(dao, mapper)
+            repository = LifeLogRepositoryImpl(dao, mapper, FakeSearchEngine(), scope)
 
             dummyLogs.forEach {
                 dao.insertLifeLog(it)
@@ -148,5 +148,25 @@ class LifeLogRepositoryTest {
             assertEquals(2, images.size)
             assertEquals("산책.jpg", images[0])
             assertEquals("음식.jpg", images[1])
+        }
+
+    @Test
+    fun givenQuery_whenSearchLifeLogs_thenReturnsMatchingLogs() =
+        scope.runTest {
+            dummyLogs.forEach { entity ->
+                repository.insertLifeLog(mapper.map(entity))
+            }
+
+            val result = repository.searchLifeLogs("산책")
+
+            assertEquals(1, result.size)
+            assertEquals("아침 산책", result.first().title)
+        }
+
+    @Test
+    fun givenBlankQuery_whenSearchLifeLogs_thenReturnsEmpty() =
+        scope.runTest {
+            val result = repository.searchLifeLogs("  ")
+            assertEquals(0, result.size)
         }
 }

@@ -24,13 +24,14 @@ class TestLifeLogDao : LifeLogDao {
     override suspend fun getLifeLogById(lifeLogId: Int): LifeLogEntity =
         logsFlow.value.first { it.id == lifeLogId }
 
-    override suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity) {
+    override suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity): Long {
         logsFlow.update { current ->
             current + lifeLogEntity
         }
+        return lifeLogEntity.id.toLong()
     }
 
-    override suspend fun upsertLifeLog(lifeLogEntity: LifeLogEntity) {
+    override suspend fun upsertLifeLog(lifeLogEntity: LifeLogEntity): Long {
         logsFlow.update { current ->
             val index = current.indexOfFirst { it.id == lifeLogEntity.id }
             if (index == -1) {
@@ -41,6 +42,7 @@ class TestLifeLogDao : LifeLogDao {
                 }
             }
         }
+        return lifeLogEntity.id.toLong()
     }
 
     override suspend fun deleteLifeLogById(lifeLogId: Int) {

@@ -46,6 +46,11 @@ class TestLifeLogRepository : LifeLogRepository {
         logsFlow.tryEmit(current)
     }
 
+    override suspend fun searchLifeLogs(query: String): List<LifeLog> {
+        val logs = logsFlow.replayCache.firstOrNull() ?: emptyList()
+        return logs.filter { it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true) }
+    }
+
     fun sendLogs(logs: List<LifeLog>) {
         logsFlow.tryEmit(logs)
     }

@@ -41,10 +41,10 @@ interface LifeLogDao {
     suspend fun getLifeLogById(lifeLogId: Int): LifeLogEntity
 
     @Insert(onConflict = REPLACE)
-    suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity)
+    suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity): Long
 
     @Upsert
-    suspend fun upsertLifeLog(lifeLogEntity: LifeLogEntity)
+    suspend fun upsertLifeLog(lifeLogEntity: LifeLogEntity): Long
 
     @Query("DELETE FROM lifelogs WHERE id = :lifeLogId")
     suspend fun deleteLifeLogById(lifeLogId: Int)
