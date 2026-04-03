@@ -70,6 +70,8 @@ end
 :feature:photo -.-> :core:domain
 :feature:photo -.-> :core:testing
 
+:core:domain ~~~ :native
+
 classDef android-app fill:#FFD6D6,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFDDA6,stroke:#000,stroke-width:2px,color:#000;
 classDef android-core fill:#A6E3E9,stroke:#000,stroke-width:2px,color:#000;
