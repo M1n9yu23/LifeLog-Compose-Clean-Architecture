@@ -60,6 +60,9 @@ class TestLifeLogDao : LifeLogDao {
         return lifeLogEntity.id.toLong()
     }
 
+    override fun getLifeLogsByMonth(monthPrefix: String): Flow<List<LifeLogEntity>> =
+        logsFlow.map { list -> list.filter { it.date.startsWith(monthPrefix) } }
+
     override suspend fun deleteLifeLogById(lifeLogId: Int) {
         logsFlow.update { current ->
             current.filterNot { it.id == lifeLogId }

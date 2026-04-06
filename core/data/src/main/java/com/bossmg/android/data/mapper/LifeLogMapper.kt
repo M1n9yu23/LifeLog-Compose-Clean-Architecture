@@ -18,6 +18,7 @@ package com.bossmg.android.data.mapper
 import com.bossmg.android.data.model.LifeLogEntity
 import com.bossmg.android.domain.mapper.BiMapper
 import com.bossmg.android.domain.model.LifeLog
+import java.time.LocalDate
 import javax.inject.Inject
 
 class LifeLogMapper @Inject constructor() : BiMapper<LifeLogEntity, LifeLog> {
@@ -27,7 +28,7 @@ class LifeLogMapper @Inject constructor() : BiMapper<LifeLogEntity, LifeLog> {
             title = output.title,
             description = output.description,
             mood = output.mood,
-            date = output.date,
+            date = output.date.toString(),
             img = output.img,
         )
 
@@ -37,7 +38,7 @@ class LifeLogMapper @Inject constructor() : BiMapper<LifeLogEntity, LifeLog> {
             title = input.title,
             description = input.description,
             mood = input.mood,
-            date = input.date,
+            date = LocalDate.parse(input.date),
             img = input.img,
         )
 }

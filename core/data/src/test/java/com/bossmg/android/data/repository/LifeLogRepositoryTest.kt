@@ -26,10 +26,12 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LifeLogRepositoryTest {
-    private val scope = TestScope(UnconfinedTestDispatcher())
+    private val testDispatcher = UnconfinedTestDispatcher()
+    private val scope = TestScope(testDispatcher)
 
     private lateinit var dao: TestLifeLogDao
     private lateinit var mapper: LifeLogMapper
@@ -47,7 +49,7 @@ class LifeLogRepositoryTest {
         runTest {
             dao = TestLifeLogDao()
             mapper = LifeLogMapper()
-            repository = LifeLogRepositoryImpl(dao, mapper, FakeSearchEngine(), scope)
+            repository = LifeLogRepositoryImpl(dao, mapper, FakeSearchEngine(), testDispatcher)
 
             dummyLogs.forEach {
                 dao.insertLifeLog(it)
@@ -65,7 +67,7 @@ class LifeLogRepositoryTest {
     @Test
     fun givenDate_whenGetLifeLogsByDate_thenReturnsFilteredList() =
         scope.runTest {
-            val result = repository.getLifeLogsByDate("2025-10-02").first()
+            val result = repository.getLifeLogsByDate(LocalDate.of(2025, 10, 2)).first()
             assertEquals(2, result.size)
         }
 
@@ -81,7 +83,7 @@ class LifeLogRepositoryTest {
         scope.runTest {
             val result = repository.getLifeLogById(3)
             assertEquals("친구와 저녁", result.title)
-            assertEquals("2025-10-02", result.date)
+            assertEquals(LocalDate.of(2025, 10, 2), result.date)
             assertEquals("\uD83E\uDD70 행복", result.mood)
             assertEquals("오랜만에 친구와 저녁식사", result.description)
             assertEquals(3, result.id)
@@ -90,7 +92,15 @@ class LifeLogRepositoryTest {
     @Test
     fun givenNewLog_whenInsert_thenAddedNewLog() =
         scope.runTest {
-            val newLog = LifeLog(4, "2025-10-03", "저녁 독서", "책 읽기", "\uD83D\uDCDD 메모", "book.jpg")
+            val newLog =
+                LifeLog(
+                    id = 4,
+                    date = LocalDate.of(2025, 10, 3),
+                    title = "저녁 독서",
+                    description = "책 읽기",
+                    mood = "\uD83D\uDCDD 메모",
+                    img = "book.jpg",
+                )
             repository.insertLifeLog(newLog)
 
             val logs = repository.getLifeLogs().first()
@@ -109,7 +119,7 @@ class LifeLogRepositoryTest {
             val newLog =
                 LifeLog(
                     id = 5,
-                    date = "2025-10-04",
+                    date = LocalDate.of(2025, 10, 4),
                     title = "새 기록",
                     description = "업데이트가 아닌 새로운 기록",
                     mood = "\uD83D\uDE0A 기쁨",
@@ -134,7 +144,7 @@ class LifeLogRepositoryTest {
             val updatedLog =
                 LifeLog(
                     id = 1,
-                    date = "2025-10-01",
+                    date = LocalDate.of(2025, 10, 1),
                     title = "id 1 수정",
                     description = "축구를 했다.",
                     mood = "\uD83D\uDE0A 기쁨",

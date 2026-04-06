@@ -16,23 +16,32 @@
 package com.bossmg.android.testing.repository
 
 import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogReadRepository
+import com.bossmg.android.domain.repository.LifeLogSearchRepository
+import com.bossmg.android.domain.repository.LifeLogWriteRepository
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
+import java.time.LocalDate
+import java.time.YearMonth
 
-class TestLifeLogRepository : LifeLogRepository {
+class TestLifeLogRepository : LifeLogReadRepository, LifeLogWriteRepository, LifeLogSearchRepository {
     private val logsFlow: MutableSharedFlow<List<LifeLog>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     override fun getLifeLogs(): Flow<List<LifeLog>> = logsFlow
 
-    override fun getLifeLogsByDate(date: String): Flow<List<LifeLog>> =
+    override fun getLifeLogsByDate(date: LocalDate): Flow<List<LifeLog>> =
         logsFlow.map { list -> list.filter { it.date == date } }
 
     override fun getLifeLogsByMood(mood: String): Flow<List<LifeLog>> =
         logsFlow.map { list -> list.filter { it.mood == mood } }
+
+    override fun getLifeLogsByMonth(yearMonth: YearMonth): Flow<List<LifeLog>> =
+        logsFlow.map { list ->
+            list.filter { YearMonth.of(it.date.year, it.date.monthValue) == yearMonth }
+        }
 
     override fun getImages(): Flow<List<String>> =
         logsFlow.map { list -> list.mapNotNull { it.img } }
@@ -63,7 +72,10 @@ class TestLifeLogRepository : LifeLogRepository {
 
     override suspend fun searchLifeLogs(query: String): List<LifeLog> {
         val logs = logsFlow.replayCache.firstOrNull() ?: emptyList()
-        return logs.filter { it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true) }
+        return logs.filter {
+            it.title.contains(query, ignoreCase = true) ||
+                it.description.contains(query, ignoreCase = true)
+        }
     }
 
     fun sendLogs(logs: List<LifeLog>) {

@@ -16,41 +16,35 @@
 package com.bossmg.android.data.repository
 
 import com.bossmg.android.data.database.LifeLogDao
-import com.bossmg.android.data.di.ApplicationScope
+import com.bossmg.android.data.di.IoDispatcher
 import com.bossmg.android.data.mapper.LifeLogMapper
 import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogReadRepository
+import com.bossmg.android.domain.repository.LifeLogSearchRepository
+import com.bossmg.android.domain.repository.LifeLogWriteRepository
 import com.bossmg.android.fts.SearchEngine
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.YearMonth
 import javax.inject.Inject
 
-class LifeLogRepositoryImpl @Inject constructor(
+internal class LifeLogRepositoryImpl @Inject constructor(
     private val dao: LifeLogDao,
     private val mapper: LifeLogMapper,
     private val searchEngine: SearchEngine,
-    @ApplicationScope private val scope: CoroutineScope,
-) : LifeLogRepository {
-    init {
-        scope.launch(Dispatchers.IO) {
-            runCatching {
-                val entities = dao.getLifeLogs().first()
-                val docs = entities.map { Triple(it.id, it.title, it.description) }
-                searchEngine.rebuildIndex(docs)
-            }
-        }
-    }
-
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+) : LifeLogReadRepository, LifeLogWriteRepository, LifeLogSearchRepository {
     override fun getLifeLogs(): Flow<List<LifeLog>> =
         dao.getLifeLogs().map { entities -> entities.map { mapper.map(it) } }
 
-    override fun getLifeLogsByDate(date: String): Flow<List<LifeLog>> =
-        dao.getLifeLogsByDate(date).map { entities -> entities.map { mapper.map(it) } }
+    override fun getLifeLogsByDate(date: LocalDate): Flow<List<LifeLog>> =
+        dao.getLifeLogsByDate(date.toString()).map { entities -> entities.map { mapper.map(it) } }
+
+    override fun getLifeLogsByMonth(yearMonth: YearMonth): Flow<List<LifeLog>> =
+        dao.getLifeLogsByMonth(yearMonth.toString()).map { entities -> entities.map { mapper.map(it) } }
 
     override fun getLifeLogsByMood(mood: String): Flow<List<LifeLog>> =
         dao.getLifeLogsByMood(mood).map { entities -> entities.map { mapper.map(it) } }
@@ -62,7 +56,7 @@ class LifeLogRepositoryImpl @Inject constructor(
 
     override suspend fun insertLifeLog(lifeLog: LifeLog) {
         val rowId = dao.insertLifeLog(mapper.mapBack(lifeLog))
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             searchEngine.indexDocument(rowId.toInt(), lifeLog.title, lifeLog.description)
         }
     }
@@ -70,21 +64,21 @@ class LifeLogRepositoryImpl @Inject constructor(
     override suspend fun upsertLifeLog(lifeLog: LifeLog) {
         val rowId = dao.upsertLifeLog(mapper.mapBack(lifeLog))
         val actualId = if (lifeLog.id != 0) lifeLog.id else rowId.toInt()
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             searchEngine.indexDocument(actualId, lifeLog.title, lifeLog.description)
         }
     }
 
     override suspend fun deleteLifeLogById(id: Int) {
         dao.deleteLifeLogById(id)
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             searchEngine.removeDocument(id)
         }
     }
 
     override suspend fun searchLifeLogs(query: String): List<LifeLog> {
         if (query.isBlank()) return emptyList()
-        val ids = withContext(Dispatchers.IO) { searchEngine.search(query) }
+        val ids = withContext(ioDispatcher) { searchEngine.search(query) }
         return ids.mapNotNull { id ->
             runCatching { dao.getLifeLogById(id) }.getOrNull()?.let { mapper.map(it) }
         }
