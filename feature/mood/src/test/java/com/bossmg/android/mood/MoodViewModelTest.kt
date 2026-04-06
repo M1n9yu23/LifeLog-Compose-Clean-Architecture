@@ -17,6 +17,7 @@ package com.bossmg.android.mood
 
 import com.bossmg.android.domain.usecase.GetLifeLogsByMoodUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
+import com.bossmg.android.model.MemoItemMapper
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.MainDispatcherRule
@@ -31,7 +32,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MoodViewModelTest {
@@ -41,7 +41,7 @@ class MoodViewModelTest {
     private lateinit var testRepository: TestLifeLogRepository
     private lateinit var getLifeLogsUseCase: GetLifeLogsUseCase
     private lateinit var getLifeLogsByMoodUseCase: GetLifeLogsByMoodUseCase
-    private lateinit var mapper: MoodMapper
+    private lateinit var mapper: MemoItemMapper
     private lateinit var viewModel: MoodViewModel
 
     private val testLifeLogs = lifeLogTestData
@@ -51,16 +51,14 @@ class MoodViewModelTest {
         testRepository = TestLifeLogRepository()
         getLifeLogsUseCase = GetLifeLogsUseCase(testRepository)
         getLifeLogsByMoodUseCase = GetLifeLogsByMoodUseCase(testRepository)
-        mapper = MoodMapper()
+        mapper = MemoItemMapper()
         viewModel = MoodViewModel(mapper, getLifeLogsByMoodUseCase, getLifeLogsUseCase)
     }
 
     @Test
-    fun load_whenCalled_shouldUpdateLoadingStateAndEmitMoodCounts() =
+    fun uiState_isLoadingInitially_thenPopulatesWithMoodCounts() =
         runTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-
-            viewModel.load()
 
             assertTrue(viewModel.uiState.value.isLoading)
 
@@ -81,12 +79,11 @@ class MoodViewModelTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
             val mood = "\uD83E\uDD29 설렘"
 
+            testRepository.sendLogs(testLifeLogs)
             viewModel.selectMood(mood)
-            assertEquals(mood, viewModel.uiState.value.selectedMood)
-
-            testRepository.sendLogs(testLifeLogs.filter { it.mood == mood })
 
             val state = viewModel.uiState.value
+            assertEquals(mood, state.selectedMood)
             assertTrue(state.uiModel.memoItem.all { it.mood == mood })
 
             job.cancel()
@@ -109,7 +106,7 @@ class MoodViewModelTest {
             memoItems.forEachIndexed { index, item ->
                 val log = filterLogs[index]
                 assertEquals(log.id, item.id)
-                assertEquals(LocalDate.parse(log.date), item.date)
+                assertEquals(log.date, item.date)
                 assertEquals(log.title, item.title)
                 assertEquals(log.mood, item.mood)
                 assertEquals(log.img, item.img)

@@ -16,7 +16,9 @@
 package com.bossmg.android.data.di
 
 import com.bossmg.android.data.repository.LifeLogRepositoryImpl
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogReadRepository
+import com.bossmg.android.domain.repository.LifeLogSearchRepository
+import com.bossmg.android.domain.repository.LifeLogWriteRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,10 +27,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+internal abstract class RepositoryModule {
     @Binds
     @Singleton
-    abstract fun bindsLifeLogRepository(
-        lifeLogRepositoryImpl: LifeLogRepositoryImpl,
-    ): LifeLogRepository
+    abstract fun bindsLifeLogReadRepository(impl: LifeLogRepositoryImpl): LifeLogReadRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsLifeLogWriteRepository(impl: LifeLogRepositoryImpl): LifeLogWriteRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsLifeLogSearchRepository(impl: LifeLogRepositoryImpl): LifeLogSearchRepository
 }

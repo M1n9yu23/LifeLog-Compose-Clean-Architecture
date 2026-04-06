@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
 import com.bossmg.android.domain.usecase.SearchLifeLogsUseCase
+import com.bossmg.android.model.MemoItem
+import com.bossmg.android.model.MemoItemMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +39,7 @@ import javax.inject.Inject
 internal class HomeViewModel @Inject constructor(
     private val getLifeLogsUseCase: GetLifeLogsUseCase,
     private val searchLifeLogsUseCase: SearchLifeLogsUseCase,
-    private val mapper: HomeMapper,
+    private val mapper: MemoItemMapper,
 ) : ViewModel() {
     val uiState: StateFlow<HomeUIState> =
         getLifeLogsUseCase()
@@ -53,7 +55,7 @@ internal class HomeViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    val searchResults: StateFlow<List<HomeUIModel>> =
+    val searchResults: StateFlow<List<MemoItem>> =
         _searchQuery
             .debounce(300L)
             .flatMapLatest { query ->
@@ -77,6 +79,6 @@ internal sealed interface HomeUIState {
     data object Loading : HomeUIState
 
     data class Success(
-        val uiModels: List<HomeUIModel> = emptyList(),
+        val uiModels: List<MemoItem> = emptyList(),
     ) : HomeUIState
 }

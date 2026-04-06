@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.mood
+package com.bossmg.android.domain.repository
 
-import com.bossmg.android.designsystem.ui.util.cardColor
-import com.bossmg.android.domain.mapper.Mapper
 import com.bossmg.android.domain.model.LifeLog
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import javax.inject.Inject
+import java.time.YearMonth
 
-internal class MoodMapper @Inject constructor() : Mapper<LifeLog, MemoItem> {
-    override fun map(input: LifeLog): MemoItem =
-        MemoItem(
-            id = input.id,
-            date = LocalDate.parse(input.date),
-            title = input.title,
-            mood = input.mood,
-            cardColor = cardColor(input.mood),
-            img = input.img,
-        )
+interface LifeLogReadRepository {
+    fun getLifeLogs(): Flow<List<LifeLog>>
+
+    fun getLifeLogsByDate(date: LocalDate): Flow<List<LifeLog>>
+
+    fun getLifeLogsByMood(mood: String): Flow<List<LifeLog>>
+
+    fun getLifeLogsByMonth(yearMonth: YearMonth): Flow<List<LifeLog>>
+
+    fun getImages(): Flow<List<String>>
+
+    suspend fun getLifeLogById(id: Int): LifeLog
 }

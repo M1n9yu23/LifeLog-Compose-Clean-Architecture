@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.memo
 
+import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
 
 internal data class MemoUIModel(
@@ -22,6 +23,6 @@ internal data class MemoUIModel(
     val title: String = "",
     val description: String = "",
     val selectedDate: LocalDate = LocalDate.now(),
-    val selectedMood: String = "\uD83D\uDE0A 기쁨",
+    val selectedMood: String = MoodProvider.Moods.first().str,
     val img: String? = null,
 )

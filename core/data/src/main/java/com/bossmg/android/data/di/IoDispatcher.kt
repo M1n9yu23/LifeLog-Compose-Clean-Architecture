@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.home
+package com.bossmg.android.data.di
 
-import androidx.compose.ui.graphics.Color
-import com.bossmg.android.designsystem.ui.theme.White
-import java.time.LocalDate
+import javax.inject.Qualifier
 
-internal data class HomeUIModel(
-    val id: Int,
-    val date: LocalDate,
-    val title: String,
-    val mood: String,
-    val cardColor: Color = White,
-    val img: String? = null,
-)
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class IoDispatcher

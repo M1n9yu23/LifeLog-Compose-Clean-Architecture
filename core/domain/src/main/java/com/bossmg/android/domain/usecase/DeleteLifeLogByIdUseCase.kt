@@ -15,13 +15,11 @@
  */
 package com.bossmg.android.domain.usecase
 
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogWriteRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class DeleteLifeLogByIdUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository,
-) {
-    suspend operator fun invoke(id: Int) = lifeLogRepository.deleteLifeLogById(id)
+    private val lifeLogRepository: LifeLogWriteRepository,
+) : SuspendUseCase<Int, Unit>() {
+    override suspend fun execute(params: Int) = lifeLogRepository.deleteLifeLogById(params)
 }

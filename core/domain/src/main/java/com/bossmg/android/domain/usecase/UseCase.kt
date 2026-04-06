@@ -15,12 +15,22 @@
  */
 package com.bossmg.android.domain.usecase
 
-import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogWriteRepository
-import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class InsertLifeLogUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogWriteRepository,
-) : SuspendUseCase<LifeLog, Unit>() {
-    override suspend fun execute(params: LifeLog) = lifeLogRepository.insertLifeLog(params)
+abstract class FlowUseCase<in Params, out T> {
+    protected abstract fun execute(params: Params): Flow<T>
+
+    operator fun invoke(params: Params): Flow<T> = execute(params)
+}
+
+abstract class NoParamFlowUseCase<out T> {
+    protected abstract fun execute(): Flow<T>
+
+    operator fun invoke(): Flow<T> = execute()
+}
+
+abstract class SuspendUseCase<in Params, out T> {
+    protected abstract suspend fun execute(params: Params): T
+
+    suspend operator fun invoke(params: Params): T = execute(params)
 }

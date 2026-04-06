@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.calendar
+package com.bossmg.android.domain.repository
 
-import com.bossmg.android.designsystem.ui.util.cardColor
-import com.bossmg.android.domain.mapper.Mapper
 import com.bossmg.android.domain.model.LifeLog
-import java.time.LocalDate
-import javax.inject.Inject
 
-internal class CalendarMapper @Inject constructor() : Mapper<LifeLog, MemoItem> {
-    override fun map(input: LifeLog): MemoItem =
-        MemoItem(
-            id = input.id,
-            date = LocalDate.parse(input.date),
-            title = input.title,
-            mood = input.mood,
-            cardColor = cardColor(input.mood),
-            img = input.img,
-        )
+interface LifeLogSearchRepository {
+    suspend fun searchLifeLogs(query: String): List<LifeLog>
 }

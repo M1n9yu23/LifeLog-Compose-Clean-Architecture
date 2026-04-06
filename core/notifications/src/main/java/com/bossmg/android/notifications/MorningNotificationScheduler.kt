@@ -19,11 +19,15 @@ import android.content.Context
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MorningNotificationScheduler(
-    private val context: Context,
+@Singleton
+class MorningNotificationScheduler @Inject constructor(
+    @ApplicationContext private val context: Context,
 ) {
     fun scheduleDailyNotification() {
         val now = Calendar.getInstance()

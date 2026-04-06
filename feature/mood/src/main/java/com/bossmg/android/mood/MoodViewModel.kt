@@ -19,77 +19,56 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.GetLifeLogsByMoodUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
+import com.bossmg.android.model.MemoItemMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 internal class MoodViewModel @Inject constructor(
-    private val mapper: MoodMapper,
+    private val mapper: MemoItemMapper,
     private val getLifeLogsByMoodUseCase: GetLifeLogsByMoodUseCase,
     private val getLifeLogsUseCase: GetLifeLogsUseCase,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(MoodUIState())
-    val uiState = _uiState.asStateFlow()
+    private val _selectedMood = MutableStateFlow("")
 
-    fun load() {
-        _uiState.update {
-            it.copy(
-                isLoading = true,
+    val uiState: StateFlow<MoodUIState> =
+        combine(
+            getLifeLogsUseCase(),
+            _selectedMood.flatMapLatest { mood ->
+                if (mood.isEmpty()) {
+                    flowOf(emptyList())
+                } else {
+                    getLifeLogsByMoodUseCase(mood)
+                }
+            },
+            _selectedMood,
+        ) { allLogs, filteredLogs, selectedMood ->
+            MoodUIState(
+                isLoading = false,
+                uiModel =
+                    MoodUIModel(
+                        moods = allLogs.map { mapper.map(it) }.groupingBy { it.mood }.eachCount(),
+                        memoItem = filteredLogs.map { mapper.map(it) },
+                    ),
+                selectedMood = selectedMood,
             )
         }
-        viewModelScope.launch {
-            getLifeLogsUseCase().collectLatest { logs ->
-                val items = logs.map { mapper.map(it) }
-                val moods: Map<String, Int> = items.groupingBy { it.mood }.eachCount()
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        uiModel =
-                            it.uiModel.copy(
-                                moods = moods,
-                            ),
-                    )
-                }
-            }
-        }
-    }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = MoodUIState(isLoading = true),
+            )
 
     fun selectMood(mood: String) {
-        if (_uiState.value.selectedMood != mood) {
-            _uiState.update {
-                it.copy(
-                    selectedMood = mood,
-                )
-            }
-
-            getLifeLogsByMood()
-        }
-    }
-
-    private fun getLifeLogsByMood() {
-        _uiState.update {
-            it.copy(
-                isLoading = true,
-            )
-        }
-        viewModelScope.launch {
-            getLifeLogsByMoodUseCase(_uiState.value.selectedMood).collectLatest { logs ->
-                val items = logs.map { mapper.map(it) }
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        uiModel =
-                            it.uiModel.copy(
-                                memoItem = items,
-                            ),
-                    )
-                }
-            }
+        if (_selectedMood.value != mood) {
+            _selectedMood.value = mood
         }
     }
 }

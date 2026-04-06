@@ -16,7 +16,28 @@
 package com.bossmg.android.lifelog
 
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import com.bossmg.android.data.initializer.FtsIndexInitializer
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
-class LifeLogApplication : Application()
+class LifeLogApplication : Application(), Configuration.Provider {
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    lateinit var ftsIndexInitializer: FtsIndexInitializer
+
+    override val workManagerConfiguration: Configuration
+        get() =
+            Configuration.Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
+
+    override fun onCreate() {
+        super.onCreate()
+        ftsIndexInitializer.initialize()
+    }
+}

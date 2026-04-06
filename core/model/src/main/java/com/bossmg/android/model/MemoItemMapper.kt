@@ -13,27 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.domain.repository
+package com.bossmg.android.model
 
+import com.bossmg.android.domain.mapper.Mapper
 import com.bossmg.android.domain.model.LifeLog
-import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-interface LifeLogRepository {
-    fun getLifeLogs(): Flow<List<LifeLog>>
-
-    fun getLifeLogsByDate(date: String): Flow<List<LifeLog>>
-
-    fun getLifeLogsByMood(mood: String): Flow<List<LifeLog>>
-
-    fun getImages(): Flow<List<String>>
-
-    suspend fun getLifeLogById(id: Int): LifeLog
-
-    suspend fun insertLifeLog(lifeLog: LifeLog)
-
-    suspend fun upsertLifeLog(lifeLog: LifeLog)
-
-    suspend fun deleteLifeLogById(id: Int)
-
-    suspend fun searchLifeLogs(query: String): List<LifeLog>
+class MemoItemMapper @Inject constructor() : Mapper<LifeLog, MemoItem> {
+    override fun map(input: LifeLog): MemoItem =
+        MemoItem(
+            id = input.id,
+            date = input.date,
+            title = input.title,
+            mood = input.mood,
+            img = input.img,
+        )
 }

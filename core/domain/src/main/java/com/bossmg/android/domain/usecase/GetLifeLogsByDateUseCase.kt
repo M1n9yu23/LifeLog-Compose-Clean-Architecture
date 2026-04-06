@@ -16,14 +16,13 @@
 package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogReadRepository
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class GetLifeLogsByDateUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository,
-) {
-    operator fun invoke(date: String): Flow<List<LifeLog>> = lifeLogRepository.getLifeLogsByDate(date)
+    private val lifeLogRepository: LifeLogReadRepository,
+) : FlowUseCase<LocalDate, List<LifeLog>>() {
+    override fun execute(params: LocalDate): Flow<List<LifeLog>> = lifeLogRepository.getLifeLogsByDate(params)
 }

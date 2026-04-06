@@ -34,7 +34,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +56,8 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.DP800
 import com.bossmg.android.designsystem.ui.theme.DarkGray2
 import com.bossmg.android.designsystem.ui.theme.Gray5
+import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.model.MemoItem
 import java.time.LocalDate
 
 @Composable
@@ -65,10 +66,6 @@ internal fun Mood(
     viewModel: MoodViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.load()
-    }
 
     when {
         uiState.isLoading -> {
@@ -136,7 +133,7 @@ private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
                     onMemoItemClick(item.id)
                 }
                 .padding(vertical = DP8),
-        backgroundColor = item.cardColor,
+        backgroundColor = cardColor(item.mood),
     ) {
         MemoCardItem(
             date = item.date,

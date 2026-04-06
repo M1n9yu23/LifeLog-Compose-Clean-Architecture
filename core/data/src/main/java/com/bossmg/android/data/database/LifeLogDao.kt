@@ -24,7 +24,7 @@ import com.bossmg.android.data.model.LifeLogEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface LifeLogDao {
+internal interface LifeLogDao {
     @Query("SELECT * FROM lifelogs ORDER BY date DESC, id DESC")
     fun getLifeLogs(): Flow<List<LifeLogEntity>>
 
@@ -35,6 +35,14 @@ interface LifeLogDao {
             """,
     )
     fun getLifeLogsByDate(date: String): Flow<List<LifeLogEntity>>
+
+    @Query(
+        """
+            SELECT * FROM lifelogs
+            WHERE date LIKE :monthPrefix || '-%' ORDER BY date DESC, id DESC
+        """,
+    )
+    fun getLifeLogsByMonth(monthPrefix: String): Flow<List<LifeLogEntity>>
 
     @Query(
         """

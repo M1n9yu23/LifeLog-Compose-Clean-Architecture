@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.home
+package com.bossmg.android.domain.repository
 
-import com.bossmg.android.designsystem.ui.util.cardColor
-import com.bossmg.android.domain.mapper.Mapper
 import com.bossmg.android.domain.model.LifeLog
-import java.time.LocalDate
-import javax.inject.Inject
 
-internal class HomeMapper @Inject constructor() : Mapper<LifeLog, HomeUIModel> {
-    override fun map(input: LifeLog): HomeUIModel =
-        HomeUIModel(
-            id = input.id,
-            date = LocalDate.parse(input.date),
-            title = input.title,
-            mood = input.mood,
-            cardColor = cardColor(input.mood),
-            img = input.img,
-        )
+interface LifeLogWriteRepository {
+    suspend fun insertLifeLog(lifeLog: LifeLog)
+
+    suspend fun upsertLifeLog(lifeLog: LifeLog)
+
+    suspend fun deleteLifeLogById(id: Int)
 }

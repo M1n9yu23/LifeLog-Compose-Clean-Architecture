@@ -16,14 +16,12 @@
 package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogReadRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class GetLifeLogsUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository,
-) {
-    operator fun invoke(): Flow<List<LifeLog>> = lifeLogRepository.getLifeLogs()
+    private val lifeLogRepository: LifeLogReadRepository,
+) : NoParamFlowUseCase<List<LifeLog>>() {
+    override fun execute(): Flow<List<LifeLog>> = lifeLogRepository.getLifeLogs()
 }

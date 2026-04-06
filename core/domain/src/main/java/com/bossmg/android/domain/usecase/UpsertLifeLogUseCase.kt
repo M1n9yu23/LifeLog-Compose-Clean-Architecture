@@ -16,13 +16,11 @@
 package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogWriteRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class UpsertLifeLogUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository,
-) {
-    suspend operator fun invoke(lifeLog: LifeLog) = lifeLogRepository.upsertLifeLog(lifeLog)
+    private val lifeLogRepository: LifeLogWriteRepository,
+) : SuspendUseCase<LifeLog, Unit>() {
+    override suspend fun execute(params: LifeLog) = lifeLogRepository.upsertLifeLog(params)
 }

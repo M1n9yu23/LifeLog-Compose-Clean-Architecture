@@ -21,6 +21,7 @@ import com.bossmg.android.domain.model.LifeLog
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDate
 
 class LifeLogMapperTest {
     private lateinit var mapper: LifeLogMapper
@@ -46,7 +47,7 @@ class LifeLogMapperTest {
 
         assertEquals(entity.id, domainModel.id)
         assertEquals(entity.title, domainModel.title)
-        assertEquals(entity.date, domainModel.date)
+        assertEquals(LocalDate.parse(entity.date), domainModel.date)
         assertEquals(entity.mood, domainModel.mood)
         assertEquals(entity.description, domainModel.description)
         assertEquals(entity.img, domainModel.img)
@@ -57,7 +58,7 @@ class LifeLogMapperTest {
         val domainModel =
             LifeLog(
                 id = 2,
-                date = "2025-10-06",
+                date = LocalDate.of(2025, 10, 6),
                 title = "Domain Title",
                 description = "Domain Description",
                 mood = "\uD83D\uDE22 슬픔",
@@ -68,7 +69,7 @@ class LifeLogMapperTest {
 
         assertEquals(domainModel.id, entity.id)
         assertEquals(domainModel.title, entity.title)
-        assertEquals(domainModel.date, entity.date)
+        assertEquals(domainModel.date.toString(), entity.date)
         assertEquals(domainModel.mood, entity.mood)
         assertEquals(domainModel.description, entity.description)
         assertEquals(domainModel.img, entity.img)

@@ -17,14 +17,13 @@ package com.bossmg.android.memo
 
 import com.bossmg.android.domain.mapper.BiMapper
 import com.bossmg.android.domain.model.LifeLog
-import java.time.LocalDate
 import javax.inject.Inject
 
 internal class MemoMapper @Inject constructor() : BiMapper<LifeLog, MemoUIModel> {
     override fun mapBack(output: MemoUIModel): LifeLog =
         LifeLog(
             id = output.id,
-            date = output.selectedDate.toString(),
+            date = output.selectedDate,
             title = output.title,
             description = output.description,
             mood = output.selectedMood,
@@ -36,7 +35,7 @@ internal class MemoMapper @Inject constructor() : BiMapper<LifeLog, MemoUIModel>
             id = input.id,
             title = input.title,
             description = input.description,
-            selectedDate = LocalDate.parse(input.date),
+            selectedDate = input.date,
             selectedMood = input.mood,
             img = input.img,
         )

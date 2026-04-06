@@ -16,13 +16,11 @@
 package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogRepository
+import com.bossmg.android.domain.repository.LifeLogSearchRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class SearchLifeLogsUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogRepository,
-) {
-    suspend operator fun invoke(query: String): List<LifeLog> = lifeLogRepository.searchLifeLogs(query)
+    private val lifeLogRepository: LifeLogSearchRepository,
+) : SuspendUseCase<String, List<LifeLog>>() {
+    override suspend fun execute(params: String): List<LifeLog> = lifeLogRepository.searchLifeLogs(params)
 }
