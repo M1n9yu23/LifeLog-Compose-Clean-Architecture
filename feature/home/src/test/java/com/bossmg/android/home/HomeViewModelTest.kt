@@ -18,6 +18,7 @@ package com.bossmg.android.home
 import com.bossmg.android.domain.model.LifeLog
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
 import com.bossmg.android.domain.usecase.SearchLifeLogsUseCase
+import com.bossmg.android.model.MemoItemMapper
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.MainDispatcherRule
@@ -31,7 +32,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
@@ -41,7 +41,7 @@ class HomeViewModelTest {
     private lateinit var testLifeLogRepository: TestLifeLogRepository
     private lateinit var getLifeLogsUseCase: GetLifeLogsUseCase
     private lateinit var searchLifeLogsUseCase: SearchLifeLogsUseCase
-    private lateinit var mapper: HomeMapper
+    private lateinit var mapper: MemoItemMapper
     private lateinit var viewModel: HomeViewModel
 
     private val testLifeLogs: List<LifeLog> = lifeLogTestData
@@ -51,7 +51,7 @@ class HomeViewModelTest {
         testLifeLogRepository = TestLifeLogRepository()
         getLifeLogsUseCase = GetLifeLogsUseCase(testLifeLogRepository)
         searchLifeLogsUseCase = SearchLifeLogsUseCase(testLifeLogRepository)
-        mapper = HomeMapper()
+        mapper = MemoItemMapper()
         viewModel = HomeViewModel(getLifeLogsUseCase, searchLifeLogsUseCase, mapper)
     }
 
@@ -92,7 +92,7 @@ class HomeViewModelTest {
         }
 
     @Test
-    fun uiState_shouldMapLifeLogToHomeUIModelCorrectly() =
+    fun uiState_shouldMapLifeLogToMemoItemCorrectly() =
         runTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
@@ -104,7 +104,7 @@ class HomeViewModelTest {
             successState.uiModels.forEachIndexed { index, uiModel ->
                 val lifeLog = testLifeLogs[index]
                 assertEquals(lifeLog.id, uiModel.id)
-                assertEquals(LocalDate.parse(lifeLog.date), uiModel.date)
+                assertEquals(lifeLog.date, uiModel.date)
                 assertEquals(lifeLog.title, uiModel.title)
                 assertEquals(lifeLog.mood, uiModel.mood)
                 assertEquals(lifeLog.img, uiModel.img)

@@ -81,7 +81,7 @@ class MemoViewModelTest {
             assertEquals(testLifeLog.id, state.id)
             assertEquals(testLifeLog.title, state.title)
             assertEquals(testLifeLog.description, state.description)
-            assertEquals(LocalDate.parse(testLifeLog.date), state.selectedDate)
+            assertEquals(testLifeLog.date, state.selectedDate)
             assertEquals(testLifeLog.mood, state.selectedMood)
             assertEquals(testLifeLog.img, state.img)
         }

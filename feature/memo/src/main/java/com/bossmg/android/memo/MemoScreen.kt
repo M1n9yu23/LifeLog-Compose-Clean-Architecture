@@ -42,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,6 +76,7 @@ internal fun Memo(
     viewModel: MemoViewModel = hiltViewModel(),
 ) {
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
+    val currentOnBack by rememberUpdatedState(onBack)
     val context = LocalContext.current
 
     var showDateDialog by remember { mutableStateOf(false) }
@@ -118,9 +120,16 @@ internal fun Memo(
         viewModel.load(id)
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                MemoEvent.NavigateBack -> currentOnBack()
+            }
+        }
+    }
+
     MemoScreen(
         uiModel = uiModel,
-        onBack = onBack,
         onShowDateDialogChange = { showDateDialog = it },
         onShowGallery = { showGallery = it },
         onTitleChange = { viewModel.updateTitle(it) },
@@ -134,7 +143,6 @@ internal fun Memo(
 @Composable
 private fun MemoScreen(
     uiModel: MemoUIModel,
-    onBack: () -> Unit,
     onShowDateDialogChange: (Boolean) -> Unit,
     onShowGallery: (Boolean) -> Unit,
     onTitleChange: (String) -> Unit,
@@ -212,20 +220,14 @@ private fun MemoScreen(
                         tint = Primary,
                     )
                 }
-                IconButton(onClick = {
-                    onDeleteClick()
-                    onBack()
-                }) {
+                IconButton(onClick = { onDeleteClick() }) {
                     Icon(
                         LifeIcons.Delete,
                         contentDescription = stringResource(R.string.icon_delete),
                         tint = Primary,
                     )
                 }
-                IconButton(onClick = {
-                    onSaveClick()
-                    onBack()
-                }) {
+                IconButton(onClick = { onSaveClick() }) {
                     Icon(
                         LifeIcons.Save,
                         contentDescription = stringResource(R.string.icon_save),
@@ -345,7 +347,6 @@ private fun MemoImage(
 private fun MemoScreenPreview() {
     MemoScreen(
         MemoUIModel(),
-        {},
         {},
         {},
         {},

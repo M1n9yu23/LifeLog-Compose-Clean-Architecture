@@ -58,6 +58,8 @@ import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP32
 import com.bossmg.android.designsystem.ui.theme.DP8
+import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.model.MemoItem
 import java.time.LocalDate
 
 @Composable
@@ -89,9 +91,9 @@ internal fun Home(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreen(
-    uiModels: List<HomeUIModel>,
+    uiModels: List<MemoItem>,
     searchQuery: String,
-    searchResults: List<HomeUIModel>,
+    searchResults: List<MemoItem>,
     onSearchQueryChange: (String) -> Unit,
     onMemoItemClick: (Int) -> Unit,
 ) {
@@ -194,7 +196,7 @@ private fun HomeScreen(
 @Composable
 private fun SearchContent(
     searchQuery: String,
-    searchResults: List<HomeUIModel>,
+    searchResults: List<MemoItem>,
     onMemoItemClick: (Int) -> Unit,
 ) {
     if (searchQuery.isBlank()) {
@@ -236,20 +238,20 @@ private fun SearchContent(
 }
 
 @Composable
-private fun HomeCard(uiModel: HomeUIModel, onMemoItemClick: (Int) -> Unit) {
+private fun HomeCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
     CustomCard(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clickable { onMemoItemClick(uiModel.id) }
+                .clickable { onMemoItemClick(item.id) }
                 .padding(vertical = DP8),
-        backgroundColor = uiModel.cardColor,
+        backgroundColor = cardColor(item.mood),
     ) {
         MemoCardItem(
-            date = uiModel.date,
-            title = uiModel.title,
-            mood = uiModel.mood,
-            img = uiModel.img,
+            date = item.date,
+            title = item.title,
+            mood = item.mood,
+            img = item.img,
         )
     }
 }
@@ -292,9 +294,9 @@ private fun HomeScreenPreview() {
     HomeScreen(
         uiModels =
             listOf(
-                HomeUIModel(id = 1, date = LocalDate.of(2025, 10, 1), title = "오늘의 아침", mood = "행복"),
-                HomeUIModel(id = 2, date = LocalDate.of(2025, 10, 2), title = "점심시간", mood = "피곤"),
-                HomeUIModel(id = 3, date = LocalDate.of(2025, 10, 3), title = "저녁 산책", mood = "편안"),
+                MemoItem(id = 1, date = LocalDate.of(2025, 10, 1), title = "오늘의 아침", mood = "행복"),
+                MemoItem(id = 2, date = LocalDate.of(2025, 10, 2), title = "점심시간", mood = "피곤"),
+                MemoItem(id = 3, date = LocalDate.of(2025, 10, 3), title = "저녁 산책", mood = "편안"),
             ),
         searchQuery = "",
         searchResults = emptyList(),

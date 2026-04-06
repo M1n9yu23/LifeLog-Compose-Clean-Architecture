@@ -17,6 +17,7 @@ package com.bossmg.android.calendar
 
 import com.bossmg.android.domain.usecase.GetLifeLogsByDateUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsByMonthUseCase
+import com.bossmg.android.model.MemoItemMapper
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.AndroidLogRule
@@ -32,6 +33,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDate
+import java.time.YearMonth
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModelTest {
@@ -44,7 +46,7 @@ class CalendarViewModelTest {
     private lateinit var testLifeLogRepository: TestLifeLogRepository
     private lateinit var getLifeLogsByDateUseCase: GetLifeLogsByDateUseCase
     private lateinit var getLifeLogsByMonthUseCase: GetLifeLogsByMonthUseCase
-    private lateinit var mapper: CalendarMapper
+    private lateinit var mapper: MemoItemMapper
     private lateinit var viewModel: CalendarViewModel
 
     private val testLifeLogs = lifeLogTestData
@@ -54,7 +56,7 @@ class CalendarViewModelTest {
         testLifeLogRepository = TestLifeLogRepository()
         getLifeLogsByDateUseCase = GetLifeLogsByDateUseCase(testLifeLogRepository)
         getLifeLogsByMonthUseCase = GetLifeLogsByMonthUseCase(testLifeLogRepository)
-        mapper = CalendarMapper()
+        mapper = MemoItemMapper()
         viewModel = CalendarViewModel(getLifeLogsByDateUseCase, getLifeLogsByMonthUseCase, mapper)
     }
 
@@ -74,8 +76,7 @@ class CalendarViewModelTest {
             assertTrue(state is CalendarUiState.Success)
 
             val successState = state as CalendarUiState.Success
-
-            val lifeLogs = testLifeLogs.filter { it.date == successState.selectedDate.toString() }
+            val lifeLogs = testLifeLogs.filter { it.date == successState.selectedDate }
 
             assertEquals(lifeLogs.size, successState.memoItems.size)
             if (lifeLogs.isNotEmpty()) {
@@ -95,14 +96,13 @@ class CalendarViewModelTest {
             val newDate = LocalDate.of(2025, 10, 7)
             viewModel.onDateSelect(newDate)
 
-            testLifeLogRepository.sendLogs(testLifeLogs.filter { it.date == newDate.toString() })
+            testLifeLogRepository.sendLogs(testLifeLogs.filter { it.date == newDate })
 
             val state = viewModel.uiState.value
             assertTrue(state is CalendarUiState.Success)
 
             val successState = state as CalendarUiState.Success
-
-            val expectedLogs = testLifeLogs.filter { it.date == newDate.toString() }
+            val expectedLogs = testLifeLogs.filter { it.date == newDate }
             assertEquals(expectedLogs.size, successState.memoItems.size)
             assertEquals(newDate, successState.memoItems[0].date)
 
@@ -155,12 +155,12 @@ class CalendarViewModelTest {
             assertTrue(state is CalendarUiState.Success)
 
             val successState = state as CalendarUiState.Success
-            val lifeLogs = testLifeLogs.filter { it.date == successState.selectedDate.toString() }
+            val lifeLogs = testLifeLogs.filter { it.date == successState.selectedDate }
 
             successState.memoItems.forEachIndexed { index, item ->
                 val lifeLog = lifeLogs[index]
                 assertEquals(lifeLog.id, item.id)
-                assertEquals(LocalDate.parse(lifeLog.date), item.date)
+                assertEquals(lifeLog.date, item.date)
                 assertEquals(lifeLog.title, item.title)
                 assertEquals(lifeLog.mood, item.mood)
                 assertEquals(lifeLog.img, item.img)
@@ -181,16 +181,14 @@ class CalendarViewModelTest {
             val successState = state as CalendarUiState.Success
 
             val currentMonth = successState.currentMonth
-
+            val yearMonth = YearMonth.of(currentMonth.year, currentMonth.monthValue)
             val monthLogs =
                 testLifeLogs.filter {
-                    val date = LocalDate.parse(it.date)
-                    date.year == currentMonth.year && date.monthValue == currentMonth.monthValue
+                    YearMonth.of(it.date.year, it.date.monthValue) == yearMonth
                 }
+            val expected = monthLogs.map { it.date }.toSet()
 
-            val result = monthLogs.map { LocalDate.parse(it.date) }.toSet()
-
-            assertEquals(result, successState.markedDates.toSet())
+            assertEquals(expected, successState.markedDates.toSet())
 
             job.cancel()
         }

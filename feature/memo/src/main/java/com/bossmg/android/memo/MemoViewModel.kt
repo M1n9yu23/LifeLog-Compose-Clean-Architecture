@@ -22,8 +22,11 @@ import com.bossmg.android.domain.usecase.GetLifeLogByIdUseCase
 import com.bossmg.android.domain.usecase.InsertLifeLogUseCase
 import com.bossmg.android.domain.usecase.UpsertLifeLogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -39,6 +42,9 @@ internal class MemoViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiModel = MutableStateFlow(MemoUIModel())
     val uiModel = _uiModel.asStateFlow()
+
+    private val _events = Channel<MemoEvent>(Channel.BUFFERED)
+    val events: Flow<MemoEvent> = _events.receiveAsFlow()
 
     fun load(id: Int?) {
         if (id == null) {
@@ -74,6 +80,7 @@ internal class MemoViewModel @Inject constructor(
         viewModelScope.launch {
             val lifeLog = mapper.mapBack(_uiModel.value)
             upsertLifeLogUseCase(lifeLog)
+            _events.send(MemoEvent.NavigateBack)
         }
     }
 
@@ -81,7 +88,12 @@ internal class MemoViewModel @Inject constructor(
         id?.let {
             viewModelScope.launch {
                 deleteLifeLogByIdUseCase(it)
+                _events.send(MemoEvent.NavigateBack)
             }
         }
     }
+}
+
+internal sealed interface MemoEvent {
+    data object NavigateBack : MemoEvent
 }

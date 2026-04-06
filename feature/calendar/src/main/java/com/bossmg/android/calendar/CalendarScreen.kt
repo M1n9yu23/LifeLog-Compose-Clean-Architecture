@@ -61,6 +61,8 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.Primary
 import com.bossmg.android.designsystem.ui.theme.Secondary
 import com.bossmg.android.designsystem.ui.theme.White
+import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.model.MemoItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
@@ -286,7 +288,7 @@ private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
                     onMemoItemClick(item.id)
                 }
                 .padding(vertical = DP8),
-        backgroundColor = item.cardColor,
+        backgroundColor = cardColor(item.mood),
     ) {
         MemoCardItem(
             date = item.date,

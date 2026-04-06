@@ -40,7 +40,7 @@ internal class PhotoViewModel @Inject constructor(
 }
 
 internal sealed interface PhotoUIState {
-    object Loading : PhotoUIState
+    data object Loading : PhotoUIState
 
     data class Success(
         val uiModel: PhotoUIModel,

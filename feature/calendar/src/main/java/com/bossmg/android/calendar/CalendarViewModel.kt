@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.GetLifeLogsByDateUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsByMonthUseCase
+import com.bossmg.android.model.MemoItemMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,13 +33,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import java.time.LocalDate
+import java.time.YearMonth
 import javax.inject.Inject
 
 @HiltViewModel
 internal class CalendarViewModel @Inject constructor(
     private val getLifeLogsByDateUseCase: GetLifeLogsByDateUseCase,
     private val getLifeLogsByMonthUseCase: GetLifeLogsByMonthUseCase,
-    private val mapper: CalendarMapper,
+    private val mapper: MemoItemMapper,
 ) : ViewModel() {
     private val _selectedDate = MutableStateFlow(LocalDate.now())
 
@@ -49,23 +51,14 @@ internal class CalendarViewModel @Inject constructor(
             _selectedDate,
             _currentMonth,
             _currentMonth.flatMapLatest { month ->
-                getLifeLogsByMonthUseCase(month.year, month.monthValue)
-                    .map { logs ->
-                        logs.mapNotNull { log ->
-                            runCatching { LocalDate.parse(log.date) }
-                                .onFailure { Log.e(TAG, "Date parse error: ${log.date}", it) }
-                                .getOrNull()
-                        }.toImmutableList()
-                    }
+                getLifeLogsByMonthUseCase(YearMonth.of(month.year, month.monthValue))
+                    .map { logs -> logs.map { it.date }.toImmutableList() }
             },
             _selectedDate.flatMapLatest { date ->
-                getLifeLogsByDateUseCase(date.toString())
-                    .map { logs ->
-                        logs.map { mapper.map(it) }.toImmutableList()
-                    }
+                getLifeLogsByDateUseCase(date)
+                    .map { logs -> logs.map { mapper.map(it) }.toImmutableList() }
             },
         ) { selectedDate, currentMonth, markedDates, memoItems ->
-            Log.d(TAG, "UI State Updated: Date=$selectedDate, Items=${memoItems.size}")
             CalendarUiState.Success(
                 currentMonth = currentMonth,
                 selectedDate = selectedDate,
