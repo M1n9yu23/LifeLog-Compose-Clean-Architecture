@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.domain.usecase
+package com.bossmg.android.model
 
-import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogWriteRepository
-import javax.inject.Inject
+import java.time.LocalDate
 
-class InsertLifeLogUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogWriteRepository,
-) : SuspendUseCase<LifeLog, Unit>() {
-    override suspend fun execute(params: LifeLog) = lifeLogRepository.insertLifeLog(params)
-}
+data class MemoItem(
+    val id: Int,
+    val date: LocalDate,
+    val title: String,
+    val mood: String,
+    val img: String? = null,
+)

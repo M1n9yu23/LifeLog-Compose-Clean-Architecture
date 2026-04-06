@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 data class LifeLog(
     val id: Int = 0,
-    val date: String = LocalDate.now().toString(),
+    val date: LocalDate = LocalDate.now(),
     val title: String = "",
     val description: String = "",
     val mood: String = MoodProvider.Moods.first().str,

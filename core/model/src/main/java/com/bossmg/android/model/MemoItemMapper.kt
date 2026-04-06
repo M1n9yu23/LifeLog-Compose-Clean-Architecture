@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.domain.usecase
+package com.bossmg.android.model
 
+import com.bossmg.android.domain.mapper.Mapper
 import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogWriteRepository
 import javax.inject.Inject
 
-class InsertLifeLogUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogWriteRepository,
-) : SuspendUseCase<LifeLog, Unit>() {
-    override suspend fun execute(params: LifeLog) = lifeLogRepository.insertLifeLog(params)
+class MemoItemMapper @Inject constructor() : Mapper<LifeLog, MemoItem> {
+    override fun map(input: LifeLog): MemoItem =
+        MemoItem(
+            id = input.id,
+            date = input.date,
+            title = input.title,
+            mood = input.mood,
+            img = input.img,
+        )
 }
