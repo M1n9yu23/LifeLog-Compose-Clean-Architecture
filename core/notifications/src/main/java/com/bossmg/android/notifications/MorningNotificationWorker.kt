@@ -16,23 +16,25 @@
 package com.bossmg.android.notifications
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class MorningNotificationWorker(
-    context: Context,
-    workerParams: WorkerParameters,
+@HiltWorker
+class MorningNotificationWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted workerParams: WorkerParameters,
+    private val notificationSender: NotificationSender,
+    private val scheduler: MorningNotificationScheduler,
 ) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result {
-        val notificationHelper = NotificationHelper(applicationContext)
-
-        notificationHelper.send(
+        notificationSender.send(
             "오늘 하루 힘내요!",
             "작은 목표를 달성하는 하루가 되길 응원해요",
         )
-
-        MorningNotificationScheduler(applicationContext).scheduleDailyNotification()
-
+        scheduler.scheduleDailyNotification()
         return Result.success()
     }
 }

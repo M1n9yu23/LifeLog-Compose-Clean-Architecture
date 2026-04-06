@@ -33,9 +33,13 @@ import com.bossmg.android.lifelog.ui.LifeLogApp
 import com.bossmg.android.lifelog.ui.rememberLifeLogAppState
 import com.bossmg.android.notifications.MorningNotificationScheduler
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var notificationScheduler: MorningNotificationScheduler
+
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission(),
@@ -76,13 +80,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 else -> {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                        != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    } else {
-                        showPermissionRationale()
-                    }
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
         } else {
@@ -112,6 +110,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun scheduleNotifications() {
-        MorningNotificationScheduler(this).scheduleDailyNotification()
+        notificationScheduler.scheduleDailyNotification()
     }
 }
