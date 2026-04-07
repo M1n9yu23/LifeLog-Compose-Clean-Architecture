@@ -71,7 +71,7 @@ import java.time.LocalDate
 
 @Composable
 internal fun Memo(
-    onBack: () -> Unit,
+    onBack: (String?) -> Unit,
     id: Int? = null,
     viewModel: MemoViewModel = hiltViewModel(),
 ) {
@@ -120,11 +120,19 @@ internal fun Memo(
         viewModel.load(id)
     }
 
+    val memoAddedMessage = stringResource(R.string.snackbar_memo_added)
+    val memoEditedMessage = stringResource(R.string.snackbar_memo_edited)
+    val memoDeletedMessage = stringResource(R.string.snackbar_memo_deleted)
+
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
-            when (event) {
-                MemoEvent.NavigateBack -> currentOnBack()
-            }
+            val message =
+                when (event) {
+                    MemoEvent.MemoAdded -> memoAddedMessage
+                    MemoEvent.MemoEdited -> memoEditedMessage
+                    MemoEvent.MemoDeleted -> memoDeletedMessage
+                }
+            currentOnBack(message)
         }
     }
 

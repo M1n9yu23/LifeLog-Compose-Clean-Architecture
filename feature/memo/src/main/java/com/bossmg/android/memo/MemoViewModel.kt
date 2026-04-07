@@ -78,9 +78,10 @@ internal class MemoViewModel @Inject constructor(
 
     fun saveMemo() {
         viewModelScope.launch {
+            val isNew = _uiModel.value.id == 0
             val lifeLog = mapper.mapBack(_uiModel.value)
             upsertLifeLogUseCase(lifeLog)
-            _events.send(MemoEvent.NavigateBack)
+            _events.send(if (isNew) MemoEvent.MemoAdded else MemoEvent.MemoEdited)
         }
     }
 
@@ -88,12 +89,16 @@ internal class MemoViewModel @Inject constructor(
         id?.let {
             viewModelScope.launch {
                 deleteLifeLogByIdUseCase(it)
-                _events.send(MemoEvent.NavigateBack)
+                _events.send(MemoEvent.MemoDeleted)
             }
         }
     }
 }
 
 internal sealed interface MemoEvent {
-    data object NavigateBack : MemoEvent
+    data object MemoAdded : MemoEvent
+
+    data object MemoEdited : MemoEvent
+
+    data object MemoDeleted : MemoEvent
 }

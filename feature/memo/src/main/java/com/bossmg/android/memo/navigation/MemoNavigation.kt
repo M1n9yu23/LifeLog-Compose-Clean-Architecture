@@ -30,7 +30,7 @@ fun NavController.navigateToMemo(memoId: Int? = null, navOptions: NavOptions? = 
     navigate(MemoRoute(memoId), navOptions)
 
 fun NavGraphBuilder.memoScreen(
-    onBack: () -> Unit,
+    onBack: (String?) -> Unit,
 ) {
     composable<MemoRoute> {
         val id = it.toRoute<MemoRoute>().id
