@@ -17,6 +17,7 @@ package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.model.LifeLog
 import com.bossmg.android.domain.repository.LifeLogReadRepository
+import com.bossmg.android.domain.usecase.base.SuspendUseCase
 import javax.inject.Inject
 
 class GetLifeLogByIdUseCase @Inject constructor(

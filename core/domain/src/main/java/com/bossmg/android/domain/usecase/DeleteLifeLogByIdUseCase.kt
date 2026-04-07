@@ -16,6 +16,7 @@
 package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.repository.LifeLogWriteRepository
+import com.bossmg.android.domain.usecase.base.SuspendUseCase
 import javax.inject.Inject
 
 class DeleteLifeLogByIdUseCase @Inject constructor(

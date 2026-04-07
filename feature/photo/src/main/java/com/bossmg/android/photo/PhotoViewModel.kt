@@ -18,6 +18,7 @@ package com.bossmg.android.photo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.GetImagesUseCase
+import com.bossmg.android.domain.usecase.base.invoke
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

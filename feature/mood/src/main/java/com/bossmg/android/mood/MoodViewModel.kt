@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.GetLifeLogsByMoodUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
+import com.bossmg.android.domain.usecase.base.invoke
 import com.bossmg.android.model.MemoItemMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

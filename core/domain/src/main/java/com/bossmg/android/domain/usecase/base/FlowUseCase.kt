@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.domain.usecase
+package com.bossmg.android.domain.usecase.base
 
-import com.bossmg.android.domain.model.LifeLog
-import com.bossmg.android.domain.repository.LifeLogWriteRepository
-import com.bossmg.android.domain.usecase.base.SuspendUseCase
-import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class UpsertLifeLogUseCase @Inject constructor(
-    private val lifeLogRepository: LifeLogWriteRepository,
-) : SuspendUseCase<LifeLog, Unit>() {
-    override suspend fun execute(params: LifeLog) = lifeLogRepository.upsertLifeLog(params)
+abstract class FlowUseCase<in P, out R> {
+    protected abstract fun execute(params: P): Flow<R>
+
+    operator fun invoke(params: P): Flow<R> = execute(params)
 }
+
+operator fun <R> FlowUseCase<NoParams, R>.invoke(): Flow<R> = this(NoParams)

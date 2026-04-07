@@ -13,24 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.domain.usecase
+package com.bossmg.android.domain.usecase.base
 
-import kotlinx.coroutines.flow.Flow
-
-abstract class FlowUseCase<in Params, out T> {
-    protected abstract fun execute(params: Params): Flow<T>
-
-    operator fun invoke(params: Params): Flow<T> = execute(params)
-}
-
-abstract class NoParamFlowUseCase<out T> {
-    protected abstract fun execute(): Flow<T>
-
-    operator fun invoke(): Flow<T> = execute()
-}
-
-abstract class SuspendUseCase<in Params, out T> {
-    protected abstract suspend fun execute(params: Params): T
-
-    suspend operator fun invoke(params: Params): T = execute(params)
-}
+object NoParams
