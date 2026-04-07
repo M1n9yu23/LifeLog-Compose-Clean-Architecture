@@ -7,4 +7,7 @@
     <string name="icon_delete">삭제</string>
     <string name="icon_save">저장</string>
     <string name="memo_image_description">관련 이미지</string>
+    <string name="snackbar_memo_added">새 메모가 추가됐어요</string>
+    <string name="snackbar_memo_edited">메모가 수정됐어요</string>
+    <string name="snackbar_memo_deleted">메모가 삭제됐어요</string>
 </resources>

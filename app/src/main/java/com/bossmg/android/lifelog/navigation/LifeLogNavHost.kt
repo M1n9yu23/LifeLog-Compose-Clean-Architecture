@@ -15,7 +15,9 @@
  */
 package com.bossmg.android.lifelog.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.bossmg.android.calendar.navigation.calendarScreen
@@ -26,13 +28,16 @@ import com.bossmg.android.memo.navigation.memoScreen
 import com.bossmg.android.memo.navigation.navigateToMemo
 import com.bossmg.android.mood.navigation.moodScreen
 import com.bossmg.android.photo.navigation.photoScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun LifeLogNavHost(
     appState: LifeLogAppState,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
     val navController = appState.navController
+    val scope = rememberCoroutineScope()
 
     NavHost(
         navController = navController,
@@ -44,7 +49,10 @@ fun LifeLogNavHost(
         moodScreen(navController::navigateToMemo)
         photoScreen()
         memoScreen(
-            onBack = navController::popBackStack,
+            onBack = { message ->
+                navController.popBackStack()
+                message?.let { scope.launch { snackbarHostState.showSnackbar(it) } }
+            },
         )
     }
 }

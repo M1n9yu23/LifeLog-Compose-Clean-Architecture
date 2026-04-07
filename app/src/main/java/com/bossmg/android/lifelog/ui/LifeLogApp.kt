@@ -21,7 +21,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -36,6 +39,7 @@ fun LifeLogApp(
     appState: LifeLogAppState,
 ) {
     val currentDestination = appState.currentDestination
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val isTopLevelScreen =
         appState.topLevelDestinations.any {
@@ -43,6 +47,7 @@ fun LifeLogApp(
         }
 
     LifeLogScaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             if (isTopLevelScreen) {
                 NavigationBar(containerColor = Secondary) {
@@ -84,6 +89,6 @@ fun LifeLogApp(
             }
         },
     ) {
-        LifeLogNavHost(appState, Modifier.padding(it))
+        LifeLogNavHost(appState, snackbarHostState, Modifier.padding(it))
     }
 }
