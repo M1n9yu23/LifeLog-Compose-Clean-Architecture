@@ -17,6 +17,7 @@ package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.model.LifeLog
 import com.bossmg.android.domain.repository.LifeLogReadRepository
+import com.bossmg.android.domain.usecase.base.FlowUseCase
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject

@@ -17,6 +17,7 @@ package com.bossmg.android.domain.usecase
 
 import com.bossmg.android.domain.model.LifeLog
 import com.bossmg.android.domain.repository.LifeLogSearchRepository
+import com.bossmg.android.domain.usecase.base.SuspendUseCase
 import javax.inject.Inject
 
 class SearchLifeLogsUseCase @Inject constructor(
