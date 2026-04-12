@@ -16,9 +16,11 @@
 package com.bossmg.android.data.di
 
 import com.bossmg.android.data.repository.LifeLogRepositoryImpl
+import com.bossmg.android.data.repository.ThemeRepositoryImpl
 import com.bossmg.android.domain.repository.LifeLogReadRepository
 import com.bossmg.android.domain.repository.LifeLogSearchRepository
 import com.bossmg.android.domain.repository.LifeLogWriteRepository
+import com.bossmg.android.domain.repository.ThemeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -39,4 +41,8 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindsLifeLogSearchRepository(impl: LifeLogRepositoryImpl): LifeLogSearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsThemeRepository(impl: ThemeRepositoryImpl): ThemeRepository
 }
