@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,10 +46,7 @@ import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP80
-import com.bossmg.android.designsystem.ui.theme.DarkGray2
-import com.bossmg.android.designsystem.ui.theme.DarkGray3
-import com.bossmg.android.designsystem.ui.theme.Gray2
-import com.bossmg.android.designsystem.ui.theme.White
+import com.bossmg.android.designsystem.ui.theme.LightSurface
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -57,7 +55,7 @@ import java.util.Locale
 @Composable
 fun CustomCard(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = White,
+    backgroundColor: Color = LightSurface,
     shadowColor: Color = Color.Transparent,
     shapeTop: Dp = DP10,
     shapeBottom: Dp = DP10,
@@ -109,7 +107,7 @@ fun MemoCardItem(
         ) {
             Text(
                 text = date.dayOfMonth.toString(),
-                style = AppTypography.titleLarge.copy(color = DarkGray2),
+                style = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
             )
             Text(
                 text =
@@ -117,7 +115,7 @@ fun MemoCardItem(
                         TextStyle.FULL,
                         Locale.KOREAN,
                     ),
-                style = AppTypography.bodyMedium.copy(color = DarkGray3),
+                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
             )
         }
 
@@ -135,7 +133,7 @@ fun MemoCardItem(
                     ),
                 style =
                     AppTypography.bodyLarge.copy(
-                        color = DarkGray2,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontStyle = FontStyle.Italic,
                     ),
             )
@@ -144,7 +142,7 @@ fun MemoCardItem(
 
             Text(
                 text = title,
-                style = AppTypography.titleLarge.copy(color = DarkGray2),
+                style = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -152,7 +150,7 @@ fun MemoCardItem(
 
             Text(
                 text = mood,
-                style = AppTypography.bodyMedium.copy(color = Gray2),
+                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
             )
         }
 
