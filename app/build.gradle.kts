@@ -26,6 +26,7 @@ android {
 dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:calendar"))
+    implementation(project(":feature:settings"))
     implementation(project(":feature:mood"))
     implementation(project(":feature:memo"))
     implementation(project(":feature:photo"))

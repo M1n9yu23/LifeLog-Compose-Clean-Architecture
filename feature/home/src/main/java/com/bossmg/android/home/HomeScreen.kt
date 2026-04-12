@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
@@ -52,7 +53,6 @@ import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.theme.Background
 import com.bossmg.android.designsystem.ui.theme.DP0
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
@@ -65,6 +65,7 @@ import java.time.LocalDate
 @Composable
 internal fun Home(
     onMemoItemClick: (Int) -> Unit,
+    onSettingsClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -83,6 +84,7 @@ internal fun Home(
                 searchResults = searchResults,
                 onSearchQueryChange = viewModel::onSearchQueryChange,
                 onMemoItemClick = onMemoItemClick,
+                onSettingsClick = onSettingsClick,
             )
         }
     }
@@ -96,6 +98,7 @@ private fun HomeScreen(
     searchResults: List<MemoItem>,
     onSearchQueryChange: (String) -> Unit,
     onMemoItemClick: (Int) -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -103,7 +106,7 @@ private fun HomeScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .statusBarsPadding(),
     ) {
         SearchBar(
@@ -156,7 +159,7 @@ private fun HomeScreen(
                                 )
                             }
                         } else {
-                            IconButton(onClick = {}) {
+                            IconButton(onClick = onSettingsClick) {
                                 Icon(
                                     imageVector = LifeIcons.Settings,
                                     contentDescription = stringResource(R.string.cd_settings),
@@ -262,7 +265,7 @@ private fun EmptyScreen(modifier: Modifier = Modifier) {
         modifier =
             modifier
                 .fillMaxSize()
-                .background(color = Background),
+                .background(color = MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -302,5 +305,6 @@ private fun HomeScreenPreview() {
         searchResults = emptyList(),
         onSearchQueryChange = {},
         onMemoItemClick = {},
+        onSettingsClick = {},
     )
 }

@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,7 +47,6 @@ import com.bossmg.android.designsystem.ui.components.CustomCard
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.theme.Background
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -54,8 +54,7 @@ import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP24
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.DP800
-import com.bossmg.android.designsystem.ui.theme.DarkGray2
-import com.bossmg.android.designsystem.ui.theme.Gray5
+import com.bossmg.android.designsystem.ui.theme.LightOnSurface
 import com.bossmg.android.designsystem.ui.util.cardColor
 import com.bossmg.android.model.MemoItem
 import java.time.LocalDate
@@ -96,7 +95,7 @@ private fun MoodScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .statusBarsPadding()
                 .padding(DP12),
     ) {
@@ -106,7 +105,7 @@ private fun MoodScreen(
             ) {
                 Text(
                     text = stringResource(R.string.text_mood),
-                    style = AppTypography.titleLarge.copy(color = DarkGray2),
+                    style = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
                 )
 
                 Spacer(Modifier.height(DP16))
@@ -153,7 +152,7 @@ private fun MoodsBox(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .border(width = DP1, color = Gray5, shape = RoundedCornerShape(DP10)),
+                .border(width = DP1, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(DP10)),
         shapeTop = DP10,
         shapeBottom = DP10,
         elevation = DP10,
@@ -184,6 +183,7 @@ private fun MoodsBox(
                     Text(
                         text = count.toString(),
                         fontSize = 30.sp,
+                        color = LightOnSurface,
                     )
                 }
             }

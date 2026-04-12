@@ -36,6 +36,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,14 +59,10 @@ import com.bossmg.android.designsystem.ui.components.CustomDivider
 import com.bossmg.android.designsystem.ui.components.DefaultTextField
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.theme.Background
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP300
 import com.bossmg.android.designsystem.ui.theme.DP400
 import com.bossmg.android.designsystem.ui.theme.DP8
-import com.bossmg.android.designsystem.ui.theme.DarkGray2
-import com.bossmg.android.designsystem.ui.theme.Gray5
-import com.bossmg.android.designsystem.ui.theme.Primary
 import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
 
@@ -163,7 +160,7 @@ private fun MemoScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .statusBarsPadding()
                 .padding(DP12),
     ) {
@@ -218,28 +215,28 @@ private fun MemoScreen(
                     Icon(
                         LifeIcons.Photo,
                         contentDescription = stringResource(R.string.icon_camera),
-                        tint = Primary,
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 }
                 IconButton(onClick = { /* 공유 기능 */ }) {
                     Icon(
                         LifeIcons.Share,
                         contentDescription = stringResource(R.string.icon_share),
-                        tint = Primary,
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 }
                 IconButton(onClick = { onDeleteClick() }) {
                     Icon(
                         LifeIcons.Delete,
                         contentDescription = stringResource(R.string.icon_delete),
-                        tint = Primary,
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 }
                 IconButton(onClick = { onSaveClick() }) {
                     Icon(
                         LifeIcons.Save,
                         contentDescription = stringResource(R.string.icon_save),
-                        tint = Primary,
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 }
             }
@@ -309,8 +306,8 @@ private fun TitleInputField(
         },
         modifier = Modifier.fillMaxWidth(),
         placeholder = stringResource(R.string.memo_title_placeholder),
-        textStyle = AppTypography.titleLarge.copy(color = DarkGray2),
-        hintStyle = AppTypography.titleLarge.copy(color = Gray5),
+        textStyle = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+        hintStyle = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
     )
 }
 

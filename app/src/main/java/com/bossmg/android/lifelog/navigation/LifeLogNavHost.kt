@@ -28,6 +28,7 @@ import com.bossmg.android.memo.navigation.memoScreen
 import com.bossmg.android.memo.navigation.navigateToMemo
 import com.bossmg.android.mood.navigation.moodScreen
 import com.bossmg.android.photo.navigation.photoScreen
+import com.bossmg.android.settings.navigation.settingsScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,7 +45,10 @@ fun LifeLogNavHost(
         startDestination = HomeRoute,
         modifier = modifier,
     ) {
-        homeScreen(navController::navigateToMemo)
+        homeScreen(
+            onMemoItemClick = navController::navigateToMemo,
+            onSettingsClick = appState::navigateToSettings,
+        )
         calendarScreen(navController::navigateToMemo)
         moodScreen(navController::navigateToMemo)
         photoScreen()
@@ -53,6 +57,9 @@ fun LifeLogNavHost(
                 navController.popBackStack()
                 message?.let { scope.launch { snackbarHostState.showSnackbar(it) } }
             },
+        )
+        settingsScreen(
+            onBack = { navController.popBackStack() },
         )
     }
 }

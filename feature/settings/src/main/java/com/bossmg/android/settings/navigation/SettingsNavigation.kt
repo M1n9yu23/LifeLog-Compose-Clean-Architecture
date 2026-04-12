@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.home.navigation
+package com.bossmg.android.settings.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.bossmg.android.home.Home
+import com.bossmg.android.settings.Settings
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeRoute
+object SettingsRoute
 
-fun NavController.navigateToHome(navOptions: NavOptions) = navigate(HomeRoute, navOptions)
+fun NavController.navigateToSettings(navOptions: NavOptions? = null) =
+    navigate(SettingsRoute, navOptions)
 
-fun NavGraphBuilder.homeScreen(
-    onMemoItemClick: (Int) -> Unit,
-    onSettingsClick: () -> Unit,
-) {
-    composable<HomeRoute> {
-        Home(onMemoItemClick, onSettingsClick)
+fun NavGraphBuilder.settingsScreen(onBack: () -> Unit) {
+    composable<SettingsRoute> {
+        Settings(onBack = onBack)
     }
 }

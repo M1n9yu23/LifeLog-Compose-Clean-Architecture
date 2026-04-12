@@ -32,6 +32,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -49,17 +50,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.theme.Black
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP2
 import com.bossmg.android.designsystem.ui.theme.DP320
 import com.bossmg.android.designsystem.ui.theme.DP8
-import com.bossmg.android.designsystem.ui.theme.DarkGray2
-import com.bossmg.android.designsystem.ui.theme.Primary
-import com.bossmg.android.designsystem.ui.theme.Secondary
-import com.bossmg.android.designsystem.ui.theme.White
 import java.time.LocalDate
 import kotlin.math.ceil
 
@@ -84,6 +80,7 @@ fun CalendarDialog(
             shapeTop = DP10,
             shapeBottom = DP10,
             elevation = DP10,
+            backgroundColor = MaterialTheme.colorScheme.surface,
         ) {
             Column(
                 modifier =
@@ -94,7 +91,7 @@ fun CalendarDialog(
             ) {
                 Text(
                     text = "${selectedDate.year}년 ${selectedDate.monthValue}월 ${selectedDate.dayOfMonth}일",
-                    style = AppTypography.titleMedium.copy(DarkGray2),
+                    style = AppTypography.titleMedium.copy(MaterialTheme.colorScheme.onSurface),
                 )
 
                 Spacer(Modifier.height(DP10))
@@ -138,8 +135,8 @@ fun CalendarDialog(
                         onClick = onCancel,
                         colors =
                             ButtonDefaults.buttonColors(
-                                containerColor = Secondary,
-                                contentColor = Black,
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onBackground,
                             ),
                     ) {
                         Text("취소")
@@ -150,8 +147,8 @@ fun CalendarDialog(
                         onClick = { onConfirm(selectedDate) },
                         colors =
                             ButtonDefaults.buttonColors(
-                                containerColor = Primary,
-                                contentColor = White,
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
                             ),
                     ) {
                         Text("확인")
@@ -224,8 +221,8 @@ private fun CalendarGrid(
                                     .clip(CircleShape)
                                     .background(
                                         when {
-                                            isSelected -> Primary
-                                            isToday -> Secondary
+                                            isSelected -> MaterialTheme.colorScheme.primary
+                                            isToday -> MaterialTheme.colorScheme.secondaryContainer
                                             else -> Color.Transparent
                                         },
                                     )
@@ -234,7 +231,7 @@ private fun CalendarGrid(
                         ) {
                             Text(
                                 text = day.toString(),
-                                color = if (isSelected) White else Black,
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground,
                             )
                         }
                     }

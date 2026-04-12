@@ -19,11 +19,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.bossmg.android.designsystem.ui.theme.Background
 
 @Composable
 fun LifeLogScaffold(
@@ -33,7 +33,7 @@ fun LifeLogScaffold(
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
-    containerColor: Color = Background,
+    containerColor: Color = MaterialTheme.colorScheme.background,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(

@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,7 +43,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.theme.Background
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP6
 import com.bossmg.android.designsystem.ui.theme.DP8
@@ -76,7 +76,7 @@ private fun PhotoScreen(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .background(color = Background)
+                .background(color = MaterialTheme.colorScheme.background)
                 .statusBarsPadding()
                 .padding(DP12),
         columns = GridCells.Fixed(3),
@@ -101,7 +101,7 @@ private fun EmptyScreen() {
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(color = Background),
+                .background(color = MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
