@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,16 +52,12 @@ import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.theme.Background
-import com.bossmg.android.designsystem.ui.theme.Black
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP36
 import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP8
-import com.bossmg.android.designsystem.ui.theme.Primary
-import com.bossmg.android.designsystem.ui.theme.Secondary
-import com.bossmg.android.designsystem.ui.theme.White
+import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
 import com.bossmg.android.designsystem.ui.util.cardColor
 import com.bossmg.android.model.MemoItem
 import kotlinx.collections.immutable.ImmutableList
@@ -113,7 +110,7 @@ private fun CalendarScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(Background)
+                .background(MaterialTheme.colorScheme.background)
                 .statusBarsPadding()
                 .padding(DP12),
     ) {
@@ -203,6 +200,7 @@ private fun CalendarGrid(
     val firstDay = month.withDayOfMonth(1)
     val daysInMonth = month.lengthOfMonth()
     val startOffset = firstDay.dayOfWeek.value % 7
+    val calendarMarker = LocalLifeLogColors.current.calendarMarker
 
     Column {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -248,8 +246,8 @@ private fun CalendarGrid(
                                         .clip(CircleShape)
                                         .background(
                                             when {
-                                                isSelected -> Primary
-                                                isToday -> Secondary
+                                                isSelected -> MaterialTheme.colorScheme.primary
+                                                isToday -> MaterialTheme.colorScheme.secondaryContainer
                                                 else -> Color.Transparent
                                             },
                                         ),
@@ -257,7 +255,7 @@ private fun CalendarGrid(
                             ) {
                                 Text(
                                     text = day.toString(),
-                                    color = if (isSelected) White else Black,
+                                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground,
                                 )
                             }
 
@@ -266,7 +264,7 @@ private fun CalendarGrid(
                                     modifier =
                                         Modifier
                                             .size(DP4)
-                                            .background(Color.Cyan, CircleShape)
+                                            .background(calendarMarker, CircleShape)
                                             .align(Alignment.BottomCenter),
                                 )
                             }

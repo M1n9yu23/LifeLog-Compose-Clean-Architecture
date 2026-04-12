@@ -29,8 +29,9 @@ fun NavController.navigateToHome(navOptions: NavOptions) = navigate(HomeRoute, n
 
 fun NavGraphBuilder.homeScreen(
     onMemoItemClick: (Int) -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     composable<HomeRoute> {
-        Home(onMemoItemClick)
+        Home(onMemoItemClick, onSettingsClick)
     }
 }
