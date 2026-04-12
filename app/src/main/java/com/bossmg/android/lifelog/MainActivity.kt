@@ -27,8 +27,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.theme.LifeLogTheme
+import com.bossmg.android.domain.enums.ThemeConfig
+import com.bossmg.android.domain.repository.ThemeRepository
 import com.bossmg.android.lifelog.ui.LifeLogApp
 import com.bossmg.android.lifelog.ui.rememberLifeLogAppState
 import com.bossmg.android.notifications.MorningNotificationScheduler
@@ -39,6 +44,9 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var notificationScheduler: MorningNotificationScheduler
+
+    @Inject
+    lateinit var themeRepository: ThemeRepository
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -58,7 +66,16 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            LifeLogTheme {
+            val themeConfig by themeRepository.getThemeConfig()
+                .collectAsStateWithLifecycle(ThemeConfig.FOLLOW_SYSTEM)
+            val darkTheme =
+                when (themeConfig) {
+                    ThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+                    ThemeConfig.LIGHT -> false
+                    ThemeConfig.DARK -> true
+                }
+
+            LifeLogTheme(darkTheme = darkTheme) {
                 val appState = rememberLifeLogAppState()
                 LifeLogApp(appState)
             }

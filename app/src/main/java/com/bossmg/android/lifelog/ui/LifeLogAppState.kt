@@ -32,6 +32,7 @@ import com.bossmg.android.lifelog.navigation.TopLevelDestination
 import com.bossmg.android.memo.navigation.navigateToMemo
 import com.bossmg.android.mood.navigation.navigateToMood
 import com.bossmg.android.photo.navigation.navigateToPhoto
+import com.bossmg.android.settings.navigation.navigateToSettings
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -87,4 +88,6 @@ class LifeLogAppState(
     }
 
     fun navigateToMemo(memoId: Int? = null) = navController.navigateToMemo(memoId)
+
+    fun navigateToSettings() = navController.navigateToSettings()
 }

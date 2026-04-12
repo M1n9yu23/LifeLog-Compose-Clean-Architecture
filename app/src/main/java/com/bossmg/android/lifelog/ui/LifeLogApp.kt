@@ -18,6 +18,7 @@ package com.bossmg.android.lifelog.ui
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -30,8 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.bossmg.android.designsystem.ui.components.LifeLogScaffold
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
-import com.bossmg.android.designsystem.ui.theme.Primary
-import com.bossmg.android.designsystem.ui.theme.Secondary
 import com.bossmg.android.lifelog.navigation.LifeLogNavHost
 
 @Composable
@@ -50,7 +49,7 @@ fun LifeLogApp(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             if (isTopLevelScreen) {
-                NavigationBar(containerColor = Secondary) {
+                NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceVariant) {
                     appState.topLevelDestinations.forEach { destination ->
                         val selected = appState.currentTopLevelDestination == destination
                         NavigationBarItem(
@@ -66,7 +65,7 @@ fun LifeLogApp(
                             },
                             colors =
                                 NavigationBarItemDefaults.colors(
-                                    selectedIconColor = Primary,
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
                                     indicatorColor = Color.Transparent,
                                 ),
                         )
@@ -78,8 +77,8 @@ fun LifeLogApp(
             if (isTopLevelScreen) {
                 FloatingActionButton(
                     onClick = { appState.navigateToMemo() },
-                    containerColor = Primary,
-                    contentColor = Secondary,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                 ) {
                     Icon(
                         imageVector = LifeIcons.Add,
