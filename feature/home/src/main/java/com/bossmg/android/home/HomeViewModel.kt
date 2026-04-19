@@ -58,7 +58,7 @@ internal class HomeViewModel @Inject constructor(
 
     val searchResults: StateFlow<List<MemoItem>> =
         _searchQuery
-            .debounce(300L)
+            .debounce(100L)
             .flatMapLatest { query ->
                 flow {
                     val results = searchLifeLogsUseCase(query).map { mapper.map(it) }

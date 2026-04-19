@@ -18,7 +18,8 @@ package com.bossmg.android.data.initializer
 import com.bossmg.android.data.di.ApplicationScope
 import com.bossmg.android.data.di.IoDispatcher
 import com.bossmg.android.domain.repository.LifeLogReadRepository
-import com.bossmg.android.fts.SearchEngine
+import com.gyugle.hanfts.Document
+import com.gyugle.hanfts.SearchEngine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -36,7 +37,7 @@ class FtsIndexInitializer @Inject constructor(
             runCatching {
                 val docs =
                     readRepository.getLifeLogs().first()
-                        .map { Triple(it.id, it.title, it.description) }
+                        .map { Document(id = it.id.toLong(), title = it.title, body = it.description) }
                 searchEngine.rebuildIndex(docs)
             }
         }

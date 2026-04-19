@@ -15,29 +15,44 @@
  */
 package com.bossmg.android.data.repository
 
-import com.bossmg.android.fts.SearchEngine
+import com.gyugle.hanfts.Document
+import com.gyugle.hanfts.SearchEngine
+import com.gyugle.hanfts.SearchResult
 
 class FakeSearchEngine : SearchEngine {
-    private val index = mutableMapOf<Int, Pair<String, String>>()
+    private val index = mutableMapOf<Long, Pair<String, String>>()
 
-    override fun indexDocument(id: Int, title: String, body: String) {
+    override val documentCount: Int get() = index.size
+
+    override fun indexDocument(id: Long, title: String, body: String) {
         index[id] = title to body
     }
 
-    override fun removeDocument(id: Int) {
+    override fun indexDocument(document: Document) {
+        index[document.id] = document.title to document.body
+    }
+
+    override fun removeDocument(id: Long) {
         index.remove(id)
     }
 
-    override fun search(query: String, limit: Int): List<Int> =
+    override fun clear() {
+        index.clear()
+    }
+
+    override fun search(query: String, limit: Int): List<SearchResult> =
         index
             .filter { (_, pair) ->
                 pair.first.contains(query, ignoreCase = true) ||
                     pair.second.contains(query, ignoreCase = true)
-            }.keys
+            }
+            .map { (id, _) -> SearchResult(id = id, score = 1f) }
             .take(limit)
 
-    override fun rebuildIndex(documents: List<Triple<Int, String, String>>) {
+    override fun rebuildIndex(documents: List<Document>) {
         index.clear()
-        documents.forEach { (id, title, body) -> index[id] = title to body }
+        documents.forEach { index[it.id] = it.title to it.body }
     }
+
+    override fun close() = Unit
 }

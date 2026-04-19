@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,18 +28,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -49,11 +42,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.components.CustomCard
+import com.bossmg.android.designsystem.ui.components.LifeLogSearchBar
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.theme.DP0
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP32
@@ -90,7 +83,6 @@ internal fun Home(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreen(
     uiModels: List<MemoItem>,
@@ -100,7 +92,7 @@ private fun HomeScreen(
     onMemoItemClick: (Int) -> Unit,
     onSettingsClick: () -> Unit,
 ) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    val isSearching = searchQuery.isNotEmpty()
 
     Column(
         modifier =
@@ -109,75 +101,42 @@ private fun HomeScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .statusBarsPadding(),
     ) {
-        SearchBar(
+        LifeLogSearchBar(
+            query = searchQuery,
+            onQueryChange = onSearchQueryChange,
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .then(
-                        if (!expanded) {
-                            Modifier.padding(horizontal = DP16, vertical = DP8)
-                        } else {
-                            Modifier
-                        },
-                    ),
-            windowInsets = WindowInsets(left = DP0, top = DP0, right = DP0, bottom = DP0),
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = searchQuery,
-                    onQueryChange = onSearchQueryChange,
-                    onSearch = {},
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.text_search_placeholder),
-                            style = AppTypography.bodyLarge,
-                        )
-                    },
-                    leadingIcon = {
+                    .padding(horizontal = DP16, vertical = DP8),
+            placeholder = stringResource(R.string.text_search_placeholder),
+            trailingIcon = {
+                if (isSearching) {
+                    IconButton(onClick = { onSearchQueryChange("") }) {
                         Icon(
-                            imageVector = LifeIcons.Search,
-                            contentDescription = null,
+                            imageVector = LifeIcons.Close,
+                            contentDescription = stringResource(R.string.cd_close_search),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
-                    },
-                    trailingIcon = {
-                        if (expanded) {
-                            IconButton(
-                                onClick = {
-                                    if (searchQuery.isNotEmpty()) {
-                                        onSearchQueryChange("")
-                                    } else {
-                                        expanded = false
-                                    }
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = LifeIcons.Close,
-                                    contentDescription = stringResource(R.string.cd_close_search),
-                                )
-                            }
-                        } else {
-                            IconButton(onClick = onSettingsClick) {
-                                Icon(
-                                    imageVector = LifeIcons.Settings,
-                                    contentDescription = stringResource(R.string.cd_settings),
-                                )
-                            }
-                        }
-                    },
-                )
+                    }
+                } else {
+                    IconButton(onClick = onSettingsClick) {
+                        Icon(
+                            imageVector = LifeIcons.Settings,
+                            contentDescription = stringResource(R.string.cd_settings),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             },
-        ) {
+        )
+
+        if (isSearching) {
             SearchContent(
                 searchQuery = searchQuery,
                 searchResults = searchResults,
                 onMemoItemClick = onMemoItemClick,
             )
-        }
-
-        if (!expanded) {
+        } else {
             if (uiModels.isNotEmpty()) {
                 LazyColumn(
                     modifier =
