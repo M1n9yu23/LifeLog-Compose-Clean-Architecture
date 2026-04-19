@@ -15,13 +15,10 @@
  */
 package com.bossmg.android.data.di
 
-import android.content.Context
-import com.bossmg.android.fts.NativeSearchEngine
-import com.bossmg.android.fts.SearchEngine
+import com.gyugle.hanfts.SearchEngine
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -30,10 +27,5 @@ import javax.inject.Singleton
 internal object NativeModule {
     @Provides
     @Singleton
-    fun providesNativeSearchEngine(
-        @ApplicationContext context: Context,
-    ): SearchEngine {
-        val indexPath = context.filesDir.resolve("fts_index").absolutePath
-        return NativeSearchEngine(indexPath)
-    }
+    fun providesSearchEngine(): SearchEngine = SearchEngine()
 }

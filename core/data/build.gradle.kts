@@ -20,7 +20,7 @@ android {
 
 dependencies {
     implementation(project(":core:domain"))
-    implementation(project(":native"))
+    implementation(libs.hanfts)
     implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

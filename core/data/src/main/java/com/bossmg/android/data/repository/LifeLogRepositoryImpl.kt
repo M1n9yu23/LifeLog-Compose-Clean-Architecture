@@ -22,7 +22,7 @@ import com.bossmg.android.domain.model.LifeLog
 import com.bossmg.android.domain.repository.LifeLogReadRepository
 import com.bossmg.android.domain.repository.LifeLogSearchRepository
 import com.bossmg.android.domain.repository.LifeLogWriteRepository
-import com.bossmg.android.fts.SearchEngine
+import com.gyugle.hanfts.SearchEngine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -57,13 +57,13 @@ internal class LifeLogRepositoryImpl @Inject constructor(
     override suspend fun insertLifeLog(lifeLog: LifeLog) {
         val rowId = dao.insertLifeLog(mapper.mapBack(lifeLog))
         withContext(ioDispatcher) {
-            searchEngine.indexDocument(rowId.toInt(), lifeLog.title, lifeLog.description)
+            searchEngine.indexDocument(rowId, lifeLog.title, lifeLog.description)
         }
     }
 
     override suspend fun upsertLifeLog(lifeLog: LifeLog) {
         val rowId = dao.upsertLifeLog(mapper.mapBack(lifeLog))
-        val actualId = if (lifeLog.id != 0) lifeLog.id else rowId.toInt()
+        val actualId = if (lifeLog.id != 0) lifeLog.id.toLong() else rowId
         withContext(ioDispatcher) {
             searchEngine.indexDocument(actualId, lifeLog.title, lifeLog.description)
         }
@@ -72,15 +72,15 @@ internal class LifeLogRepositoryImpl @Inject constructor(
     override suspend fun deleteLifeLogById(id: Int) {
         dao.deleteLifeLogById(id)
         withContext(ioDispatcher) {
-            searchEngine.removeDocument(id)
+            searchEngine.removeDocument(id.toLong())
         }
     }
 
     override suspend fun searchLifeLogs(query: String): List<LifeLog> {
         if (query.isBlank()) return emptyList()
-        val ids = withContext(ioDispatcher) { searchEngine.search(query) }
-        return ids.mapNotNull { id ->
-            runCatching { dao.getLifeLogById(id) }.getOrNull()?.let { mapper.map(it) }
+        val results = withContext(ioDispatcher) { searchEngine.search(query) }
+        return results.mapNotNull { result ->
+            runCatching { dao.getLifeLogById(result.id.toInt()) }.getOrNull()?.let { mapper.map(it) }
         }
     }
 }
