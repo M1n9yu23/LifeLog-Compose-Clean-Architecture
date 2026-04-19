@@ -7,8 +7,7 @@
 
 - **테스트** — 모든 레이어 모듈은 단위 테스트와 통합 테스트로 검증 됐습니다.
 - **빌드 시스템** — Gradle Convention Plugin으로 모든 모듈의 빌드 설정을 관리합니다.
-- **Native FTS** — 한국어 검색을 위해 Android NDK(C++17)로 Full-Text Search 엔진을 직접
-  구현했습니다. → [자세히보기](native/README.md)
+- **Native FTS** — 한국어 검색을 위해 자체 개발한 오픈소스 라이브러리 **[hanfts](https://github.com/M1n9yu23/hanfts)**를 사용합니다.
 
 ## Module dependency graph
 
@@ -126,18 +125,7 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 
 ## Native Full-Text Search
 
-`:core:data` 모듈은 한국어·영어 혼합 텍스트 검색을 위해 Android NDK(C++17)로 구현된 FTS 엔진을 사용합니다.
-
-|                    |                                          |
-|--------------------|------------------------------------------|
-| **한국어 바이그램 토크나이저** | 형태소 분석기 없이 유니코드 코드포인트 기반 2-gram 토큰 생성    |
-| **TF-IDF 랭킹**      | 제목(3×) · 본문(1×) 필드 가중치 스코어링              |
-| **프리픽스 검색**        | `"산"` 입력 시 `"산책"`, `"산보"` 등 자동 매칭        |
-| **영속 인덱스**         | 컴팩트 바이너리 직렬화                             |
-| **스레드 안전**         | `std::shared_mutex`: 읽기 동시 허용, 쓰기 배타적 접근 |
-| **외부 의존 없음**       | 순수 C++17 STL                             |
-
-Room FTS의 한국어 토크나이저 미지원, Kotlin 구현의 GC 부담 등 각 대안의 한계를 검토한 결과 NDK C++ 구현을 채택했습니다.  
+`:core:data` 모듈은 한국어·영어 혼합 텍스트 검색을 위해 자체 개발한 오픈소스 라이브러리 **[hanfts](https://github.com/M1n9yu23/hanfts)**를 사용합니다.  
 내부 구현, 아키텍처, 자료구조, 직렬화 포맷 등 상세 내용은 **[native/README.md](native/README.md)** 를 참고하세요.
 
 ## Tech Stack
@@ -149,7 +137,7 @@ Room FTS의 한국어 토크나이저 미지원, Kotlin 구현의 GC 부담 등 
 | **Architecture**  | Clean Architecture, MVVM                    |
 | **Asynchronous**  | Coroutine, Flow(cold, hot)                  |
 | **Database**      | Room                                        |
-| **Search**        | Custom FTS Engine                           |
+| **Search**        | hanfts                                      |
 | **Image Loading** | Coil                                        |
 | **DI**            | Hilt                                        |
 | **Build**         | Gradle Convention Plugin                    |
