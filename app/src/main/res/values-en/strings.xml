@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LifeLog</string>
+    <string name="cd_new_memo">New Memo</string>
+    <string name="notification_permission_title">Notification permission required</string>
+    <string name="notification_permission_message">LifeLog needs notification permission to send you reminders. Please allow it in Settings.</string>
+    <string name="notification_permission_positive">Settings</string>
+    <string name="notification_permission_negative">Cancel</string>
+</resources>

@@ -68,7 +68,7 @@ internal class CalendarViewModel @Inject constructor(
         }
             .catch { e ->
                 Log.e(TAG, "Error in UI State Flow", e)
-                emit(CalendarUiState.Error(e.message ?: "알 수 없는 오류가 발생했습니다."))
+                emit(CalendarUiState.Error(R.string.error_unknown))
             }
             .stateIn(
                 scope = viewModelScope,

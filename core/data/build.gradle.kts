@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(libs.hanfts)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_title">오늘 하루 힘내요!</string>
+    <string name="notification_message">작은 목표를 달성하는 하루가 되길 응원해요</string>
+    <string name="notification_channel_name">모닝 알람</string>
+    <string name="notification_channel_description">매일 오전 8시 아침 알림</string>
+</resources>

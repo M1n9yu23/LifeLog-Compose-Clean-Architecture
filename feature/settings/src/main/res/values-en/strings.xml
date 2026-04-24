@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme_section">Theme</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="cd_back">Back</string>
+    <string name="settings_language_section">Language</string>
+    <string name="settings_language_system">System default</string>
+    <string name="settings_language_korean">한국어</string>
+    <string name="settings_language_english">English</string>
+</resources>

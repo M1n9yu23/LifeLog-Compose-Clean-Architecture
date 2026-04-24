@@ -36,6 +36,7 @@ dependencies {
     implementation(project(":core:data"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 }

@@ -2,4 +2,5 @@
 <resources>
     <string name="text_empty_title">텅 비었네요...</string>
     <string name="text_empty_body">사진을 채워보세요!</string>
+    <string name="cd_used_image">사용한 이미지</string>
 </resources>

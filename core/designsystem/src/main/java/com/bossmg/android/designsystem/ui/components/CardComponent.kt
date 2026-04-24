@@ -49,6 +49,7 @@ import com.bossmg.android.designsystem.ui.theme.DP80
 import com.bossmg.android.designsystem.ui.theme.LightSurface
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -113,7 +114,7 @@ fun MemoCardItem(
                 text =
                     date.dayOfWeek.getDisplayName(
                         TextStyle.FULL,
-                        Locale.KOREAN,
+                        Locale.getDefault(),
                     ),
                 style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
             )
@@ -129,7 +130,8 @@ fun MemoCardItem(
             Text(
                 text =
                     date.format(
-                        DateTimeFormatter.ofPattern("yyyy년 M월 d일 E요일"),
+                        DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
+                            .withLocale(Locale.getDefault()),
                     ),
                 style =
                     AppTypography.bodyLarge.copy(
