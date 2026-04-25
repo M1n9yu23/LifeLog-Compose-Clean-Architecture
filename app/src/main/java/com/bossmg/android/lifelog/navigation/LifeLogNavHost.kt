@@ -15,10 +15,13 @@
  */
 package com.bossmg.android.lifelog.navigation
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import com.bossmg.android.calendar.navigation.calendarScreen
 import com.bossmg.android.home.navigation.HomeRoute
@@ -39,6 +42,7 @@ fun LifeLogNavHost(
 ) {
     val navController = appState.navController
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     NavHost(
         navController = navController,
@@ -60,6 +64,17 @@ fun LifeLogNavHost(
         )
         settingsScreen(
             onBack = { navController.popBackStack() },
+            onRestartRequired = { context.restartApp() },
         )
     }
+}
+
+private fun Context.restartApp() {
+    val component =
+        packageManager
+            .getLaunchIntentForPackage(packageName)
+            ?.component
+            ?: return
+    startActivity(Intent.makeRestartActivityTask(component))
+    Runtime.getRuntime().exit(0)
 }

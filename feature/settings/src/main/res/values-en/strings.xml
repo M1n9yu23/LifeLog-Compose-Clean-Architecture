@@ -10,4 +10,8 @@
     <string name="settings_language_system">System default</string>
     <string name="settings_language_korean">Korean</string>
     <string name="settings_language_english">English</string>
+    <string name="settings_language_change_title">Change Language</string>
+    <string name="settings_language_change_message">The app needs to restart to apply the language change.</string>
+    <string name="settings_language_restart">Restart</string>
+    <string name="settings_language_cancel">Cancel</string>
 </resources>

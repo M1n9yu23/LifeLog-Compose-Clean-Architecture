@@ -38,14 +38,18 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bossmg.android.designsystem.ui.components.ConfirmDialog
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -62,20 +66,48 @@ import com.bossmg.android.designsystem.ui.theme.LightPrimary
 import com.bossmg.android.designsystem.ui.theme.LightSurface
 import com.bossmg.android.domain.enums.LanguageConfig
 import com.bossmg.android.domain.enums.ThemeConfig
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun Settings(
     onBack: () -> Unit,
+    onRestartRequired: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val themeConfig by viewModel.themeConfig.collectAsStateWithLifecycle()
     val languageConfig by viewModel.languageConfig.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+
+    var pendingLanguageConfig by remember { mutableStateOf<LanguageConfig?>(null) }
+
+    if (pendingLanguageConfig != null) {
+        ConfirmDialog(
+            title = stringResource(R.string.settings_language_change_title),
+            message = stringResource(R.string.settings_language_change_message),
+            confirmText = stringResource(R.string.settings_language_restart),
+            dismissText = stringResource(R.string.settings_language_cancel),
+            onConfirm = {
+                pendingLanguageConfig?.let { config ->
+                    pendingLanguageConfig = null
+                    scope.launch {
+                        viewModel.onLanguageSelect(config)
+                        onRestartRequired()
+                    }
+                }
+            },
+            onDismiss = { pendingLanguageConfig = null },
+        )
+    }
 
     SettingsScreen(
         themeConfig = themeConfig,
         onThemeSelect = viewModel::onThemeSelect,
         languageConfig = languageConfig,
-        onLanguageSelect = viewModel::onLanguageSelect,
+        onLanguageSelect = { config ->
+            if (config != languageConfig) {
+                pendingLanguageConfig = config
+            }
+        },
         onBack = onBack,
     )
 }

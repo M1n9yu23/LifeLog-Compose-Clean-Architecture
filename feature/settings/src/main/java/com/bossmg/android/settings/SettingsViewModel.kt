@@ -60,9 +60,7 @@ internal class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onLanguageSelect(config: LanguageConfig) {
-        viewModelScope.launch {
-            setLanguageConfigUseCase(config)
-        }
+    suspend fun onLanguageSelect(config: LanguageConfig) {
+        setLanguageConfigUseCase(config)
     }
 }
