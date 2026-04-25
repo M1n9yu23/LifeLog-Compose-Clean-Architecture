@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LifeLog</string>
+    <string name="cd_new_memo">새 메모</string>
+    <string name="notification_permission_title">알림 권한 필요</string>
+    <string name="notification_permission_message">앱에서 알림을 보내려면 알림 권한이 필요해요. 설정에서 허용해주세요.</string>
+    <string name="notification_permission_positive">설정</string>
+    <string name="notification_permission_negative">취소</string>
 </resources>

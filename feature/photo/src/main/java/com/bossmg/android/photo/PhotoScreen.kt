@@ -86,7 +86,7 @@ private fun PhotoScreen(
         items(photos) {
             AsyncImage(
                 model = it,
-                contentDescription = "사용한 이미지",
+                contentDescription = stringResource(R.string.cd_used_image),
                 modifier = Modifier.aspectRatio(1f),
                 alignment = Alignment.Center,
                 contentScale = ContentScale.Crop,

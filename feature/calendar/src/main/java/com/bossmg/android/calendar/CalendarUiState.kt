@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.calendar
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.bossmg.android.model.MemoItem
 import kotlinx.collections.immutable.ImmutableList
@@ -35,6 +36,6 @@ internal sealed interface CalendarUiState {
 
     @Immutable
     data class Error(
-        val message: String,
+        @StringRes val messageResId: Int,
     ) : CalendarUiState
 }

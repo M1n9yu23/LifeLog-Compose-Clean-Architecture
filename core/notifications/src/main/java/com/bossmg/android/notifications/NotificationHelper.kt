@@ -16,7 +16,7 @@
 package com.bossmg.android.notifications
 
 import android.Manifest
-import android.R
+import android.R.drawable.ic_notification_overlay
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -45,8 +45,8 @@ class NotificationHelper @Inject constructor(
     }
 
     private fun createNotificationChannel() {
-        val name = "Morning Alarm"
-        val description = "Daily morning notifications at 8 AM"
+        val name = context.getString(R.string.notification_channel_name)
+        val description = context.getString(R.string.notification_channel_description)
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel =
             NotificationChannel(channelId, name, importance).apply {
@@ -70,7 +70,7 @@ class NotificationHelper @Inject constructor(
 
         val notification =
             NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_notification_overlay)
+                .setSmallIcon(ic_notification_overlay)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)

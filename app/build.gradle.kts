@@ -10,6 +10,11 @@ android {
         applicationId = "com.bossmg.android.lifelog"
         versionCode = 1
         versionName = "1.0"
+        resourceConfigurations += listOf("en", "ko")
+    }
+
+    androidResources {
+        generateLocaleConfig = true
     }
 
     buildTypes {
@@ -36,6 +41,7 @@ dependencies {
     implementation(project(":core:data"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 }

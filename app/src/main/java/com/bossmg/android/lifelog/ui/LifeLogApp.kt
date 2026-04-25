@@ -28,9 +28,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.bossmg.android.designsystem.ui.components.LifeLogScaffold
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
+import com.bossmg.android.lifelog.R
 import com.bossmg.android.lifelog.navigation.LifeLogNavHost
 
 @Composable
@@ -82,7 +84,7 @@ fun LifeLogApp(
                 ) {
                     Icon(
                         imageVector = LifeIcons.Add,
-                        contentDescription = "새 메모",
+                        contentDescription = stringResource(R.string.cd_new_memo),
                     )
                 }
             }

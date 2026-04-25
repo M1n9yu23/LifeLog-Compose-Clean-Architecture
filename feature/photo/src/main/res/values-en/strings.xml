@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_empty_title">Nothing here yet...</string>
+    <string name="text_empty_body">Add some photos!</string>
+    <string name="cd_used_image">Used image</string>
+</resources>

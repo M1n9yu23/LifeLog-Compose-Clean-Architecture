@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_week_sunday">Sun</string>
+    <string name="text_week_monday">Mon</string>
+    <string name="text_week_tuesday">Tue</string>
+    <string name="text_week_wednesday">Wed</string>
+    <string name="text_week_thursday">Thu</string>
+    <string name="text_week_friday">Fri</string>
+    <string name="text_week_saturday">Sat</string>
+    <string name="text_prev_month">Previous month</string>
+    <string name="text_next_month">Next month</string>
+    <string name="error_unknown">An unknown error has occurred.</string>
+</resources>

@@ -31,8 +31,8 @@ class MorningNotificationWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result {
         notificationSender.send(
-            "오늘 하루 힘내요!",
-            "작은 목표를 달성하는 하루가 되길 응원해요",
+            applicationContext.getString(R.string.notification_title),
+            applicationContext.getString(R.string.notification_message),
         )
         scheduler.scheduleDailyNotification()
         return Result.success()

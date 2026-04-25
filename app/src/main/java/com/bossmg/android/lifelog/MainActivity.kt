@@ -23,10 +23,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
@@ -41,7 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var notificationScheduler: MorningNotificationScheduler
 
@@ -107,12 +107,12 @@ class MainActivity : ComponentActivity() {
 
     private fun showPermissionRationale() {
         AlertDialog.Builder(this)
-            .setTitle("알림 권한 필요")
-            .setMessage("앱에서 알림을 보내려면 알림 권한이 필요해요. 설정에서 허용해주세요.")
-            .setPositiveButton("설정") { _, _ ->
+            .setTitle(getString(R.string.notification_permission_title))
+            .setMessage(getString(R.string.notification_permission_message))
+            .setPositiveButton(getString(R.string.notification_permission_positive)) { _, _ ->
                 openAppSettings()
             }
-            .setNegativeButton("취소", null)
+            .setNegativeButton(getString(R.string.notification_permission_negative), null)
             .show()
     }
 

@@ -44,20 +44,106 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.bossmg.android.designsystem.R
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP2
+import com.bossmg.android.designsystem.ui.theme.DP24
 import com.bossmg.android.designsystem.ui.theme.DP320
 import com.bossmg.android.designsystem.ui.theme.DP8
+import com.bossmg.android.designsystem.ui.util.currentJavaLocale
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.math.ceil
+
+@Composable
+fun ConfirmDialog(
+    title: String,
+    message: String,
+    confirmText: String,
+    dismissText: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties =
+            DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+            ),
+    ) {
+        CustomCard(
+            shapeTop = DP10,
+            shapeBottom = DP10,
+            elevation = DP10,
+            backgroundColor = MaterialTheme.colorScheme.surface,
+        ) {
+            Column(
+                modifier =
+                    Modifier
+                        .width(DP320)
+                        .padding(DP16)
+                        .wrapContentSize(),
+            ) {
+                Text(
+                    text = title,
+                    style = AppTypography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                )
+
+                Spacer(Modifier.height(DP10))
+
+                Text(
+                    text = message,
+                    style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                )
+
+                Spacer(Modifier.height(DP24))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = onDismiss,
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onBackground,
+                            ),
+                    ) {
+                        Text(dismissText)
+                    }
+
+                    Spacer(Modifier.width(DP8))
+
+                    TextButton(
+                        onClick = onConfirm,
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                    ) {
+                        Text(confirmText)
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun CalendarDialog(
@@ -90,7 +176,10 @@ fun CalendarDialog(
                         .wrapContentSize(),
             ) {
                 Text(
-                    text = "${selectedDate.year}년 ${selectedDate.monthValue}월 ${selectedDate.dayOfMonth}일",
+                    text =
+                        selectedDate.format(
+                            DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(currentJavaLocale),
+                        ),
                     style = AppTypography.titleMedium.copy(MaterialTheme.colorScheme.onSurface),
                 )
 
@@ -106,8 +195,13 @@ fun CalendarDialog(
 
                 Spacer(Modifier.height(DP12))
 
+                val currentLocale = currentJavaLocale
+                val dayNames =
+                    remember(currentLocale) {
+                        (0..6).map { DayOfWeek.of(if (it == 0) 7 else it).getDisplayName(TextStyle.NARROW, currentLocale) }
+                    }
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    listOf("일", "월", "화", "수", "목", "금", "토").forEach { day ->
+                    dayNames.forEach { day ->
                         Text(
                             text = day,
                             modifier = Modifier.weight(1f),
@@ -139,7 +233,7 @@ fun CalendarDialog(
                                 contentColor = MaterialTheme.colorScheme.onBackground,
                             ),
                     ) {
-                        Text("취소")
+                        Text(stringResource(R.string.dialog_cancel))
                     }
                     Spacer(Modifier.width(DP8))
 
@@ -151,7 +245,7 @@ fun CalendarDialog(
                                 contentColor = MaterialTheme.colorScheme.onPrimary,
                             ),
                     ) {
-                        Text("확인")
+                        Text(stringResource(R.string.dialog_confirm))
                     }
                 }
             }
@@ -171,17 +265,17 @@ private fun CalenderHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onPrevMonth) {
-            Icon(LifeIcons.ArrowLeft, contentDescription = "이전 달")
+            Icon(LifeIcons.ArrowLeft, contentDescription = stringResource(R.string.cd_prev_month))
         }
 
         Text(
-            text = "${month.year}년 ${month.monthValue}월",
+            text = month.format(DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(currentJavaLocale)),
             style = AppTypography.titleMedium,
             textAlign = TextAlign.Center,
         )
 
         IconButton(onClick = onNextMonth) {
-            Icon(LifeIcons.ArrowRight, contentDescription = "다음 달")
+            Icon(LifeIcons.ArrowRight, contentDescription = stringResource(R.string.cd_next_month))
         }
     }
 }
@@ -244,5 +338,16 @@ private fun CalendarGrid(
 @Preview
 @Composable
 private fun DialogPreview() {
-    CalendarDialog()
+    Column {
+        ConfirmDialog(
+            title = "언어 변경",
+            message = "언어를 변경하시겠습니까? 변경 사항을 적용하려면 앱을 다시 시작해야 합니다.",
+            confirmText = "다시 시작",
+            dismissText = "취소",
+            onConfirm = {},
+            onDismiss = {},
+        )
+        Spacer(Modifier.height(DP16))
+        CalendarDialog()
+    }
 }

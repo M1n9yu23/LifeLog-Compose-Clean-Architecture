@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_title">Have a great day!</string>
+    <string name="notification_message">Wishing you a day full of small achievements</string>
+    <string name="notification_channel_name">Morning Alarm</string>
+    <string name="notification_channel_description">Daily morning notifications at 8 AM</string>
+</resources>

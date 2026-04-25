@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="memo_title_placeholder">Title</string>
+    <string name="memo_description_placeholder">Write about your day :)</string>
+    <string name="icon_camera">Camera or Gallery</string>
+    <string name="icon_share">Share</string>
+    <string name="icon_delete">Delete</string>
+    <string name="icon_save">Save</string>
+    <string name="memo_image_description">Related image</string>
+    <string name="snackbar_memo_added">New memo added</string>
+    <string name="snackbar_memo_edited">Memo updated</string>
+    <string name="snackbar_memo_deleted">Memo deleted</string>
+</resources>

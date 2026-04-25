@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_empty_title">Nothing here yet...</string>
+    <string name="text_empty_body">Start writing your first entry!</string>
+    <string name="text_search_placeholder">Search my diary</string>
+    <string name="text_search_hint">Enter a keyword</string>
+    <string name="text_search_empty">No results for \'%s\'</string>
+    <string name="cd_close_search">Close search</string>
+    <string name="cd_settings">Settings</string>
+</resources>

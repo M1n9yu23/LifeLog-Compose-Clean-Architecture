@@ -59,10 +59,12 @@ import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
 import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.designsystem.ui.util.currentJavaLocale
 import com.bossmg.android.model.MemoItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.ceil
 
 @Composable
@@ -164,7 +166,7 @@ private fun CalenderHeader(
         }
 
         Text(
-            text = "${month.monthValue}월 ${month.year}",
+            text = month.format(DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(currentJavaLocale)),
             style = AppTypography.titleMedium,
         )
 

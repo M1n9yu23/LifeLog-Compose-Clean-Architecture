@@ -38,10 +38,10 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -60,18 +60,31 @@ import com.bossmg.android.designsystem.ui.theme.DarkSurface
 import com.bossmg.android.designsystem.ui.theme.LightBackground
 import com.bossmg.android.designsystem.ui.theme.LightPrimary
 import com.bossmg.android.designsystem.ui.theme.LightSurface
+import com.bossmg.android.domain.enums.LanguageConfig
 import com.bossmg.android.domain.enums.ThemeConfig
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun Settings(
     onBack: () -> Unit,
+    onRestartRequired: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val themeConfig by viewModel.themeConfig.collectAsStateWithLifecycle()
+    val languageConfig by viewModel.languageConfig.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
     SettingsScreen(
         themeConfig = themeConfig,
         onThemeSelect = viewModel::onThemeSelect,
+        languageConfig = languageConfig,
+        onLanguageSelect = { config ->
+            if (config != languageConfig) {
+                scope.launch {
+                    viewModel.onLanguageSelect(config)
+                }
+            }
+        },
         onBack = onBack,
     )
 }
@@ -80,6 +93,8 @@ internal fun Settings(
 private fun SettingsScreen(
     themeConfig: ThemeConfig,
     onThemeSelect: (ThemeConfig) -> Unit,
+    languageConfig: LanguageConfig,
+    onLanguageSelect: (LanguageConfig) -> Unit,
     onBack: () -> Unit,
 ) {
     Column(
@@ -140,7 +155,66 @@ private fun SettingsScreen(
                 onClick = { onThemeSelect(ThemeConfig.DARK) },
                 previewDark = true,
             )
+
+            Spacer(modifier = Modifier.height(DP16))
+
+            Text(
+                text = stringResource(R.string.settings_language_section),
+                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary),
+            )
+
+            Spacer(modifier = Modifier.height(DP12))
+
+            LanguageOptionItem(
+                label = stringResource(R.string.settings_language_system),
+                selected = languageConfig == LanguageConfig.FOLLOW_SYSTEM,
+                onClick = { onLanguageSelect(LanguageConfig.FOLLOW_SYSTEM) },
+            )
+
+            LanguageOptionItem(
+                label = stringResource(R.string.settings_language_korean),
+                selected = languageConfig == LanguageConfig.KOREAN,
+                onClick = { onLanguageSelect(LanguageConfig.KOREAN) },
+            )
+
+            LanguageOptionItem(
+                label = stringResource(R.string.settings_language_english),
+                selected = languageConfig == LanguageConfig.ENGLISH,
+                onClick = { onLanguageSelect(LanguageConfig.ENGLISH) },
+            )
         }
+    }
+}
+
+@Composable
+private fun LanguageOptionItem(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(vertical = DP12),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick,
+            colors =
+                RadioButtonDefaults.colors(
+                    selectedColor = MaterialTheme.colorScheme.primary,
+                ),
+        )
+
+        Spacer(modifier = Modifier.width(DP12))
+
+        Text(
+            text = label,
+            style = AppTypography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+        )
     }
 }
 
@@ -281,6 +355,8 @@ private fun SettingsScreenPreview() {
     SettingsScreen(
         themeConfig = ThemeConfig.FOLLOW_SYSTEM,
         onThemeSelect = {},
+        languageConfig = LanguageConfig.FOLLOW_SYSTEM,
+        onLanguageSelect = {},
         onBack = {},
     )
 }

@@ -337,7 +337,7 @@ private fun MemoImage(
     img?.let {
         AsyncImage(
             model = it,
-            contentDescription = "관련 이미지",
+            contentDescription = stringResource(R.string.memo_image_description),
             modifier =
                 Modifier
                     .fillMaxWidth()

@@ -17,8 +17,11 @@ package com.bossmg.android.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bossmg.android.domain.enums.LanguageConfig
 import com.bossmg.android.domain.enums.ThemeConfig
+import com.bossmg.android.domain.usecase.GetLanguageConfigUseCase
 import com.bossmg.android.domain.usecase.GetThemeConfigUseCase
+import com.bossmg.android.domain.usecase.SetLanguageConfigUseCase
 import com.bossmg.android.domain.usecase.SetThemeConfigUseCase
 import com.bossmg.android.domain.usecase.base.invoke
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +35,8 @@ import javax.inject.Inject
 internal class SettingsViewModel @Inject constructor(
     private val getThemeConfigUseCase: GetThemeConfigUseCase,
     private val setThemeConfigUseCase: SetThemeConfigUseCase,
+    private val getLanguageConfigUseCase: GetLanguageConfigUseCase,
+    private val setLanguageConfigUseCase: SetLanguageConfigUseCase,
 ) : ViewModel() {
     val themeConfig: StateFlow<ThemeConfig> =
         getThemeConfigUseCase()
@@ -41,9 +46,21 @@ internal class SettingsViewModel @Inject constructor(
                 initialValue = ThemeConfig.FOLLOW_SYSTEM,
             )
 
+    val languageConfig: StateFlow<LanguageConfig> =
+        getLanguageConfigUseCase()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = LanguageConfig.FOLLOW_SYSTEM,
+            )
+
     fun onThemeSelect(config: ThemeConfig) {
         viewModelScope.launch {
             setThemeConfigUseCase(config)
         }
+    }
+
+    suspend fun onLanguageSelect(config: LanguageConfig) {
+        setLanguageConfigUseCase(config)
     }
 }

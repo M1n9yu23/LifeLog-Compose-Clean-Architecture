@@ -6,4 +6,12 @@
     <string name="settings_theme_light">라이트</string>
     <string name="settings_theme_dark">다크</string>
     <string name="cd_back">뒤로가기</string>
+    <string name="settings_language_section">언어</string>
+    <string name="settings_language_system">시스템 기본값</string>
+    <string name="settings_language_korean">한국어</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_change_title">언어 변경</string>
+    <string name="settings_language_change_message">언어를 변경하려면 앱을 재시작해야 합니다.</string>
+    <string name="settings_language_restart">재시작</string>
+    <string name="settings_language_cancel">취소</string>
 </resources>

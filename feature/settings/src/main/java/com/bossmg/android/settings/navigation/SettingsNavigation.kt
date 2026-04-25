@@ -28,8 +28,11 @@ object SettingsRoute
 fun NavController.navigateToSettings(navOptions: NavOptions? = null) =
     navigate(SettingsRoute, navOptions)
 
-fun NavGraphBuilder.settingsScreen(onBack: () -> Unit) {
+fun NavGraphBuilder.settingsScreen(
+    onBack: () -> Unit,
+    onRestartRequired: () -> Unit,
+) {
     composable<SettingsRoute> {
-        Settings(onBack = onBack)
+        Settings(onBack = onBack, onRestartRequired = onRestartRequired)
     }
 }
