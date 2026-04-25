@@ -10,6 +10,11 @@ android {
         applicationId = "com.bossmg.android.lifelog"
         versionCode = 1
         versionName = "1.0"
+        resourceConfigurations += listOf("en", "ko")
+    }
+
+    androidResources {
+        generateLocaleConfig = true
     }
 
     buildTypes {

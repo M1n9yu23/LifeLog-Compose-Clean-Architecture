@@ -65,7 +65,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import kotlin.math.ceil
 
 @Composable

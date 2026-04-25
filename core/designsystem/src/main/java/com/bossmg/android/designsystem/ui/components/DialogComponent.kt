@@ -118,8 +118,12 @@ fun CalendarDialog(
                 Spacer(Modifier.height(DP12))
 
                 val currentLocale = currentJavaLocale
+                val dayNames =
+                    remember(currentLocale) {
+                        (0..6).map { DayOfWeek.of(if (it == 0) 7 else it).getDisplayName(TextStyle.NARROW, currentLocale) }
+                    }
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    (0..6).map { DayOfWeek.of(if (it == 0) 7 else it).getDisplayName(TextStyle.NARROW, currentLocale) }.forEach { day ->
+                    dayNames.forEach { day ->
                         Text(
                             text = day,
                             modifier = Modifier.weight(1f),
