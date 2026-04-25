@@ -64,17 +64,7 @@ fun LifeLogNavHost(
         )
         settingsScreen(
             onBack = { navController.popBackStack() },
-            onRestartRequired = { context.restartApp() },
+            onRestartRequired = { },
         )
     }
-}
-
-private fun Context.restartApp() {
-    val component =
-        packageManager
-            .getLaunchIntentForPackage(packageName)
-            ?.component
-            ?: return
-    startActivity(Intent.makeRestartActivityTask(component))
-    Runtime.getRuntime().exit(0)
 }
