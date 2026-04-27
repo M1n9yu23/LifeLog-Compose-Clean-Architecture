@@ -76,6 +76,9 @@ internal class MemoViewModel @Inject constructor(
     fun addImage(uri: String) =
         _uiModel.update { it.copy(imgs = it.imgs + uri) }
 
+    fun addImages(uris: List<String>) =
+        _uiModel.update { it.copy(imgs = it.imgs + uris) }
+
     fun removeImage(uri: String) =
         _uiModel.update { it.copy(imgs = it.imgs - uri) }
 

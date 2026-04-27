@@ -98,18 +98,20 @@ internal fun Memo(
 
     val galleryLauncher =
         rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.GetMultipleContents(),
+            contract = ActivityResultContracts.OpenMultipleDocuments(),
         ) { uris ->
-            uris.forEach { uri ->
-                try {
-                    context.contentResolver.takePersistableUriPermission(
-                        uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                    )
-                } catch (_: SecurityException) {
+            val uriStrings =
+                uris.map { uri ->
+                    try {
+                        context.contentResolver.takePersistableUriPermission(
+                            uri,
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION,
+                        )
+                    } catch (_: SecurityException) {
+                    }
+                    uri.toString()
                 }
-                viewModel.addImage(uri.toString())
-            }
+            viewModel.addImages(uriStrings)
         }
 
     if (showDateDialog) {
@@ -127,7 +129,7 @@ internal fun Memo(
 
     LaunchedEffect(showGallery) {
         if (showGallery) {
-            galleryLauncher.launch("image/*")
+            galleryLauncher.launch(arrayOf("image/*"))
             showGallery = false
         }
     }
@@ -363,7 +365,7 @@ private fun ImageStrip(
         horizontalArrangement = Arrangement.spacedBy(DP8),
         contentPadding = PaddingValues(vertical = DP8),
     ) {
-        itemsIndexed(items = imgs) { _, uri ->
+        itemsIndexed(items = imgs, key = { index, uri -> "$index-$uri" }) { _, uri ->
             Box(
                 modifier =
                     Modifier
