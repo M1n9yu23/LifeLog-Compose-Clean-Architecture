@@ -29,7 +29,7 @@ class LifeLogMapper @Inject constructor() : BiMapper<LifeLogEntity, LifeLog> {
             description = output.description,
             mood = output.mood,
             date = output.date.toString(),
-            img = output.img,
+            imgs = output.imgs.joinToString("|"),
         )
 
     override fun map(input: LifeLogEntity): LifeLog =
@@ -39,6 +39,6 @@ class LifeLogMapper @Inject constructor() : BiMapper<LifeLogEntity, LifeLog> {
             description = input.description,
             mood = input.mood,
             date = LocalDate.parse(input.date),
-            img = input.img,
+            imgs = input.imgs.split("|").filter { it.isNotEmpty() },
         )
 }

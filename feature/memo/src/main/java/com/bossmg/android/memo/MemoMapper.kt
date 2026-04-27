@@ -27,7 +27,7 @@ internal class MemoMapper @Inject constructor() : BiMapper<LifeLog, MemoUIModel>
             title = output.title,
             description = output.description,
             mood = output.selectedMood,
-            img = output.img,
+            imgs = output.imgs,
         )
 
     override fun map(input: LifeLog): MemoUIModel =
@@ -37,6 +37,6 @@ internal class MemoMapper @Inject constructor() : BiMapper<LifeLog, MemoUIModel>
             description = input.description,
             selectedDate = input.date,
             selectedMood = input.mood,
-            img = input.img,
+            imgs = input.imgs,
         )
 }

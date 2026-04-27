@@ -109,7 +109,7 @@ class MoodViewModelTest {
                 assertEquals(log.date, item.date)
                 assertEquals(log.title, item.title)
                 assertEquals(log.mood, item.mood)
-                assertEquals(log.img, item.img)
+                assertEquals(log.imgs.firstOrNull(), item.img)
             }
 
             job.cancel()

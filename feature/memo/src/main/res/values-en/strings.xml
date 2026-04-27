@@ -7,6 +7,8 @@
     <string name="icon_delete">Delete</string>
     <string name="icon_save">Save</string>
     <string name="memo_image_description">Related image</string>
+    <string name="memo_remove_image">Remove image</string>
+    <string name="memo_add_image">Add image</string>
     <string name="snackbar_memo_added">New memo added</string>
     <string name="snackbar_memo_edited">Memo updated</string>
     <string name="snackbar_memo_deleted">Memo deleted</string>

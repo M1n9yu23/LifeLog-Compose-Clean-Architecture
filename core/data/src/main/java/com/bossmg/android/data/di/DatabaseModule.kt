@@ -37,5 +37,5 @@ internal object DatabaseModule {
             context,
             LifeLogDatabase::class.java,
             "life-log-database",
-        ).build()
+        ).addMigrations(LifeLogDatabase.MIGRATION_1_2).build()
 }

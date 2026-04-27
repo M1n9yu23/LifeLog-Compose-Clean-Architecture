@@ -44,7 +44,7 @@ class TestLifeLogRepository : LifeLogReadRepository, LifeLogWriteRepository, Lif
         }
 
     override fun getImages(): Flow<List<String>> =
-        logsFlow.map { list -> list.mapNotNull { it.img } }
+        logsFlow.map { list -> list.flatMap { it.imgs } }
 
     override suspend fun getLifeLogById(id: Int): LifeLog {
         val logs = logsFlow.replayCache.firstOrNull() ?: emptyList()

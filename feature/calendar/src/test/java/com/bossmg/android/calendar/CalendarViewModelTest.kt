@@ -163,7 +163,7 @@ class CalendarViewModelTest {
                 assertEquals(lifeLog.date, item.date)
                 assertEquals(lifeLog.title, item.title)
                 assertEquals(lifeLog.mood, item.mood)
-                assertEquals(lifeLog.img, item.img)
+                assertEquals(lifeLog.imgs.firstOrNull(), item.img)
             }
 
             job.cancel()

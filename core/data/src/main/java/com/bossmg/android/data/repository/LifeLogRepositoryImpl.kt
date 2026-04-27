@@ -49,7 +49,10 @@ internal class LifeLogRepositoryImpl @Inject constructor(
     override fun getLifeLogsByMood(mood: String): Flow<List<LifeLog>> =
         dao.getLifeLogsByMood(mood).map { entities -> entities.map { mapper.map(it) } }
 
-    override fun getImages(): Flow<List<String>> = dao.getImages()
+    override fun getImages(): Flow<List<String>> =
+        dao.getImages().map { rows ->
+            rows.flatMap { it.split("|").filter { uri -> uri.isNotEmpty() } }
+        }
 
     override suspend fun getLifeLogById(id: Int): LifeLog =
         dao.getLifeLogById(id).run { mapper.map(this) }

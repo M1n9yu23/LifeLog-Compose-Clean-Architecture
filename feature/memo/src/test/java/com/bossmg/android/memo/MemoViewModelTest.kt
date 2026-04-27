@@ -83,7 +83,7 @@ class MemoViewModelTest {
             assertEquals(testLifeLog.description, state.description)
             assertEquals(testLifeLog.date, state.selectedDate)
             assertEquals(testLifeLog.mood, state.selectedMood)
-            assertEquals(testLifeLog.img, state.img)
+            assertEquals(testLifeLog.imgs, state.imgs)
         }
 
     @Test
@@ -120,10 +120,33 @@ class MemoViewModelTest {
     }
 
     @Test
-    fun given_image_when_updateImage_then_uiModelUpdated() {
+    fun given_image_when_addImage_then_uiModelUpdated() {
         val img = "이미지추가.jpg"
-        viewModel.updateImage(img)
-        assertEquals(img, viewModel.uiModel.value.img)
+        viewModel.addImage(img)
+        assertEquals(listOf(img), viewModel.uiModel.value.imgs)
+    }
+
+    @Test
+    fun given_multipleImages_when_addImage_then_allImagesPresent() {
+        viewModel.addImage("a.jpg")
+        viewModel.addImage("b.jpg")
+        viewModel.addImage("c.jpg")
+        assertEquals(listOf("a.jpg", "b.jpg", "c.jpg"), viewModel.uiModel.value.imgs)
+    }
+
+    @Test
+    fun given_images_when_removeImage_then_imageRemoved() {
+        viewModel.addImage("a.jpg")
+        viewModel.addImage("b.jpg")
+        viewModel.removeImage("a.jpg")
+        assertEquals(listOf("b.jpg"), viewModel.uiModel.value.imgs)
+    }
+
+    @Test
+    fun given_nonExistentImage_when_removeImage_then_listUnchanged() {
+        viewModel.addImage("a.jpg")
+        viewModel.removeImage("nonexistent.jpg")
+        assertEquals(listOf("a.jpg"), viewModel.uiModel.value.imgs)
     }
 
     @Test
@@ -133,14 +156,14 @@ class MemoViewModelTest {
             viewModel.updateDescription("내용 입력")
             viewModel.updateDate(LocalDate.of(2025, 10, 7))
             viewModel.updateMood("\uD83E\uDD29 설렘")
-            viewModel.updateImage("이미지추가.jpg")
+            viewModel.addImage("이미지추가.jpg")
 
             viewModel.saveMemo()
 
             val saveLog = testRepository.getLifeLogs().first().find { it.title == "제목 입력" }
             assertNotNull(saveLog)
             assertEquals("제목 입력", saveLog?.title)
-            assertEquals("이미지추가.jpg", saveLog?.img)
+            assertEquals(listOf("이미지추가.jpg"), saveLog?.imgs)
             assertEquals("내용 입력", saveLog?.description)
         }
 

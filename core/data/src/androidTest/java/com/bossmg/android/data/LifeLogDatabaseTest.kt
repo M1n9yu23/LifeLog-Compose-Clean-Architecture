@@ -55,7 +55,7 @@ class LifeLogDatabaseTest {
                         title = "제목 $i",
                         description = "내용 $i",
                         mood = if (i % 2 == 0) "\uD83D\uDE0A 기쁨" else "\uD83D\uDE22 슬픔",
-                        img = if (i % 2 != 0) "image$i.jpg" else null,
+                        imgs = if (i % 2 != 0) "image$i.jpg" else "",
                     )
                 dao.insertLifeLog(log)
             }
@@ -113,7 +113,7 @@ class LifeLogDatabaseTest {
                     description = "추가 되는 내용",
                     date = "2025-10-06",
                     mood = "\uD83D\uDE0A 기쁨",
-                    img = "추가.jpg",
+                    imgs = "추가.jpg",
                 )
 
             dao.upsertLifeLog(newLog)
@@ -126,7 +126,7 @@ class LifeLogDatabaseTest {
             assertEquals(newLog.id, insertLog.id)
             assertEquals(newLog.title, insertLog.title)
             assertEquals(newLog.description, insertLog.description)
-            assertEquals(newLog.img, insertLog.img)
+            assertEquals(newLog.imgs, insertLog.imgs)
         }
 
     @Test

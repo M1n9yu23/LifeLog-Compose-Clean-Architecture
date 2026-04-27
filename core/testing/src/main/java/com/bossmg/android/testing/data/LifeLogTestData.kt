@@ -26,7 +26,7 @@ val lifeLogTestData =
             title = "아침 산책",
             description = "오늘 아침 공원에서 산책하며 상쾌한 공기를 마셨다.",
             mood = "\uD83D\uDE0A 기쁨",
-            img = "test1.jpg",
+            imgs = listOf("test1.jpg"),
         ),
         LifeLog(
             id = 2,
@@ -34,7 +34,6 @@ val lifeLogTestData =
             title = "새 프로젝트 시작",
             description = "회사에서 새로운 안드로이드 프로젝트를 맡았다. 설렘과 기대가 공존한다.",
             mood = "\uD83E\uDD29 설렘",
-            img = null,
         ),
         LifeLog(
             id = 3,
@@ -42,7 +41,6 @@ val lifeLogTestData =
             title = "친구와 저녁",
             description = "오랜만에 친구와 저녁 식사. 즐거운 시간을 보냈다.",
             mood = "\uD83E\uDD70 행복",
-            img = null,
         ),
         LifeLog(
             id = 4,
@@ -50,7 +48,7 @@ val lifeLogTestData =
             title = "회의 스트레스",
             description = "회의가 길어지고 피로가 쌓였다. 집중력이 떨어진 느낌.",
             mood = "\uD83D\uDE34 피곤",
-            img = "test4.jpg",
+            imgs = listOf("test4.jpg"),
         ),
         LifeLog(
             id = 5,
@@ -58,7 +56,6 @@ val lifeLogTestData =
             title = "작은 성취",
             description = "오류를 찾아서 해결했다. 뿌듯함을 느꼈다.",
             mood = "\uD83D\uDE0E 뿌듯함",
-            img = null,
         ),
         LifeLog(
             id = 6,
@@ -66,7 +63,6 @@ val lifeLogTestData =
             title = "책 읽기",
             description = "코틀린 관련 책을 읽으며 공부했다. 집중이 잘 되었다.",
             mood = "\uD83D\uDE10 무난함",
-            img = null,
         ),
         LifeLog(
             id = 7,
@@ -74,7 +70,7 @@ val lifeLogTestData =
             title = "데이트",
             description = "연인과 함께한 하루. 사랑이 가득했다.",
             mood = "\uD83D\uDE0D 사랑",
-            img = "test7.jpg",
+            imgs = listOf("test7.jpg"),
         ),
         LifeLog(
             id = 8,
@@ -82,7 +78,6 @@ val lifeLogTestData =
             title = "프로젝트 고민",
             description = "새로운 기능 설계 때문에 고민이 많았다.",
             mood = "\uD83E\uDD14 고민",
-            img = null,
         ),
         LifeLog(
             id = 9,
@@ -90,7 +85,6 @@ val lifeLogTestData =
             title = "회의 불만",
             description = "회의에서 의견이 반영되지 않아 실망스러웠다.",
             mood = "\uD83D\uDE1E 실망함",
-            img = null,
         ),
         LifeLog(
             id = 10,
@@ -98,6 +92,5 @@ val lifeLogTestData =
             title = "야근 후 귀가",
             description = "오늘 야근으로 피곤이 극에 달했다.",
             mood = "\uD83D\uDE29 피곤함",
-            img = null,
         ),
     )

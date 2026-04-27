@@ -24,5 +24,5 @@ data class LifeLog(
     val title: String = "",
     val description: String = "",
     val mood: String = MoodProvider.Moods.first().str,
-    val img: String? = null,
+    val imgs: List<String> = emptyList(),
 )
