@@ -39,9 +39,9 @@ class LifeLogRepositoryTest {
 
     private val dummyLogs =
         listOf(
-            LifeLogEntity(1, "2025-10-01", "아침 산책", "공원에서 산책", "\uD83D\uDE0A 기쁨", "산책.jpg"),
+            LifeLogEntity(1, "2025-10-01", "아침 산책", "공원에서 산책", "\uD83D\uDE0A 기쁨", imgs = "산책.jpg"),
             LifeLogEntity(2, "2025-10-02", "새 프로젝트 시작", "안드로이드 프로젝트 시작", "\uD83E\uDD29 설렘"),
-            LifeLogEntity(3, "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", "\uD83E\uDD70 행복", "음식.jpg"),
+            LifeLogEntity(3, "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", "\uD83E\uDD70 행복", imgs = "음식.jpg"),
         )
 
     @Before
@@ -99,7 +99,7 @@ class LifeLogRepositoryTest {
                     title = "저녁 독서",
                     description = "책 읽기",
                     mood = "\uD83D\uDCDD 메모",
-                    img = "book.jpg",
+                    imgs = listOf("book.jpg"),
                 )
             repository.insertLifeLog(newLog)
 
@@ -110,7 +110,7 @@ class LifeLogRepositoryTest {
             assertEquals(newLog.date, logs.last().date)
             assertEquals(newLog.description, logs.last().description)
             assertEquals(newLog.mood, logs.last().mood)
-            assertEquals(newLog.img, logs.last().img)
+            assertEquals(newLog.imgs, logs.last().imgs)
         }
 
     @Test
@@ -135,7 +135,7 @@ class LifeLogRepositoryTest {
             assertEquals(newLog.date, logs.last().date)
             assertEquals(newLog.description, logs.last().description)
             assertEquals(newLog.mood, logs.last().mood)
-            assertEquals(newLog.img, logs.last().img)
+            assertEquals(newLog.imgs, logs.last().imgs)
         }
 
     @Test
@@ -148,7 +148,7 @@ class LifeLogRepositoryTest {
                     title = "id 1 수정",
                     description = "축구를 했다.",
                     mood = "\uD83D\uDE0A 기쁨",
-                    img = "축구.jpg",
+                    imgs = listOf("축구.jpg"),
                 )
 
             repository.upsertLifeLog(updatedLog)
@@ -159,20 +159,39 @@ class LifeLogRepositoryTest {
             assertEquals(3, logs.size)
             assertEquals("id 1 수정", log.title)
             assertEquals("축구를 했다.", log.description)
-            assertEquals("축구.jpg", log.img)
+            assertEquals(listOf("축구.jpg"), log.imgs)
             assertEquals("\uD83D\uDE0A 기쁨", log.mood)
 
             assertEquals(0, logs.indexOf(log))
         }
 
     @Test
-    fun getImages_returnsOnlyNonNullImages() =
+    fun getImages_returnsAllImagesFlattened() =
         scope.runTest {
             val images = repository.getImages().first()
 
             assertEquals(2, images.size)
             assertEquals("산책.jpg", images[0])
             assertEquals("음식.jpg", images[1])
+        }
+
+    @Test
+    fun getImages_returnsAllImagesFlattened_whenMultipleImagesPerLog() =
+        scope.runTest {
+            val multiLog =
+                LifeLog(
+                    id = 4,
+                    date = LocalDate.of(2025, 10, 3),
+                    title = "다중 이미지",
+                    description = "여러 이미지",
+                    mood = "\uD83D\uDE0A 기쁨",
+                    imgs = listOf("a.jpg", "b.jpg"),
+                )
+            repository.insertLifeLog(multiLog)
+
+            val images = repository.getImages().first()
+            assertEquals(4, images.size)
+            assertEquals(true, images.containsAll(listOf("a.jpg", "b.jpg")))
         }
 
     @Test

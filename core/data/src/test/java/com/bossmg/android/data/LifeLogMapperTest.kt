@@ -40,7 +40,7 @@ class LifeLogMapperTest {
                 title = "Test Title",
                 description = "Test Description",
                 mood = "\uD83D\uDE0A 기쁨",
-                img = "image.png",
+                imgs = "image.png",
             )
 
         val domainModel = mapper.map(entity)
@@ -50,7 +50,7 @@ class LifeLogMapperTest {
         assertEquals(LocalDate.parse(entity.date), domainModel.date)
         assertEquals(entity.mood, domainModel.mood)
         assertEquals(entity.description, domainModel.description)
-        assertEquals(entity.img, domainModel.img)
+        assertEquals(listOf("image.png"), domainModel.imgs)
     }
 
     @Test
@@ -62,7 +62,7 @@ class LifeLogMapperTest {
                 title = "Domain Title",
                 description = "Domain Description",
                 mood = "\uD83D\uDE22 슬픔",
-                img = "test.png",
+                imgs = listOf("test.png"),
             )
 
         val entity = mapper.mapBack(domainModel)
@@ -72,6 +72,74 @@ class LifeLogMapperTest {
         assertEquals(domainModel.date.toString(), entity.date)
         assertEquals(domainModel.mood, entity.mood)
         assertEquals(domainModel.description, entity.description)
-        assertEquals(domainModel.img, entity.img)
+        assertEquals("test.png", entity.imgs)
+    }
+
+    @Test
+    fun mapEntityToDomain_multipleImages() {
+        val entity =
+            LifeLogEntity(
+                id = 3,
+                date = "2025-10-07",
+                title = "Multi Image",
+                description = "여러 이미지 테스트",
+                mood = "\uD83D\uDE0A 기쁨",
+                imgs = "a.jpg|b.jpg",
+            )
+
+        val domainModel = mapper.map(entity)
+
+        assertEquals(listOf("a.jpg", "b.jpg"), domainModel.imgs)
+    }
+
+    @Test
+    fun mapBack_multipleImages() {
+        val domainModel =
+            LifeLog(
+                id = 4,
+                date = LocalDate.of(2025, 10, 8),
+                title = "Multi Image Back",
+                description = "여러 이미지 역매핑 테스트",
+                mood = "\uD83D\uDE22 슬픔",
+                imgs = listOf("a.jpg", "b.jpg"),
+            )
+
+        val entity = mapper.mapBack(domainModel)
+
+        assertEquals("a.jpg|b.jpg", entity.imgs)
+    }
+
+    @Test
+    fun mapEntityToDomain_emptyImgs_returnsEmptyList() {
+        val entity =
+            LifeLogEntity(
+                id = 5,
+                date = "2025-10-09",
+                title = "No Image",
+                description = "이미지 없음",
+                mood = "\uD83D\uDE10 무난함",
+                imgs = "",
+            )
+
+        val domainModel = mapper.map(entity)
+
+        assertEquals(emptyList<String>(), domainModel.imgs)
+    }
+
+    @Test
+    fun mapBack_emptyImgs_returnsEmptyString() {
+        val domainModel =
+            LifeLog(
+                id = 6,
+                date = LocalDate.of(2025, 10, 10),
+                title = "No Image Back",
+                description = "이미지 없음 역매핑",
+                mood = "\uD83D\uDE10 무난함",
+                imgs = emptyList(),
+            )
+
+        val entity = mapper.mapBack(domainModel)
+
+        assertEquals("", entity.imgs)
     }
 }

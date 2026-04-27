@@ -54,8 +54,8 @@ internal interface LifeLogDao {
 
     @Query(
         """
-            SELECT img FROM lifelogs
-            WHERE img IS NOT NULL ORDER BY date DESC, id DESC 
+            SELECT imgs FROM lifelogs
+            WHERE imgs != '' ORDER BY date DESC, id DESC
         """,
     )
     fun getImages(): Flow<List<String>>

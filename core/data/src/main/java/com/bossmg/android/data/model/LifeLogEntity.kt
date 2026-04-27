@@ -26,5 +26,5 @@ data class LifeLogEntity(
     val title: String,
     val description: String,
     val mood: String,
-    val img: String? = null,
+    val imgs: String = "",
 )

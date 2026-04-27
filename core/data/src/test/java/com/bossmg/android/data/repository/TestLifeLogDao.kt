@@ -34,7 +34,7 @@ class TestLifeLogDao : LifeLogDao {
         logsFlow.map { list -> list.filter { it.mood == mood } }
 
     override fun getImages(): Flow<List<String>> =
-        logsFlow.map { list -> list.mapNotNull { it.img } }
+        logsFlow.map { list -> list.filter { it.imgs.isNotEmpty() }.map { it.imgs } }
 
     override suspend fun getLifeLogById(lifeLogId: Int): LifeLogEntity =
         logsFlow.value.first { it.id == lifeLogId }

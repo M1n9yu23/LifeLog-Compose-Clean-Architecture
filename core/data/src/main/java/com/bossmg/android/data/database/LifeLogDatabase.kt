@@ -17,9 +17,39 @@ package com.bossmg.android.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.bossmg.android.data.model.LifeLogEntity
 
-@Database(entities = [LifeLogEntity::class], version = 1)
+@Database(entities = [LifeLogEntity::class], version = 2)
 internal abstract class LifeLogDatabase : RoomDatabase() {
     abstract fun lifeLogDao(): LifeLogDao
+
+    companion object {
+        val MIGRATION_1_2 =
+            object : Migration(1, 2) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        CREATE TABLE lifelogs_new (
+                            id          INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            date        TEXT    NOT NULL,
+                            title       TEXT    NOT NULL,
+                            description TEXT    NOT NULL,
+                            mood        TEXT    NOT NULL,
+                            imgs        TEXT    NOT NULL DEFAULT ''
+                        )
+                        """.trimIndent(),
+                    )
+                    db.execSQL(
+                        """
+                        INSERT INTO lifelogs_new (id, date, title, description, mood, imgs)
+                        SELECT id, date, title, description, mood, COALESCE(img, '') FROM lifelogs
+                        """.trimIndent(),
+                    )
+                    db.execSQL("DROP TABLE lifelogs")
+                    db.execSQL("ALTER TABLE lifelogs_new RENAME TO lifelogs")
+                }
+            }
+    }
 }

@@ -26,6 +26,6 @@ class MemoItemMapper @Inject constructor() : Mapper<LifeLog, MemoItem> {
             date = input.date,
             title = input.title,
             mood = input.mood,
-            img = input.img,
+            img = input.imgs.firstOrNull(),
         )
 }
