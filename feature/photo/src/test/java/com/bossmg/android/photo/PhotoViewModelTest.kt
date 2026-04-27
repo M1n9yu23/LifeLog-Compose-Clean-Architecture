@@ -62,7 +62,7 @@ class PhotoViewModelTest {
             testLifeLogRepository.sendLogs(testLifeLogs)
 
             val state = viewModel.uiState.value
-            val testImages = testLifeLogs.mapNotNull { it.img }
+            val testImages = testLifeLogs.flatMap { it.imgs }
 
             assertTrue(state is PhotoUIState.Success)
             assertEquals(testImages, (state as PhotoUIState.Success).uiModel.photos)
@@ -80,11 +80,11 @@ class PhotoViewModelTest {
 
             var state = viewModel.uiState.value
             assertEquals(1, (state as PhotoUIState.Success).uiModel.photos.size)
-            assertEquals(testLifeLogs.first().img, state.uiModel.photos.first())
+            assertEquals(testLifeLogs.first().imgs.first(), state.uiModel.photos.first())
 
             testLifeLogRepository.sendLogs(testLifeLogs)
             state = viewModel.uiState.value
-            val testImages = testLifeLogs.mapNotNull { it.img }
+            val testImages = testLifeLogs.flatMap { it.imgs }
 
             assertEquals(testImages, (state as PhotoUIState.Success).uiModel.photos)
 

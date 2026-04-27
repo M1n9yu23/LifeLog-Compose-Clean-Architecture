@@ -107,7 +107,7 @@ class HomeViewModelTest {
                 assertEquals(lifeLog.date, uiModel.date)
                 assertEquals(lifeLog.title, uiModel.title)
                 assertEquals(lifeLog.mood, uiModel.mood)
-                assertEquals(lifeLog.img, uiModel.img)
+                assertEquals(lifeLog.imgs.firstOrNull(), uiModel.img)
             }
 
             job.cancel()
