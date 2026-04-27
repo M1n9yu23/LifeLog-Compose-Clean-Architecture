@@ -24,5 +24,5 @@ internal data class MemoUIModel(
     val description: String = "",
     val selectedDate: LocalDate = LocalDate.now(),
     val selectedMood: String = MoodProvider.Moods.first().str,
-    val img: String? = null,
+    val imgs: List<String> = emptyList(),
 )
