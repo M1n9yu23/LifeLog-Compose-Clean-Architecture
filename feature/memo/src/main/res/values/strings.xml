@@ -9,6 +9,12 @@
     <string name="memo_image_description">관련 이미지</string>
     <string name="memo_remove_image">이미지 제거</string>
     <string name="memo_add_image">이미지 추가</string>
+    <string name="memo_new">새 메모</string>
+    <string name="memo_edit">메모 편집</string>
+    <string name="memo_save">저장</string>
+    <string name="memo_back">뒤로가기</string>
+    <string name="memo_more">더보기</string>
+    <string name="memo_add_photo">사진 추가</string>
     <string name="snackbar_memo_added">새 메모가 추가됐어요</string>
     <string name="snackbar_memo_edited">메모가 수정됐어요</string>
     <string name="snackbar_memo_deleted">메모가 삭제됐어요</string>

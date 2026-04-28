@@ -27,6 +27,7 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Mood
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Share
@@ -46,4 +47,5 @@ object LifeIcons {
     val Search = Icons.Rounded.Search
     val Close = Icons.Rounded.Close
     val Settings = Icons.Rounded.Settings
+    val More = Icons.Rounded.MoreVert
 }
