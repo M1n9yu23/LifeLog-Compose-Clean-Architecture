@@ -23,17 +23,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -41,10 +37,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,20 +66,25 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.bossmg.android.designsystem.ui.components.CalendarDialog
-import com.bossmg.android.designsystem.ui.components.CustomDivider
 import com.bossmg.android.designsystem.ui.components.DefaultTextField
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
-import com.bossmg.android.designsystem.ui.theme.DP100
 import com.bossmg.android.designsystem.ui.theme.DP12
+import com.bossmg.android.designsystem.ui.theme.DP120
 import com.bossmg.android.designsystem.ui.theme.DP16
+import com.bossmg.android.designsystem.ui.theme.DP20
 import com.bossmg.android.designsystem.ui.theme.DP24
+import com.bossmg.android.designsystem.ui.theme.DP28
 import com.bossmg.android.designsystem.ui.theme.DP300
 import com.bossmg.android.designsystem.ui.theme.DP32
 import com.bossmg.android.designsystem.ui.theme.DP4
+import com.bossmg.android.designsystem.ui.theme.DP6
 import com.bossmg.android.designsystem.ui.theme.DP8
+import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
+import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.domain.enums.MoodType
 import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -156,6 +163,8 @@ internal fun Memo(
 
     MemoScreen(
         uiModel = uiModel,
+        isEditing = id != null,
+        onBack = { currentOnBack(null) },
         onShowDateDialogChange = { showDateDialog = it },
         onShowGallery = { showGallery = it },
         onTitleChange = { viewModel.updateTitle(it) },
@@ -167,9 +176,12 @@ internal fun Memo(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MemoScreen(
     uiModel: MemoUIModel,
+    isEditing: Boolean,
+    onBack: () -> Unit,
     onShowDateDialogChange: (Boolean) -> Unit,
     onShowGallery: (Boolean) -> Unit,
     onTitleChange: (String) -> Unit,
@@ -179,141 +191,258 @@ private fun MemoScreen(
     onDeleteClick: () -> Unit,
     onRemoveImage: (String) -> Unit,
 ) {
-    Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .statusBarsPadding()
-                .padding(DP12),
-    ) {
-        LazyColumn {
+    Scaffold(
+        topBar = {
+            MemoTopBar(
+                onBack = onBack,
+                onSaveClick = onSaveClick,
+                onShowGallery = { onShowGallery(true) },
+                onDeleteClick = onDeleteClick,
+            )
+        },
+    ) { paddingValues ->
+        LazyColumn(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+        ) {
             item {
-                Head(
-                    uiModel.selectedDate,
-                    uiModel.selectedMood,
-                    onShowDateDialogChange,
-                    {
-                        onMoodSelected(it)
-                    },
+                MemoDateMoodRow(
+                    selectedDate = uiModel.selectedDate,
+                    selectedMood = uiModel.selectedMood,
+                    onShowDateDialogChange = onShowDateDialogChange,
+                    onMoodSelected = onMoodSelected,
                 )
 
-                Spacer(Modifier.height(DP12))
+                TitleInputField(
+                    title = uiModel.title,
+                    onTitleChange = onTitleChange,
+                )
 
-                TitleInputField(uiModel.title, {
-                    onTitleChange(it)
-                })
-
-                Spacer(Modifier.height(DP8))
+                DescriptionInputField(
+                    description = uiModel.description,
+                    onDescriptionChange = onDescriptionChange,
+                )
 
                 ImageStrip(
                     imgs = uiModel.imgs,
-                    onAddClick = { onShowGallery(true) },
                     onRemoveImage = onRemoveImage,
                 )
-
-                CustomDivider()
-
-                DescriptionInputField(uiModel.description, {
-                    onDescriptionChange(it)
-                })
-            }
-        }
-
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = DP12),
-        ) {
-            CustomDivider()
-
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = DP8),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                IconButton(onClick = { onShowGallery(true) }) {
-                    Icon(
-                        LifeIcons.Photo,
-                        contentDescription = stringResource(R.string.icon_camera),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                IconButton(onClick = { /* 공유 기능 */ }) {
-                    Icon(
-                        LifeIcons.Share,
-                        contentDescription = stringResource(R.string.icon_share),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                IconButton(onClick = { onDeleteClick() }) {
-                    Icon(
-                        LifeIcons.Delete,
-                        contentDescription = stringResource(R.string.icon_delete),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                IconButton(onClick = { onSaveClick() }) {
-                    Icon(
-                        LifeIcons.Save,
-                        contentDescription = stringResource(R.string.icon_save),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Head(
+private fun MemoTopBar(
+    onBack: () -> Unit,
+    onSaveClick: () -> Unit,
+    onShowGallery: () -> Unit,
+    onDeleteClick: () -> Unit,
+) {
+    var menuExpanded by remember { mutableStateOf(false) }
+
+    TopAppBar(
+        title = {},
+        navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = LifeIcons.ArrowLeft,
+                    contentDescription = stringResource(R.string.memo_back),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onSaveClick) {
+                Icon(
+                    imageVector = LifeIcons.Save,
+                    contentDescription = stringResource(R.string.memo_save),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(DP28),
+                )
+            }
+            Box {
+                IconButton(onClick = { menuExpanded = true }) {
+                    Icon(
+                        imageVector = LifeIcons.More,
+                        contentDescription = stringResource(R.string.memo_more),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.memo_add_photo),
+                                style = AppTypography.bodyMedium,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = LifeIcons.PhotoTab,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        onClick = {
+                            menuExpanded = false
+                            onShowGallery()
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.icon_delete),
+                                style = AppTypography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = LifeIcons.Delete,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        onClick = {
+                            menuExpanded = false
+                            onDeleteClick()
+                        },
+                    )
+                }
+            }
+        },
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+            ),
+    )
+}
+
+@Composable
+private fun MemoDateMoodRow(
     selectedDate: LocalDate,
     selectedMood: String,
     onShowDateDialogChange: (Boolean) -> Unit,
     onMoodSelected: (String) -> Unit,
 ) {
+    val formatter = remember { DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN) }
+    val formattedDate = remember(selectedDate) { selectedDate.format(formatter) }
+
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(cardColor(selectedMood))
+                .padding(horizontal = DP16, vertical = DP10),
+        horizontalArrangement = Arrangement.spacedBy(DP8),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SuggestionChip(
+            onClick = { onShowDateDialogChange(true) },
+            label = {
+                Text(
+                    text = formattedDate,
+                    style = AppTypography.bodyMedium,
+                )
+            },
+            icon = {
+                Icon(
+                    imageVector = LifeIcons.Calendar,
+                    contentDescription = null,
+                    modifier = Modifier.size(DP16),
+                )
+            },
+            colors =
+                SuggestionChipDefaults.suggestionChipColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    labelColor = MaterialTheme.colorScheme.onSurface,
+                    iconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            border =
+                SuggestionChipDefaults.suggestionChipBorder(
+                    enabled = true,
+                    borderColor = MaterialTheme.colorScheme.outlineVariant,
+                ),
+        )
+
+        MoodChip(
+            selectedMood = selectedMood,
+            onMoodSelected = onMoodSelected,
+        )
+    }
+}
+
+@Composable
+private fun MoodChip(
+    selectedMood: String,
+    onMoodSelected: (String) -> Unit,
+) {
     val moods = MoodProvider.Moods.map { it.str }
     var expanded by remember { mutableStateOf(false) }
 
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = selectedDate.toString(),
-            modifier =
-                Modifier.clickable {
-                    onShowDateDialogChange(true)
-                },
-            style = AppTypography.bodyLarge,
-        )
+    val moodType =
+        remember(selectedMood) {
+            MoodProvider.Moods.firstOrNull { it.str == selectedMood }?.type ?: MoodType.MEMO
+        }
+    val lifeLogColors = LocalLifeLogColors.current
+    val strokeColor =
+        when (moodType) {
+            MoodType.POSITIVE -> lifeLogColors.moodPositiveStroke
+            MoodType.NEUTRAL -> lifeLogColors.moodNeutralStroke
+            MoodType.NEGATIVE -> lifeLogColors.moodNegativeStroke
+            MoodType.MEMO -> lifeLogColors.moodMemoStroke
+        }
 
-        Box {
+    Box {
+        Row(
+            modifier =
+                Modifier
+                    .clip(RoundedCornerShape(DP8))
+                    .background(MaterialTheme.colorScheme.background)
+                    .border(DP1, strokeColor, RoundedCornerShape(DP8))
+                    .clickable { expanded = true }
+                    .padding(horizontal = DP12, vertical = DP6),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(DP4),
+        ) {
             Text(
                 text = selectedMood,
-                modifier =
-                    Modifier
-                        .clickable { expanded = true },
-                style = AppTypography.bodyLarge,
+                style = AppTypography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                moods.forEach { mood ->
-                    DropdownMenuItem(
-                        text = { Text(mood) },
-                        onClick = {
-                            onMoodSelected(mood)
-                            expanded = false
-                        },
-                    )
-                }
+            Icon(
+                imageVector = LifeIcons.Mood,
+                contentDescription = null,
+                modifier = Modifier.size(DP16),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            containerColor = MaterialTheme.colorScheme.surface,
+        ) {
+            moods.forEach { mood ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = mood,
+                            style = AppTypography.bodyMedium,
+                        )
+                    },
+                    onClick = {
+                        onMoodSelected(mood)
+                        expanded = false
+                    },
+                )
             }
         }
     }
@@ -326,13 +455,14 @@ private fun TitleInputField(
 ) {
     DefaultTextField(
         value = title,
-        onValueChange = {
-            onTitleChange(it)
-        },
-        modifier = Modifier.fillMaxWidth(),
+        onValueChange = onTitleChange,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(start = DP20, end = DP20, top = DP24, bottom = DP8),
         placeholder = stringResource(R.string.memo_title_placeholder),
-        textStyle = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-        hintStyle = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+        textStyle = AppTypography.displayLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+        hintStyle = AppTypography.displayLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
     )
 }
 
@@ -343,13 +473,12 @@ private fun DescriptionInputField(
 ) {
     DefaultTextField(
         value = description,
-        onValueChange = {
-            onDescriptionChange(it)
-        },
+        onValueChange = onDescriptionChange,
         modifier =
             Modifier
                 .fillMaxWidth()
-                .heightIn(min = DP300),
+                .heightIn(min = DP300)
+                .padding(start = DP20, end = DP20, top = DP4, bottom = DP16),
         placeholder = stringResource(R.string.memo_description_placeholder),
         singleLine = false,
     )
@@ -358,105 +487,78 @@ private fun DescriptionInputField(
 @Composable
 private fun ImageStrip(
     imgs: List<String>,
-    onAddClick: () -> Unit,
     onRemoveImage: (String) -> Unit,
 ) {
+    if (imgs.isEmpty()) return
+
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(DP8),
-        contentPadding = PaddingValues(vertical = DP8),
+        contentPadding = PaddingValues(horizontal = DP16, vertical = DP12),
     ) {
         itemsIndexed(items = imgs, key = { index, uri -> "$index-$uri" }) { _, uri ->
-            Box(
-                modifier =
-                    Modifier
-                        .size(DP100)
-                        .clip(RoundedCornerShape(DP10)),
-            ) {
-                SubcomposeAsyncImage(
-                    model = uri,
-                    contentDescription = stringResource(R.string.memo_image_description),
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                        )
-                    },
-                    error = {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                imageVector = LifeIcons.Photo,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(DP32),
-                            )
-                        }
-                    },
-                )
+            ImageThumbnail(uri = uri, onRemoveImage = onRemoveImage)
+        }
+    }
+}
+
+@Composable
+private fun ImageThumbnail(
+    uri: String,
+    onRemoveImage: (String) -> Unit,
+) {
+    Box(
+        modifier =
+            Modifier
+                .size(DP120)
+                .clip(RoundedCornerShape(DP12)),
+    ) {
+        SubcomposeAsyncImage(
+            model = uri,
+            contentDescription = stringResource(R.string.memo_image_description),
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            loading = {
                 Box(
                     modifier =
                         Modifier
-                            .padding(DP4)
-                            .size(DP24)
-                            .align(Alignment.TopEnd)
-                            .clip(CircleShape)
-                            .background(Color.Black.copy(alpha = 0.5f))
-                            .clickable { onRemoveImage(uri) },
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                )
+            },
+            error = {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        imageVector = LifeIcons.Close,
-                        contentDescription = stringResource(R.string.memo_remove_image),
-                        tint = Color.White,
-                        modifier = Modifier.size(DP16),
-                    )
-                }
-            }
-        }
-
-        item {
-            Box(
-                modifier =
-                    Modifier
-                        .size(DP100)
-                        .clip(RoundedCornerShape(DP10))
-                        .border(
-                            width = DP1,
-                            color = MaterialTheme.colorScheme.outlineVariant,
-                            shape = RoundedCornerShape(DP10),
-                        )
-                        .clickable { onAddClick() },
-                contentAlignment = Alignment.Center,
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
                         imageVector = LifeIcons.Photo,
-                        contentDescription = stringResource(R.string.memo_add_image),
+                        contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(DP32),
                     )
-                    Spacer(Modifier.height(DP4))
-                    Text(
-                        text = stringResource(R.string.memo_add_image),
-                        style =
-                            AppTypography.labelSmall.copy(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            ),
-                    )
                 }
-            }
+            },
+        )
+        Box(
+            modifier =
+                Modifier
+                    .padding(DP4)
+                    .size(DP24)
+                    .align(Alignment.TopEnd)
+                    .clip(CircleShape)
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable { onRemoveImage(uri) },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = LifeIcons.Close,
+                contentDescription = stringResource(R.string.memo_remove_image),
+                tint = Color.White,
+                modifier = Modifier.size(DP16),
+            )
         }
     }
 }
@@ -465,14 +567,16 @@ private fun ImageStrip(
 @Composable
 private fun MemoScreenPreview() {
     MemoScreen(
-        MemoUIModel(),
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
+        uiModel = MemoUIModel(),
+        isEditing = false,
+        onBack = {},
+        onShowDateDialogChange = {},
+        onShowGallery = {},
+        onTitleChange = {},
+        onDescriptionChange = {},
+        onMoodSelected = {},
+        onSaveClick = {},
+        onDeleteClick = {},
+        onRemoveImage = {},
     )
 }
