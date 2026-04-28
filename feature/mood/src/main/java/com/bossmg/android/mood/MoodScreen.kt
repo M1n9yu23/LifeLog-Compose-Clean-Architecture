@@ -108,11 +108,13 @@ private fun MoodScreen(
                     style = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onSurface),
                 )
 
-                Spacer(Modifier.height(DP16))
+                if (uiModel.moods.isNotEmpty()) {
+                    Spacer(Modifier.height(DP16))
 
-                MoodsBox(uiModel.moods, onMoodSelected)
+                    MoodsBox(uiModel.moods, onMoodSelected)
 
-                Spacer(Modifier.height(DP24))
+                    Spacer(Modifier.height(DP24))
+                }
             }
         }
 
