@@ -30,15 +30,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +54,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.bossmg.android.designsystem.ui.components.ConfirmDialog
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -62,7 +71,6 @@ import com.bossmg.android.designsystem.ui.theme.LightPrimary
 import com.bossmg.android.designsystem.ui.theme.LightSurface
 import com.bossmg.android.domain.enums.LanguageConfig
 import com.bossmg.android.domain.enums.ThemeConfig
-import kotlinx.coroutines.launch
 
 @Composable
 internal fun Settings(
@@ -72,7 +80,20 @@ internal fun Settings(
 ) {
     val themeConfig by viewModel.themeConfig.collectAsStateWithLifecycle()
     val languageConfig by viewModel.languageConfig.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
+    val authUiState by viewModel.authUiState.collectAsStateWithLifecycle()
+    val isAuthLoading by viewModel.isAuthLoading.collectAsStateWithLifecycle()
+    val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val showSignOutConfirm by viewModel.showSignOutConfirm.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { message ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short,
+            )
+        }
+    }
 
     SettingsScreen(
         themeConfig = themeConfig,
@@ -80,11 +101,19 @@ internal fun Settings(
         languageConfig = languageConfig,
         onLanguageSelect = { config ->
             if (config != languageConfig) {
-                scope.launch {
-                    viewModel.onLanguageSelect(config)
-                }
+                viewModel.onLanguageSelect(config)
             }
         },
+        authUiState = authUiState,
+        isAuthLoading = isAuthLoading,
+        isSyncing = isSyncing,
+        onSignIn = viewModel::onSignIn,
+        onSignOut = viewModel::onSignOut,
+        onSignOutConfirmed = viewModel::onSignOutConfirmed,
+        onSignOutDismissed = viewModel::onSignOutDismissed,
+        showSignOutConfirm = showSignOutConfirm,
+        onSyncNow = viewModel::onSyncNow,
+        snackbarHostState = snackbarHostState,
         onBack = onBack,
     )
 }
@@ -95,93 +124,211 @@ private fun SettingsScreen(
     onThemeSelect: (ThemeConfig) -> Unit,
     languageConfig: LanguageConfig,
     onLanguageSelect: (LanguageConfig) -> Unit,
+    authUiState: AuthUiState,
+    isAuthLoading: Boolean,
+    isSyncing: Boolean,
+    onSignIn: () -> Unit,
+    onSignOut: () -> Unit,
+    onSignOutConfirmed: () -> Unit,
+    onSignOutDismissed: () -> Unit,
+    showSignOutConfirm: Boolean,
+    onSyncNow: () -> Unit,
+    snackbarHostState: SnackbarHostState,
     onBack: () -> Unit,
 ) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .statusBarsPadding(),
-    ) {
-        Row(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = DP4, vertical = DP8),
-            verticalAlignment = Alignment.CenterVertically,
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .statusBarsPadding(),
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = LifeIcons.ArrowLeft,
-                    contentDescription = stringResource(R.string.cd_back),
-                    tint = MaterialTheme.colorScheme.onBackground,
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = DP4, vertical = DP8),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = LifeIcons.ArrowLeft,
+                        contentDescription = stringResource(R.string.cd_back),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+                Spacer(modifier = Modifier.width(DP8))
+                Text(
+                    text = stringResource(R.string.settings_title),
+                    style = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                 )
             }
-            Spacer(modifier = Modifier.width(DP8))
-            Text(
-                text = stringResource(R.string.settings_title),
-                style = AppTypography.titleLarge.copy(color = MaterialTheme.colorScheme.onBackground),
-            )
+
+            Column(modifier = Modifier.padding(horizontal = DP16)) {
+                Spacer(modifier = Modifier.height(DP16))
+
+                Text(
+                    text = stringResource(R.string.settings_theme_section),
+                    style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary),
+                )
+
+                Spacer(modifier = Modifier.height(DP12))
+
+                ThemeOptionItem(
+                    label = stringResource(R.string.settings_theme_system),
+                    selected = themeConfig == ThemeConfig.FOLLOW_SYSTEM,
+                    onClick = { onThemeSelect(ThemeConfig.FOLLOW_SYSTEM) },
+                    previewDark = null,
+                )
+
+                ThemeOptionItem(
+                    label = stringResource(R.string.settings_theme_light),
+                    selected = themeConfig == ThemeConfig.LIGHT,
+                    onClick = { onThemeSelect(ThemeConfig.LIGHT) },
+                    previewDark = false,
+                )
+
+                ThemeOptionItem(
+                    label = stringResource(R.string.settings_theme_dark),
+                    selected = themeConfig == ThemeConfig.DARK,
+                    onClick = { onThemeSelect(ThemeConfig.DARK) },
+                    previewDark = true,
+                )
+
+                Spacer(modifier = Modifier.height(DP16))
+
+                Text(
+                    text = stringResource(R.string.settings_language_section),
+                    style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary),
+                )
+
+                Spacer(modifier = Modifier.height(DP12))
+
+                LanguageOptionItem(
+                    label = stringResource(R.string.settings_language_system),
+                    selected = languageConfig == LanguageConfig.FOLLOW_SYSTEM,
+                    onClick = { onLanguageSelect(LanguageConfig.FOLLOW_SYSTEM) },
+                )
+
+                LanguageOptionItem(
+                    label = stringResource(R.string.settings_language_korean),
+                    selected = languageConfig == LanguageConfig.KOREAN,
+                    onClick = { onLanguageSelect(LanguageConfig.KOREAN) },
+                )
+
+                LanguageOptionItem(
+                    label = stringResource(R.string.settings_language_english),
+                    selected = languageConfig == LanguageConfig.ENGLISH,
+                    onClick = { onLanguageSelect(LanguageConfig.ENGLISH) },
+                )
+
+                Spacer(modifier = Modifier.height(DP16))
+
+                Text(
+                    text = stringResource(R.string.settings_account_section),
+                    style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary),
+                )
+
+                Spacer(modifier = Modifier.height(DP12))
+
+                AccountSection(
+                    authUiState = authUiState,
+                    isAuthLoading = isAuthLoading,
+                    isSyncing = isSyncing,
+                    onSignIn = onSignIn,
+                    onSignOut = onSignOut,
+                    onSyncNow = onSyncNow,
+                )
+            }
         }
 
-        Column(modifier = Modifier.padding(horizontal = DP16)) {
-            Spacer(modifier = Modifier.height(DP16))
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
 
-            Text(
-                text = stringResource(R.string.settings_theme_section),
-                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary),
+        if (showSignOutConfirm) {
+            ConfirmDialog(
+                title = stringResource(R.string.settings_sign_out),
+                message = stringResource(R.string.settings_sign_out_confirm_message),
+                confirmText = stringResource(R.string.settings_sign_out),
+                dismissText = stringResource(R.string.settings_language_cancel),
+                onConfirm = onSignOutConfirmed,
+                onDismiss = onSignOutDismissed,
             )
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(DP12))
+@Composable
+private fun AccountSection(
+    authUiState: AuthUiState,
+    isAuthLoading: Boolean,
+    isSyncing: Boolean,
+    onSignIn: () -> Unit,
+    onSignOut: () -> Unit,
+    onSyncNow: () -> Unit,
+) {
+    when (authUiState) {
+        is AuthUiState.SignedIn -> {
+            Column {
+                Text(
+                    text = authUiState.user.displayName ?: authUiState.user.email ?: "",
+                    style = AppTypography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+                )
+                if (authUiState.user.email != null && authUiState.user.displayName != null) {
+                    Text(
+                        text = authUiState.user.email ?: "",
+                        style = AppTypography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurface),
+                    )
+                }
+                Spacer(modifier = Modifier.height(DP12))
+                Row {
+                    OutlinedButton(
+                        onClick = onSyncNow,
+                        enabled = !isAuthLoading && !isSyncing,
+                    ) {
+                        if (isSyncing) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(DP16),
+                                strokeWidth = DP2,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        } else {
+                            Text(text = stringResource(R.string.settings_sync_now))
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(DP8))
+                    OutlinedButton(
+                        onClick = onSignOut,
+                        enabled = !isAuthLoading && !isSyncing,
+                        colors =
+                            ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error,
+                            ),
+                    ) {
+                        Text(text = stringResource(R.string.settings_sign_out))
+                    }
+                }
+            }
+        }
 
-            ThemeOptionItem(
-                label = stringResource(R.string.settings_theme_system),
-                selected = themeConfig == ThemeConfig.FOLLOW_SYSTEM,
-                onClick = { onThemeSelect(ThemeConfig.FOLLOW_SYSTEM) },
-                previewDark = null,
-            )
-
-            ThemeOptionItem(
-                label = stringResource(R.string.settings_theme_light),
-                selected = themeConfig == ThemeConfig.LIGHT,
-                onClick = { onThemeSelect(ThemeConfig.LIGHT) },
-                previewDark = false,
-            )
-
-            ThemeOptionItem(
-                label = stringResource(R.string.settings_theme_dark),
-                selected = themeConfig == ThemeConfig.DARK,
-                onClick = { onThemeSelect(ThemeConfig.DARK) },
-                previewDark = true,
-            )
-
-            Spacer(modifier = Modifier.height(DP16))
-
-            Text(
-                text = stringResource(R.string.settings_language_section),
-                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.primary),
-            )
-
-            Spacer(modifier = Modifier.height(DP12))
-
-            LanguageOptionItem(
-                label = stringResource(R.string.settings_language_system),
-                selected = languageConfig == LanguageConfig.FOLLOW_SYSTEM,
-                onClick = { onLanguageSelect(LanguageConfig.FOLLOW_SYSTEM) },
-            )
-
-            LanguageOptionItem(
-                label = stringResource(R.string.settings_language_korean),
-                selected = languageConfig == LanguageConfig.KOREAN,
-                onClick = { onLanguageSelect(LanguageConfig.KOREAN) },
-            )
-
-            LanguageOptionItem(
-                label = stringResource(R.string.settings_language_english),
-                selected = languageConfig == LanguageConfig.ENGLISH,
-                onClick = { onLanguageSelect(LanguageConfig.ENGLISH) },
-            )
+        else -> {
+            Button(
+                onClick = onSignIn,
+                enabled = !isAuthLoading,
+            ) {
+                if (isAuthLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(DP16),
+                        strokeWidth = DP2,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                } else {
+                    Text(text = stringResource(R.string.settings_sign_in_with_google))
+                }
+            }
         }
     }
 }
@@ -357,6 +504,16 @@ private fun SettingsScreenPreview() {
         onThemeSelect = {},
         languageConfig = LanguageConfig.FOLLOW_SYSTEM,
         onLanguageSelect = {},
+        authUiState = AuthUiState.Idle,
+        isAuthLoading = false,
+        isSyncing = false,
+        onSignIn = {},
+        onSignOut = {},
+        onSignOutConfirmed = {},
+        onSignOutDismissed = {},
+        showSignOutConfirm = false,
+        onSyncNow = {},
+        snackbarHostState = SnackbarHostState(),
         onBack = {},
     )
 }
