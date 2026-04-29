@@ -22,5 +22,7 @@ interface LifeLogWriteRepository {
 
     suspend fun upsertLifeLog(lifeLog: LifeLog)
 
-    suspend fun deleteLifeLogById(id: Int)
+    suspend fun deleteLifeLogById(id: String)
+
+    suspend fun clearAllLifeLogs()
 }

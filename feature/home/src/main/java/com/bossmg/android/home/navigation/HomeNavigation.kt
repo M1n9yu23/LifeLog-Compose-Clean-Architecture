@@ -28,7 +28,7 @@ object HomeRoute
 fun NavController.navigateToHome(navOptions: NavOptions) = navigate(HomeRoute, navOptions)
 
 fun NavGraphBuilder.homeScreen(
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
     onSettingsClick: () -> Unit,
 ) {
     composable<HomeRoute> {

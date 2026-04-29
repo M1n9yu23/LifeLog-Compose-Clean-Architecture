@@ -46,7 +46,7 @@ internal class MemoViewModel @Inject constructor(
     private val _events = Channel<MemoEvent>(Channel.BUFFERED)
     val events: Flow<MemoEvent> = _events.receiveAsFlow()
 
-    fun load(id: Int?) {
+    fun load(id: String?) {
         if (id == null) {
             _uiModel.value = MemoUIModel()
         } else {
@@ -84,14 +84,14 @@ internal class MemoViewModel @Inject constructor(
 
     fun saveMemo() {
         viewModelScope.launch {
-            val isNew = _uiModel.value.id == 0
+            val isNew = _uiModel.value.id.isEmpty()
             val lifeLog = mapper.mapBack(_uiModel.value)
             upsertLifeLogUseCase(lifeLog)
             _events.send(if (isNew) MemoEvent.MemoAdded else MemoEvent.MemoEdited)
         }
     }
 
-    fun deleteMemo(id: Int?) {
+    fun deleteMemo(id: String?) {
         id?.let {
             viewModelScope.launch {
                 deleteLifeLogByIdUseCase(it)

@@ -17,14 +17,18 @@ package com.bossmg.android.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity(tableName = "lifelogs")
 data class LifeLogEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
     val date: String,
     val title: String,
     val description: String,
     val mood: String,
     val imgs: String = "",
+    val updatedAt: Long = System.currentTimeMillis(),
+    val isSynced: Boolean = false,
+    val isDeleted: Boolean = false,
 )

@@ -57,7 +57,7 @@ import java.time.LocalDate
 
 @Composable
 internal fun Home(
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
     onSettingsClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -89,7 +89,7 @@ private fun HomeScreen(
     searchQuery: String,
     searchResults: List<MemoItem>,
     onSearchQueryChange: (String) -> Unit,
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
     onSettingsClick: () -> Unit,
 ) {
     val isSearching = searchQuery.isNotEmpty()
@@ -159,7 +159,7 @@ private fun HomeScreen(
 private fun SearchContent(
     searchQuery: String,
     searchResults: List<MemoItem>,
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
 ) {
     if (searchQuery.isBlank()) {
         Box(
@@ -200,7 +200,7 @@ private fun SearchContent(
 }
 
 @Composable
-private fun HomeCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
+private fun HomeCard(item: MemoItem, onMemoItemClick: (String) -> Unit) {
     CustomCard(
         modifier =
             Modifier
@@ -256,9 +256,9 @@ private fun HomeScreenPreview() {
     HomeScreen(
         uiModels =
             listOf(
-                MemoItem(id = 1, date = LocalDate.of(2025, 10, 1), title = "오늘의 아침", mood = "행복"),
-                MemoItem(id = 2, date = LocalDate.of(2025, 10, 2), title = "점심시간", mood = "피곤"),
-                MemoItem(id = 3, date = LocalDate.of(2025, 10, 3), title = "저녁 산책", mood = "편안"),
+                MemoItem(id = "1", date = LocalDate.of(2025, 10, 1), title = "오늘의 아침", mood = "행복"),
+                MemoItem(id = "2", date = LocalDate.of(2025, 10, 2), title = "점심시간", mood = "피곤"),
+                MemoItem(id = "3", date = LocalDate.of(2025, 10, 3), title = "저녁 산책", mood = "편안"),
             ),
         searchQuery = "",
         searchResults = emptyList(),

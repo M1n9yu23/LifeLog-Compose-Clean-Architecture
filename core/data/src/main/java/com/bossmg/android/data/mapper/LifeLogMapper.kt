@@ -19,12 +19,13 @@ import com.bossmg.android.data.model.LifeLogEntity
 import com.bossmg.android.domain.mapper.BiMapper
 import com.bossmg.android.domain.model.LifeLog
 import java.time.LocalDate
+import java.util.UUID
 import javax.inject.Inject
 
 class LifeLogMapper @Inject constructor() : BiMapper<LifeLogEntity, LifeLog> {
     override fun mapBack(output: LifeLog): LifeLogEntity =
         LifeLogEntity(
-            id = output.id,
+            id = output.id.ifEmpty { UUID.randomUUID().toString() },
             title = output.title,
             description = output.description,
             mood = output.mood,

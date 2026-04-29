@@ -61,7 +61,7 @@ import java.time.LocalDate
 
 @Composable
 internal fun Mood(
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
     viewModel: MoodViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -89,7 +89,7 @@ private fun MoodScreen(
     uiModel: MoodUIModel,
     selectedMood: String,
     onMoodSelected: (String) -> Unit,
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
 ) {
     LazyColumn(
         modifier =
@@ -125,7 +125,7 @@ private fun MoodScreen(
 }
 
 @Composable
-private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
+private fun MemoItemCard(item: MemoItem, onMemoItemClick: (String) -> Unit) {
     CustomCard(
         modifier =
             Modifier
@@ -209,19 +209,19 @@ private fun MoodScreenPreview() {
             memoItem =
                 listOf(
                     MemoItem(
-                        id = 1,
+                        id = "1",
                         date = LocalDate.of(2025, 10, 1),
                         title = "오늘의 아침",
                         mood = "\uD83D\uDE0A 기쁨",
                     ),
                     MemoItem(
-                        id = 2,
+                        id = "2",
                         date = LocalDate.of(2025, 10, 2),
                         title = "점심시간",
                         mood = "피곤",
                     ),
                     MemoItem(
-                        id = 3,
+                        id = "3",
                         date = LocalDate.of(2025, 10, 3),
                         title = "저녁 산책",
                         mood = "\uD83D\uDE0A 기쁨",

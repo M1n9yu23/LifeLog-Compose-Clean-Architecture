@@ -17,6 +17,7 @@ package com.bossmg.android.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Upsert
@@ -25,13 +26,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface LifeLogDao {
-    @Query("SELECT * FROM lifelogs ORDER BY date DESC, id DESC")
+    @Query("SELECT * FROM lifelogs WHERE isDeleted = 0 ORDER BY date DESC, updatedAt DESC")
     fun getLifeLogs(): Flow<List<LifeLogEntity>>
 
     @Query(
         """
             SELECT * FROM lifelogs
-            WHERE date = :date ORDER BY date DESC, id DESC
+            WHERE date = :date AND isDeleted = 0 ORDER BY date DESC, updatedAt DESC
             """,
     )
     fun getLifeLogsByDate(date: String): Flow<List<LifeLogEntity>>
@@ -39,7 +40,7 @@ internal interface LifeLogDao {
     @Query(
         """
             SELECT * FROM lifelogs
-            WHERE date LIKE :monthPrefix || '-%' ORDER BY date DESC, id DESC
+            WHERE date LIKE :monthPrefix || '-%' AND isDeleted = 0 ORDER BY date DESC, updatedAt DESC
         """,
     )
     fun getLifeLogsByMonth(monthPrefix: String): Flow<List<LifeLogEntity>>
@@ -47,7 +48,7 @@ internal interface LifeLogDao {
     @Query(
         """
             SELECT * FROM lifelogs
-            WHERE mood = :mood ORDER BY date DESC, id DESC
+            WHERE mood = :mood AND isDeleted = 0 ORDER BY date DESC, updatedAt DESC
         """,
     )
     fun getLifeLogsByMood(mood: String): Flow<List<LifeLogEntity>>
@@ -55,13 +56,16 @@ internal interface LifeLogDao {
     @Query(
         """
             SELECT imgs FROM lifelogs
-            WHERE imgs != '' ORDER BY date DESC, id DESC
+            WHERE imgs != '' AND isDeleted = 0 ORDER BY date DESC, updatedAt DESC
         """,
     )
     fun getImages(): Flow<List<String>>
 
-    @Query("SELECT * FROM lifelogs WHERE id = :lifeLogId")
-    suspend fun getLifeLogById(lifeLogId: Int): LifeLogEntity
+    @Query("SELECT * FROM lifelogs WHERE id = :lifeLogId AND isDeleted = 0")
+    suspend fun getLifeLogById(lifeLogId: String): LifeLogEntity
+
+    @Query("SELECT * FROM lifelogs WHERE rowid = :rowId AND isDeleted = 0")
+    suspend fun getLifeLogByRowId(rowId: Long): LifeLogEntity?
 
     @Insert(onConflict = REPLACE)
     suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity): Long
@@ -69,6 +73,32 @@ internal interface LifeLogDao {
     @Upsert
     suspend fun upsertLifeLog(lifeLogEntity: LifeLogEntity): Long
 
+    @Query(
+        "UPDATE lifelogs SET isDeleted = 1, isSynced = 0, updatedAt = :updatedAt WHERE id = :lifeLogId",
+    )
+    suspend fun deleteLifeLogById(lifeLogId: String, updatedAt: Long)
+
     @Query("DELETE FROM lifelogs WHERE id = :lifeLogId")
-    suspend fun deleteLifeLogById(lifeLogId: Int)
+    suspend fun hardDeleteLifeLogById(lifeLogId: String)
+
+    @Query("DELETE FROM lifelogs WHERE id IN (:ids)")
+    suspend fun hardDeleteLifeLogsByIds(ids: List<String>)
+
+    @Query("SELECT * FROM lifelogs WHERE isSynced = 0 AND isDeleted = 0")
+    suspend fun getUnsyncedLogs(): List<LifeLogEntity>
+
+    @Query("SELECT * FROM lifelogs WHERE isDeleted = 1 AND isSynced = 0")
+    suspend fun getDeletedUnsyncedLogs(): List<LifeLogEntity>
+
+    @Query("SELECT * FROM lifelogs WHERE isSynced = 1 AND isDeleted = 0")
+    suspend fun getSyncedLogs(): List<LifeLogEntity>
+
+    @Upsert
+    suspend fun upsertAll(logs: List<LifeLogEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAllIgnoreConflict(logs: List<LifeLogEntity>)
+
+    @Query("DELETE FROM lifelogs")
+    suspend fun clearAll()
 }

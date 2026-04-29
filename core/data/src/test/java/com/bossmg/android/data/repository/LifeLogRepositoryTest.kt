@@ -39,9 +39,9 @@ class LifeLogRepositoryTest {
 
     private val dummyLogs =
         listOf(
-            LifeLogEntity(1, "2025-10-01", "아침 산책", "공원에서 산책", "\uD83D\uDE0A 기쁨", imgs = "산책.jpg"),
-            LifeLogEntity(2, "2025-10-02", "새 프로젝트 시작", "안드로이드 프로젝트 시작", "\uD83E\uDD29 설렘"),
-            LifeLogEntity(3, "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", "\uD83E\uDD70 행복", imgs = "음식.jpg"),
+            LifeLogEntity("1", "2025-10-01", "아침 산책", "공원에서 산책", "\uD83D\uDE0A 기쁨", imgs = "산책.jpg"),
+            LifeLogEntity("2", "2025-10-02", "새 프로젝트 시작", "안드로이드 프로젝트 시작", "\uD83E\uDD29 설렘"),
+            LifeLogEntity("3", "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", "\uD83E\uDD70 행복", imgs = "음식.jpg"),
         )
 
     @Before
@@ -81,12 +81,12 @@ class LifeLogRepositoryTest {
     @Test
     fun givenId_whenGetLifeLogById_thenReturnsCorrectLog() =
         scope.runTest {
-            val result = repository.getLifeLogById(3)
+            val result = repository.getLifeLogById("3")
             assertEquals("친구와 저녁", result.title)
             assertEquals(LocalDate.of(2025, 10, 2), result.date)
             assertEquals("\uD83E\uDD70 행복", result.mood)
             assertEquals("오랜만에 친구와 저녁식사", result.description)
-            assertEquals(3, result.id)
+            assertEquals("3", result.id)
         }
 
     @Test
@@ -94,7 +94,7 @@ class LifeLogRepositoryTest {
         scope.runTest {
             val newLog =
                 LifeLog(
-                    id = 4,
+                    id = "4",
                     date = LocalDate.of(2025, 10, 3),
                     title = "저녁 독서",
                     description = "책 읽기",
@@ -118,7 +118,7 @@ class LifeLogRepositoryTest {
         scope.runTest {
             val newLog =
                 LifeLog(
-                    id = 5,
+                    id = "5",
                     date = LocalDate.of(2025, 10, 4),
                     title = "새 기록",
                     description = "업데이트가 아닌 새로운 기록",
@@ -143,7 +143,7 @@ class LifeLogRepositoryTest {
         scope.runTest {
             val updatedLog =
                 LifeLog(
-                    id = 1,
+                    id = "1",
                     date = LocalDate.of(2025, 10, 1),
                     title = "id 1 수정",
                     description = "축구를 했다.",
@@ -154,7 +154,7 @@ class LifeLogRepositoryTest {
             repository.upsertLifeLog(updatedLog)
 
             val logs = repository.getLifeLogs().first()
-            val log = logs.first { it.id == 1 }
+            val log = logs.first { it.id == "1" }
 
             assertEquals(3, logs.size)
             assertEquals("id 1 수정", log.title)
@@ -180,7 +180,7 @@ class LifeLogRepositoryTest {
         scope.runTest {
             val multiLog =
                 LifeLog(
-                    id = 4,
+                    id = "4",
                     date = LocalDate.of(2025, 10, 3),
                     title = "다중 이미지",
                     description = "여러 이미지",

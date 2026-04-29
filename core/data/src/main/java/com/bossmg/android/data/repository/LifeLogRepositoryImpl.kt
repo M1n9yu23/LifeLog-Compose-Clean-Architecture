@@ -54,36 +54,38 @@ internal class LifeLogRepositoryImpl @Inject constructor(
             rows.flatMap { it.split("|").filter { uri -> uri.isNotEmpty() } }
         }
 
-    override suspend fun getLifeLogById(id: Int): LifeLog =
+    override suspend fun getLifeLogById(id: String): LifeLog =
         dao.getLifeLogById(id).run { mapper.map(this) }
 
     override suspend fun insertLifeLog(lifeLog: LifeLog) {
-        val rowId = dao.insertLifeLog(mapper.mapBack(lifeLog))
+        val entity = mapper.mapBack(lifeLog)
+        val rowId = dao.insertLifeLog(entity)
         withContext(ioDispatcher) {
             searchEngine.indexDocument(rowId, lifeLog.title, lifeLog.description)
         }
     }
 
     override suspend fun upsertLifeLog(lifeLog: LifeLog) {
-        val rowId = dao.upsertLifeLog(mapper.mapBack(lifeLog))
-        val actualId = if (lifeLog.id != 0) lifeLog.id.toLong() else rowId
+        val entity = mapper.mapBack(lifeLog)
+        val rowId = dao.upsertLifeLog(entity)
         withContext(ioDispatcher) {
-            searchEngine.indexDocument(actualId, lifeLog.title, lifeLog.description)
+            searchEngine.indexDocument(rowId, lifeLog.title, lifeLog.description)
         }
     }
 
-    override suspend fun deleteLifeLogById(id: Int) {
-        dao.deleteLifeLogById(id)
-        withContext(ioDispatcher) {
-            searchEngine.removeDocument(id.toLong())
-        }
+    override suspend fun deleteLifeLogById(id: String) {
+        dao.deleteLifeLogById(id, System.currentTimeMillis())
+    }
+
+    override suspend fun clearAllLifeLogs() {
+        dao.clearAll()
     }
 
     override suspend fun searchLifeLogs(query: String): List<LifeLog> {
         if (query.isBlank()) return emptyList()
         val results = withContext(ioDispatcher) { searchEngine.search(query) }
         return results.mapNotNull { result ->
-            runCatching { dao.getLifeLogById(result.id.toInt()) }.getOrNull()?.let { mapper.map(it) }
+            runCatching { dao.getLifeLogByRowId(result.id) }.getOrNull()?.let { mapper.map(it) }
         }
     }
 }

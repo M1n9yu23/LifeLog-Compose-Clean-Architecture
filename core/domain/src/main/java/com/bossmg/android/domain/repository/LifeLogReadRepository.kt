@@ -31,5 +31,5 @@ interface LifeLogReadRepository {
 
     fun getImages(): Flow<List<String>>
 
-    suspend fun getLifeLogById(id: Int): LifeLog
+    suspend fun getLifeLogById(id: String): LifeLog
 }

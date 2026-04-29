@@ -19,7 +19,7 @@ import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
 
 internal data class MemoUIModel(
-    val id: Int = 0,
+    val id: String = "",
     val title: String = "",
     val description: String = "",
     val selectedDate: LocalDate = LocalDate.now(),

@@ -93,7 +93,7 @@ import java.util.Locale
 @Composable
 internal fun Memo(
     onBack: (String?) -> Unit,
-    id: Int? = null,
+    id: String? = null,
     viewModel: MemoViewModel = hiltViewModel(),
 ) {
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()

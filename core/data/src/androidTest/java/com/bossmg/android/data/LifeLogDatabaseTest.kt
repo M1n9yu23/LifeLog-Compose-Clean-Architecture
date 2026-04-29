@@ -108,7 +108,7 @@ class LifeLogDatabaseTest {
         runTest {
             val newLog =
                 LifeLogEntity(
-                    id = 6,
+                    id = "test-uuid-6",
                     title = "추가 되는 제목",
                     description = "추가 되는 내용",
                     date = "2025-10-06",
@@ -135,7 +135,7 @@ class LifeLogDatabaseTest {
             val logs = dao.getLifeLogs().first()
             val target = logs.first()
 
-            dao.deleteLifeLogById(target.id)
+            dao.deleteLifeLogById(target.id, System.currentTimeMillis())
             val result = dao.getLifeLogs().first()
 
             val deletedCount = result.count { it.id == target.id }

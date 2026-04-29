@@ -46,7 +46,7 @@ class TestLifeLogRepository : LifeLogReadRepository, LifeLogWriteRepository, Lif
     override fun getImages(): Flow<List<String>> =
         logsFlow.map { list -> list.flatMap { it.imgs } }
 
-    override suspend fun getLifeLogById(id: Int): LifeLog {
+    override suspend fun getLifeLogById(id: String): LifeLog {
         val logs = logsFlow.replayCache.firstOrNull() ?: emptyList()
         return logs.first { it.id == id }
     }
@@ -64,10 +64,14 @@ class TestLifeLogRepository : LifeLogReadRepository, LifeLogWriteRepository, Lif
         logsFlow.tryEmit(current)
     }
 
-    override suspend fun deleteLifeLogById(id: Int) {
+    override suspend fun deleteLifeLogById(id: String) {
         val current = logsFlow.replayCache.firstOrNull()?.toMutableList() ?: mutableListOf()
         current.removeIf { it.id == id }
         logsFlow.tryEmit(current)
+    }
+
+    override suspend fun clearAllLifeLogs() {
+        logsFlow.tryEmit(emptyList())
     }
 
     override suspend fun searchLifeLogs(query: String): List<LifeLog> {

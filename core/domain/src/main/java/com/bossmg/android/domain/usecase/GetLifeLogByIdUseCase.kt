@@ -22,6 +22,6 @@ import javax.inject.Inject
 
 class GetLifeLogByIdUseCase @Inject constructor(
     private val lifeLogRepository: LifeLogReadRepository,
-) : SuspendUseCase<Int, LifeLog>() {
-    override suspend fun execute(params: Int): LifeLog = lifeLogRepository.getLifeLogById(params)
+) : SuspendUseCase<String, LifeLog>() {
+    override suspend fun execute(params: String): LifeLog = lifeLogRepository.getLifeLogById(params)
 }

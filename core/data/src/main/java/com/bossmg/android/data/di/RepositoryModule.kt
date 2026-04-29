@@ -15,6 +15,8 @@
  */
 package com.bossmg.android.data.di
 
+import com.bossmg.android.data.datasource.SyncDataSource
+import com.bossmg.android.data.datasource.SyncDataSourceImpl
 import com.bossmg.android.data.repository.LanguageRepositoryImpl
 import com.bossmg.android.data.repository.LifeLogRepositoryImpl
 import com.bossmg.android.data.repository.ThemeRepositoryImpl
@@ -51,4 +53,8 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindsLanguageRepository(impl: LanguageRepositoryImpl): LanguageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsSyncDataSource(impl: SyncDataSourceImpl): SyncDataSource
 }
