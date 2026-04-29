@@ -1,0 +1,85 @@
+package com.bossmg.android.sync
+
+import com.bossmg.android.common.safeRunCatching
+import com.bossmg.android.data.datasource.SyncDataSource
+import com.bossmg.android.data.di.IoDispatcher
+import com.bossmg.android.data.model.LifeLogEntity
+import com.bossmg.android.domain.repository.AuthRepository
+import com.bossmg.android.sync.model.LifeLogRemoteDto
+import com.bossmg.android.sync.model.toEntity
+import com.bossmg.android.sync.remote.FirestoreDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+internal class SyncEngine @Inject constructor(
+    private val authRepository: AuthRepository,
+    private val syncDataSource: SyncDataSource,
+    private val firestoreDataSource: FirestoreDataSource,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+) {
+    suspend fun push(): Result<Unit> =
+        withContext(dispatcher) {
+            safeRunCatching {
+                val uid = authRepository.getCurrentUser().first()?.uid ?: return@safeRunCatching
+                processDeletions(uid)
+                processUpserts(uid)
+            }
+        }
+
+    suspend fun sync(): Result<Unit> =
+        withContext(dispatcher) {
+            safeRunCatching {
+                val uid = authRepository.getCurrentUser().first()?.uid ?: return@safeRunCatching
+                processDeletions(uid)
+                processUpserts(uid)
+                processPulls(uid)
+            }
+        }
+
+    private suspend fun processDeletions(uid: String) {
+        val logs = syncDataSource.getDeletedUnsyncedLogs()
+        if (logs.isEmpty()) return
+        firestoreDataSource.batchDeleteLogs(uid, logs.map { it.id }).getOrThrow()
+        syncDataSource.hardDeleteAll(logs.map { it.id })
+    }
+
+    private suspend fun processUpserts(uid: String) {
+        val logs = syncDataSource.getUnsyncedLogs()
+        if (logs.isEmpty()) return
+        firestoreDataSource.batchUpsertLogs(uid, logs.map { it.toRemoteDto() }).getOrThrow()
+        syncDataSource.upsertAll(logs.map { it.copy(isSynced = true) })
+    }
+
+    private suspend fun processPulls(uid: String) {
+        val remoteLogs = firestoreDataSource.getAllLogs(uid).getOrThrow()
+
+        val dirtyIds =
+            (syncDataSource.getUnsyncedLogs() + syncDataSource.getDeletedUnsyncedLogs())
+                .map { it.id }
+                .toSet()
+        val syncedLocals = syncDataSource.getSyncedLogs().associateBy { it.id }
+        val remoteIds = remoteLogs.map { it.id }.toSet()
+
+        // 서버 레코드 upsert - 로컬 dirty 레코드 보호, imgs 필드 보존
+        val toUpsert = remoteLogs
+            .filter { it.id !in dirtyIds }
+            .map { remote -> remote.toEntity().copy(imgs = syncedLocals[remote.id]?.imgs ?: "") }
+        if (toUpsert.isNotEmpty()) syncDataSource.upsertAll(toUpsert)
+
+        // 타 기기에서 삭제된 레코드 감지 후 로컬에서도 제거
+        val ghostIds = syncedLocals.keys.filter { it !in remoteIds && it !in dirtyIds }
+        if (ghostIds.isNotEmpty()) syncDataSource.hardDeleteAll(ghostIds)
+    }
+}
+
+private fun LifeLogEntity.toRemoteDto() =
+    LifeLogRemoteDto(
+        id = id,
+        date = date,
+        title = title,
+        description = description,
+        mood = mood,
+        updatedAt = updatedAt,
+    )
