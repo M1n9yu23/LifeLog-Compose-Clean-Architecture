@@ -60,5 +60,9 @@ gradlePlugin {
             id = "bossmg.jvm.hilt"
             implementationClass = "JvmHiltConventionPlugin"
         }
+        register("androidFirebase") {
+            id = "bossmg.android.firebase"
+            implementationClass = "AndroidFirebaseConventionPlugin"
+        }
     }
 }
