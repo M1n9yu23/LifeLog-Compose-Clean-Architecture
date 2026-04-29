@@ -18,7 +18,9 @@ package com.bossmg.android.lifelog
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.bossmg.android.auth.AuthInitializer
 import com.bossmg.android.data.initializer.FtsIndexInitializer
+import com.bossmg.android.sync.SyncManager
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -30,6 +32,12 @@ class LifeLogApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var ftsIndexInitializer: FtsIndexInitializer
 
+    @Inject
+    lateinit var syncManager: SyncManager
+
+    @Inject
+    lateinit var authInitializer: AuthInitializer
+
     override val workManagerConfiguration: Configuration
         get() =
             Configuration.Builder()
@@ -38,6 +46,8 @@ class LifeLogApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        authInitializer.initialize(this)
         ftsIndexInitializer.initialize()
+        syncManager.schedulePeriodicSync()
     }
 }

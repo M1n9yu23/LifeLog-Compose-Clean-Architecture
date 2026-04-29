@@ -87,7 +87,7 @@ class LifeLogAppState(
         }
     }
 
-    fun navigateToMemo(memoId: Int? = null) = navController.navigateToMemo(memoId)
+    fun navigateToMemo(memoId: String? = null) = navController.navigateToMemo(memoId)
 
     fun navigateToSettings() = navController.navigateToSettings()
 }
