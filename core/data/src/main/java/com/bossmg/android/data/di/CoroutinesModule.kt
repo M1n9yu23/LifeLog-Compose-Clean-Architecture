@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.data.di
 
+import com.bossmg.android.common.di.IoDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

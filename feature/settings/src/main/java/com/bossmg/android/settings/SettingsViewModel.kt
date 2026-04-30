@@ -10,10 +10,15 @@ import com.bossmg.android.domain.usecase.GetLanguageConfigUseCase
 import com.bossmg.android.domain.usecase.GetThemeConfigUseCase
 import com.bossmg.android.domain.usecase.SetLanguageConfigUseCase
 import com.bossmg.android.domain.usecase.SetThemeConfigUseCase
+import com.bossmg.android.domain.usecase.CancelSyncUseCase
+import com.bossmg.android.domain.usecase.ObserveSyncingStateUseCase
+import com.bossmg.android.domain.usecase.RestoreFromCloudUseCase
+import com.bossmg.android.domain.usecase.ScheduleImmediateSyncUseCase
 import com.bossmg.android.domain.usecase.SignInWithGoogleUseCase
 import com.bossmg.android.domain.usecase.SignOutUseCase
+import com.bossmg.android.domain.usecase.SyncNowUseCase
+import com.bossmg.android.domain.usecase.SyncUploadUseCase
 import com.bossmg.android.domain.usecase.base.invoke
-import com.bossmg.android.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -30,12 +35,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
-sealed interface AuthUiState {
-    data object Idle : AuthUiState
-
-    data class SignedIn(val user: User) : AuthUiState
-}
-
 @HiltViewModel
 internal class SettingsViewModel @Inject constructor(
     private val getThemeConfigUseCase: GetThemeConfigUseCase,
@@ -45,7 +44,12 @@ internal class SettingsViewModel @Inject constructor(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
     private val signOutUseCase: SignOutUseCase,
-    private val syncManager: SyncManager,
+    private val restoreFromCloudUseCase: RestoreFromCloudUseCase,
+    private val scheduleImmediateSyncUseCase: ScheduleImmediateSyncUseCase,
+    private val syncUploadUseCase: SyncUploadUseCase,
+    private val cancelSyncUseCase: CancelSyncUseCase,
+    private val syncNowUseCase: SyncNowUseCase,
+    private val observeSyncingStateUseCase: ObserveSyncingStateUseCase,
 ) : ViewModel() {
     val themeConfig: StateFlow<ThemeConfig> =
         getThemeConfigUseCase()
@@ -83,7 +87,7 @@ internal class SettingsViewModel @Inject constructor(
 
     private val _isManualSyncing = MutableStateFlow(false)
     val isSyncing: StateFlow<Boolean> =
-        combine(_isManualSyncing, syncManager.isSyncWorkerRunning) { manual, worker -> manual || worker }
+        combine(_isManualSyncing, observeSyncingStateUseCase()) { manual, worker -> manual || worker }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -114,14 +118,14 @@ internal class SettingsViewModel @Inject constructor(
                     _events.send(error.localizedMessage ?: "로그인 실패")
                     return@launch
                 }
-            val restoreResult = syncManager.restoreFromCloud(user.uid)
+            val restoreResult = restoreFromCloudUseCase(user.uid)
             _isAuthLoading.value = false
             if (restoreResult.isFailure) {
                 _events.send(restoreResult.exceptionOrNull()?.localizedMessage ?: "데이터 복원 실패")
             } else {
                 _events.send("로그인되었습니다")
             }
-            syncManager.scheduleImmediateSync()
+            scheduleImmediateSyncUseCase()
         }
     }
 
@@ -140,8 +144,8 @@ internal class SettingsViewModel @Inject constructor(
 
     private suspend fun performSignOut() {
         _isAuthLoading.value = true
-        withTimeoutOrNull(10_000L) { syncManager.syncUpload() }
-        syncManager.cancelAllWork()
+        withTimeoutOrNull(10_000L) { syncUploadUseCase() }
+        cancelSyncUseCase()
         signOutUseCase()
             .onSuccess {
                 _isAuthLoading.value = false
@@ -156,7 +160,7 @@ internal class SettingsViewModel @Inject constructor(
     fun onSyncNow() {
         viewModelScope.launch {
             _isManualSyncing.value = true
-            syncManager.syncNow()
+            syncNowUseCase()
                 .onSuccess { _events.send("동기화 완료") }
                 .onFailure { _events.send(it.localizedMessage ?: "동기화 실패") }
             _isManualSyncing.value = false

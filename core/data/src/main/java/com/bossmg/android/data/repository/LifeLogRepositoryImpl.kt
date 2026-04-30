@@ -16,7 +16,7 @@
 package com.bossmg.android.data.repository
 
 import com.bossmg.android.data.database.LifeLogDao
-import com.bossmg.android.data.di.IoDispatcher
+import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.data.mapper.LifeLogMapper
 import com.bossmg.android.domain.model.LifeLog
 import com.bossmg.android.domain.repository.LifeLogReadRepository

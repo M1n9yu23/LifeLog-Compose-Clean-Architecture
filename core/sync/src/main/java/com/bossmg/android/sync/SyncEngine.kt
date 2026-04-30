@@ -2,7 +2,7 @@ package com.bossmg.android.sync
 
 import com.bossmg.android.common.safeRunCatching
 import com.bossmg.android.data.datasource.SyncDataSource
-import com.bossmg.android.data.di.IoDispatcher
+import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.data.model.LifeLogEntity
 import com.bossmg.android.domain.repository.AuthRepository
 import com.bossmg.android.sync.model.LifeLogRemoteDto

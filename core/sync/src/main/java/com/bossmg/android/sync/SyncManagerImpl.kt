@@ -25,6 +25,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.bossmg.android.data.datasource.SyncDataSource
+import com.bossmg.android.domain.repository.SyncRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import java.util.concurrent.TimeUnit
@@ -35,7 +36,7 @@ internal class SyncManagerImpl @Inject constructor(
     private val restoreManager: RestoreManager,
     private val syncDataSource: SyncDataSource,
     private val syncEngine: SyncEngine,
-) : SyncManager {
+) : SyncRepository {
     override fun schedulePeriodicSync() {
         val request =
             PeriodicWorkRequestBuilder<SyncWorker>(15, TimeUnit.MINUTES)
@@ -62,7 +63,7 @@ internal class SyncManagerImpl @Inject constructor(
         )
     }
 
-    override fun cancelAllWork() {
+    override fun cancelAllSync() {
         workManager.cancelUniqueWork(PERIODIC_SYNC_WORK_NAME)
         workManager.cancelUniqueWork(IMMEDIATE_SYNC_WORK_NAME)
     }
@@ -77,7 +78,7 @@ internal class SyncManagerImpl @Inject constructor(
 
     override suspend fun syncNow(): Result<Unit> = syncEngine.sync()
 
-    override val isSyncWorkerRunning: Flow<Boolean> =
+    override val isSyncing: Flow<Boolean> =
         combine(
             workManager.getWorkInfosForUniqueWorkFlow(PERIODIC_SYNC_WORK_NAME),
             workManager.getWorkInfosForUniqueWorkFlow(IMMEDIATE_SYNC_WORK_NAME),

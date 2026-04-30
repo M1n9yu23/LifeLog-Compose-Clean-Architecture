@@ -17,7 +17,7 @@ package com.bossmg.android.sync.di
 
 import android.content.Context
 import androidx.work.WorkManager
-import com.bossmg.android.sync.SyncManager
+import com.bossmg.android.domain.repository.SyncRepository
 import com.bossmg.android.sync.SyncManagerImpl
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,5 +50,5 @@ internal object SyncModule {
 internal abstract class SyncBindingModule {
     @Binds
     @Singleton
-    abstract fun bindSyncManager(impl: SyncManagerImpl): SyncManager
+    abstract fun bindSyncRepository(impl: SyncManagerImpl): SyncRepository
 }

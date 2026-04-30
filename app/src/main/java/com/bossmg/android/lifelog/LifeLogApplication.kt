@@ -20,7 +20,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.bossmg.android.auth.AuthInitializer
 import com.bossmg.android.data.initializer.FtsIndexInitializer
-import com.bossmg.android.sync.SyncManager
+import com.bossmg.android.domain.repository.SyncRepository
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class LifeLogApplication : Application(), Configuration.Provider {
     lateinit var ftsIndexInitializer: FtsIndexInitializer
 
     @Inject
-    lateinit var syncManager: SyncManager
+    lateinit var syncRepository: SyncRepository
 
     @Inject
     lateinit var authInitializer: AuthInitializer
@@ -48,6 +48,6 @@ class LifeLogApplication : Application(), Configuration.Provider {
         super.onCreate()
         authInitializer.initialize(this)
         ftsIndexInitializer.initialize()
-        syncManager.schedulePeriodicSync()
+        syncRepository.schedulePeriodicSync()
     }
 }

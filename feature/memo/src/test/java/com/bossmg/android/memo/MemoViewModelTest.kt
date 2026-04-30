@@ -89,7 +89,7 @@ class MemoViewModelTest {
     @Test
     fun given_invalidId_when_load_then_uiModelIsDefault() =
         runTest {
-            viewModel.load(-1)
+            viewModel.load("invalid-id")
             assertEquals(MemoUIModel(), viewModel.uiModel.value)
         }
 

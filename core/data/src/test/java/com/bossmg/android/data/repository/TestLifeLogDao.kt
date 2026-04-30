@@ -91,6 +91,9 @@ class TestLifeLogDao : LifeLogDao {
     override suspend fun getDeletedUnsyncedLogs(): List<LifeLogEntity> =
         logsFlow.value.filter { it.isDeleted && !it.isSynced }
 
+    override suspend fun getSyncedLogs(): List<LifeLogEntity> =
+        logsFlow.value.filter { it.isSynced && !it.isDeleted }
+
     override suspend fun upsertAll(logs: List<LifeLogEntity>) {
         logs.forEach { upsertLifeLog(it) }
     }
