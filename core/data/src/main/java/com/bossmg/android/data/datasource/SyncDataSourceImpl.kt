@@ -42,6 +42,8 @@ internal class SyncDataSourceImpl @Inject constructor(
 
     override suspend fun getSyncedLogs(): List<LifeLogEntity> = dao.getSyncedLogs()
 
+    override suspend fun markAsSynced(ids: List<String>) = dao.markAsSynced(ids)
+
     private fun indexLogs(logs: List<LifeLogEntity>) {
         logs.forEach { entity ->
             searchEngine.indexDocument(entity.id, entity.title, entity.description)

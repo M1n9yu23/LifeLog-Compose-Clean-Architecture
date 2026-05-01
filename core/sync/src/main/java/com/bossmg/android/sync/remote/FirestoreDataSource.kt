@@ -17,6 +17,7 @@ package com.bossmg.android.sync.remote
 
 import com.bossmg.android.common.safeRunCatching
 import com.bossmg.android.sync.model.LifeLogRemoteDto
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
@@ -38,10 +39,15 @@ internal class FirestoreDataSource @Inject constructor(
 
     suspend fun batchDeleteLogs(uid: String, ids: List<String>): Result<Unit> =
         safeRunCatching {
+            val deletedAt = System.currentTimeMillis()
             ids.chunked(MAX_BATCH_SIZE).forEach { chunk ->
                 val batch = firestore.batch()
                 chunk.forEach { id ->
                     batch.delete(userLogsCollection(uid).document(id))
+                    batch.set(
+                        deletedLogsCollection(uid).document(id),
+                        mapOf("id" to id, "deletedAt" to deletedAt),
+                    )
                 }
                 batch.commit().await()
             }
@@ -53,20 +59,46 @@ internal class FirestoreDataSource @Inject constructor(
                 .get(Source.SERVER)
                 .await()
                 .documents
-                .mapNotNull { doc ->
-                    LifeLogRemoteDto(
-                        id = doc.getString("id") ?: return@mapNotNull null,
-                        date = doc.getString("date") ?: "",
-                        title = doc.getString("title") ?: "",
-                        description = doc.getString("description") ?: "",
-                        mood = doc.getString("mood") ?: "",
-                        updatedAt = doc.getLong("updatedAt") ?: 0L,
-                    )
-                }
+                .mapNotNull { it.toDto() }
         }
+
+    suspend fun getLogsSince(uid: String, since: Long): Result<List<LifeLogRemoteDto>> =
+        safeRunCatching {
+            userLogsCollection(uid)
+                .whereGreaterThan("updatedAt", since)
+                .get(Source.SERVER)
+                .await()
+                .documents
+                .mapNotNull { it.toDto() }
+        }
+
+    suspend fun getDeletedLogsSince(uid: String, since: Long): Result<List<String>> =
+        safeRunCatching {
+            deletedLogsCollection(uid)
+                .whereGreaterThan("deletedAt", since)
+                .get(Source.SERVER)
+                .await()
+                .documents
+                .mapNotNull { it.getString("id") }
+        }
+
+    private fun DocumentSnapshot.toDto(): LifeLogRemoteDto? {
+        val id = getString("id") ?: return null
+        return LifeLogRemoteDto(
+            id = id,
+            date = getString("date") ?: "",
+            title = getString("title") ?: "",
+            description = getString("description") ?: "",
+            mood = getString("mood") ?: "",
+            updatedAt = getLong("updatedAt") ?: 0L,
+        )
+    }
 
     private fun userLogsCollection(uid: String) =
         firestore.collection("users").document(uid).collection("lifelogs")
+
+    private fun deletedLogsCollection(uid: String) =
+        firestore.collection("users").document(uid).collection("deleted_lifelogs")
 
     private companion object {
         const val MAX_BATCH_SIZE = 500

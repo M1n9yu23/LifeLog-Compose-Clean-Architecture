@@ -29,4 +29,6 @@ interface SyncDataSource {
     suspend fun hardDeleteAll(ids: List<String>)
 
     suspend fun getSyncedLogs(): List<LifeLogEntity>
+
+    suspend fun markAsSynced(ids: List<String>)
 }

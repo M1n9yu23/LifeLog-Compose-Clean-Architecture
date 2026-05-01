@@ -23,4 +23,8 @@
     <string name="settings_sign_out_success">로그아웃되었습니다</string>
     <string name="settings_sync_success">동기화 완료</string>
     <string name="settings_sync_failed">동기화 실패</string>
+    <string name="settings_sign_in_failed">로그인 실패</string>
+    <string name="settings_sign_out_failed">로그아웃 실패</string>
+    <string name="settings_restore_failed">데이터 복원 실패</string>
+    <string name="settings_sign_out_sync_failed">동기화에 실패했습니다. 네트워크를 확인 후 다시 시도해 주세요.</string>
 </resources>

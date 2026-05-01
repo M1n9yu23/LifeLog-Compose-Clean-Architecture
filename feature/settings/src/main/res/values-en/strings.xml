@@ -23,4 +23,8 @@
     <string name="settings_sign_out_success">Signed out</string>
     <string name="settings_sync_success">Sync complete</string>
     <string name="settings_sync_failed">Sync failed</string>
+    <string name="settings_sign_in_failed">Sign in failed</string>
+    <string name="settings_sign_out_failed">Sign out failed</string>
+    <string name="settings_restore_failed">Failed to restore data</string>
+    <string name="settings_sign_out_sync_failed">Sync failed. Please check your network and try again.</string>
 </resources>

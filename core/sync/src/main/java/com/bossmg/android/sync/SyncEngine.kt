@@ -32,6 +32,7 @@ internal class SyncEngine @Inject constructor(
     private val authRepository: AuthRepository,
     private val syncDataSource: SyncDataSource,
     private val firestoreDataSource: FirestoreDataSource,
+    private val syncPreferences: SyncPreferences,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     suspend fun push(): Result<Unit> =
@@ -64,28 +65,53 @@ internal class SyncEngine @Inject constructor(
         val logs = syncDataSource.getUnsyncedLogs()
         if (logs.isEmpty()) return
         firestoreDataSource.batchUpsertLogs(uid, logs.map { it.toRemoteDto() }).getOrThrow()
-        syncDataSource.upsertAll(logs.map { it.copy(isSynced = true) })
+        syncDataSource.markAsSynced(logs.map { it.id })
     }
 
     private suspend fun processPulls(uid: String) {
-        val remoteLogs = firestoreDataSource.getAllLogs(uid).getOrThrow()
+        val lastSyncTime = syncPreferences.getLastSyncTime(uid)
+        if (lastSyncTime == 0L) fullPull(uid) else incrementalPull(uid, lastSyncTime)
+        syncPreferences.setLastSyncTime(uid, System.currentTimeMillis())
+    }
 
-        val dirtyIds =
-            (syncDataSource.getUnsyncedLogs() + syncDataSource.getDeletedUnsyncedLogs())
-                .map { it.id }
-                .toSet()
+    private suspend fun fullPull(uid: String) {
+        val remoteLogs = firestoreDataSource.getAllLogs(uid).getOrThrow()
+        val dirty = dirtyIds()
         val syncedLocals = syncDataSource.getSyncedLogs().associateBy { it.id }
         val remoteIds = remoteLogs.map { it.id }.toSet()
 
-        val toUpsert =
-            remoteLogs
-                .filter { it.id !in dirtyIds }
-                .map { remote -> remote.toEntity().copy(imgs = syncedLocals[remote.id]?.imgs ?: "") }
-        if (toUpsert.isNotEmpty()) syncDataSource.upsertAll(toUpsert)
+        remoteLogs
+            .filter { it.id !in dirty }
+            .map { it.toEntity().copy(imgs = syncedLocals[it.id]?.imgs ?: "") }
+            .takeIf { it.isNotEmpty() }
+            ?.let { syncDataSource.upsertAll(it) }
 
-        val ghostIds = syncedLocals.keys.filter { it !in remoteIds && it !in dirtyIds }
-        if (ghostIds.isNotEmpty()) syncDataSource.hardDeleteAll(ghostIds)
+        syncedLocals.keys
+            .filter { it !in remoteIds && it !in dirty }
+            .takeIf { it.isNotEmpty() }
+            ?.let { syncDataSource.hardDeleteAll(it) }
     }
+
+    private suspend fun incrementalPull(uid: String, since: Long) {
+        val dirty = dirtyIds()
+        val syncedLocals = syncDataSource.getSyncedLogs().associateBy { it.id }
+
+        firestoreDataSource.getLogsSince(uid, since).getOrThrow()
+            .filter { it.id !in dirty }
+            .map { it.toEntity().copy(imgs = syncedLocals[it.id]?.imgs ?: "") }
+            .takeIf { it.isNotEmpty() }
+            ?.let { syncDataSource.upsertAll(it) }
+
+        firestoreDataSource.getDeletedLogsSince(uid, since).getOrThrow()
+            .filter { it !in dirty }
+            .takeIf { it.isNotEmpty() }
+            ?.let { syncDataSource.hardDeleteAll(it) }
+    }
+
+    private suspend fun dirtyIds(): Set<String> =
+        (syncDataSource.getUnsyncedLogs() + syncDataSource.getDeletedUnsyncedLogs())
+            .map { it.id }
+            .toSet()
 }
 
 private fun LifeLogEntity.toRemoteDto() =

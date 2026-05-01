@@ -34,7 +34,9 @@ import com.bossmg.android.domain.usecase.SignOutUseCase
 import com.bossmg.android.domain.usecase.SyncNowUseCase
 import com.bossmg.android.domain.usecase.SyncUploadUseCase
 import com.bossmg.android.domain.usecase.base.invoke
+import android.content.Context
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,6 +54,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getThemeConfigUseCase: GetThemeConfigUseCase,
     private val setThemeConfigUseCase: SetThemeConfigUseCase,
     private val getLanguageConfigUseCase: GetLanguageConfigUseCase,
@@ -130,15 +133,15 @@ internal class SettingsViewModel @Inject constructor(
             val user =
                 signInWithGoogleUseCase().getOrElse { error ->
                     _isAuthLoading.value = false
-                    _events.send(error.localizedMessage ?: "로그인 실패")
+                    _events.send(error.localizedMessage ?: context.getString(R.string.settings_sign_in_failed))
                     return@launch
                 }
             val restoreResult = restoreFromCloudUseCase(user.uid)
             _isAuthLoading.value = false
             if (restoreResult.isFailure) {
-                _events.send(restoreResult.exceptionOrNull()?.localizedMessage ?: "데이터 복원 실패")
+                _events.send(restoreResult.exceptionOrNull()?.localizedMessage ?: context.getString(R.string.settings_restore_failed))
             } else {
-                _events.send("로그인되었습니다")
+                _events.send(context.getString(R.string.settings_sign_in_success))
             }
             scheduleImmediateSyncUseCase()
         }
@@ -159,16 +162,21 @@ internal class SettingsViewModel @Inject constructor(
 
     private suspend fun performSignOut() {
         _isAuthLoading.value = true
-        withTimeoutOrNull(10_000L) { syncUploadUseCase() }
+        val uploadResult = withTimeoutOrNull(10_000L) { syncUploadUseCase() }
+        if (uploadResult == null || uploadResult.isFailure) {
+            _isAuthLoading.value = false
+            _events.send(context.getString(R.string.settings_sign_out_sync_failed))
+            return
+        }
         cancelSyncUseCase()
         signOutUseCase()
             .onSuccess {
                 _isAuthLoading.value = false
-                _events.send("로그아웃되었습니다")
+                _events.send(context.getString(R.string.settings_sign_out_success))
             }
             .onFailure { error ->
                 _isAuthLoading.value = false
-                _events.send(error.localizedMessage ?: "로그아웃 실패")
+                _events.send(error.localizedMessage ?: context.getString(R.string.settings_sign_out_failed))
             }
     }
 
@@ -176,8 +184,8 @@ internal class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             _isManualSyncing.value = true
             syncNowUseCase()
-                .onSuccess { _events.send("동기화 완료") }
-                .onFailure { _events.send(it.localizedMessage ?: "동기화 실패") }
+                .onSuccess { _events.send(context.getString(R.string.settings_sync_success)) }
+                .onFailure { _events.send(it.localizedMessage ?: context.getString(R.string.settings_sync_failed)) }
             _isManualSyncing.value = false
         }
     }

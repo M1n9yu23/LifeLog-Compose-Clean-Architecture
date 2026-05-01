@@ -96,6 +96,9 @@ internal interface LifeLogDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAllIgnoreConflict(logs: List<LifeLogEntity>)
 
+    @Query("UPDATE lifelogs SET isSynced = 1 WHERE id IN (:ids)")
+    suspend fun markAsSynced(ids: List<String>)
+
     @Query("DELETE FROM lifelogs")
     suspend fun clearAll()
 }

@@ -27,6 +27,7 @@ import javax.inject.Inject
 internal class RestoreManager @Inject constructor(
     private val syncDataSource: SyncDataSource,
     private val firestoreDataSource: FirestoreDataSource,
+    private val syncPreferences: SyncPreferences,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     suspend fun restoreFromCloud(uid: String): Result<Unit> =
@@ -34,6 +35,7 @@ internal class RestoreManager @Inject constructor(
             safeRunCatching {
                 val remoteLogs = firestoreDataSource.getAllLogs(uid).getOrThrow()
                 syncDataSource.insertAllIgnoreConflict(remoteLogs.map { it.toEntity() })
+                syncPreferences.setLastSyncTime(uid, System.currentTimeMillis())
             }
         }
 }
