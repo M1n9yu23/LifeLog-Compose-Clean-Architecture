@@ -24,8 +24,6 @@ import kotlinx.coroutines.flow.update
 
 class TestLifeLogDao : LifeLogDao {
     private val logsFlow = MutableStateFlow<List<LifeLogEntity>>(emptyList())
-    private var rowIdCounter = 0L
-    private val rowIdMap = mutableMapOf<String, Long>()
 
     override fun getLifeLogs(): Flow<List<LifeLogEntity>> =
         logsFlow.map { it.filter { log -> !log.isDeleted } }
@@ -45,14 +43,9 @@ class TestLifeLogDao : LifeLogDao {
     override suspend fun getLifeLogById(lifeLogId: String): LifeLogEntity =
         logsFlow.value.first { it.id == lifeLogId && !it.isDeleted }
 
-    override suspend fun getLifeLogByRowId(rowId: Long): LifeLogEntity? =
-        logsFlow.value.firstOrNull { rowIdMap[it.id] == rowId && !it.isDeleted }
-
     override suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity): Long {
         logsFlow.update { current -> current + lifeLogEntity }
-        val rowId = ++rowIdCounter
-        rowIdMap[lifeLogEntity.id] = rowId
-        return rowId
+        return 0L
     }
 
     override suspend fun upsertLifeLog(lifeLogEntity: LifeLogEntity): Long {
@@ -64,7 +57,7 @@ class TestLifeLogDao : LifeLogDao {
                 current.toMutableList().apply { this[index] = lifeLogEntity }
             }
         }
-        return rowIdMap.getOrPut(lifeLogEntity.id) { ++rowIdCounter }
+        return 0L
     }
 
     override suspend fun deleteLifeLogById(lifeLogId: String, updatedAt: Long) {
@@ -77,12 +70,10 @@ class TestLifeLogDao : LifeLogDao {
 
     override suspend fun hardDeleteLifeLogById(lifeLogId: String) {
         logsFlow.update { current -> current.filterNot { it.id == lifeLogId } }
-        rowIdMap.remove(lifeLogId)
     }
 
     override suspend fun hardDeleteLifeLogsByIds(ids: List<String>) {
         logsFlow.update { current -> current.filterNot { it.id in ids } }
-        ids.forEach { rowIdMap.remove(it) }
     }
 
     override suspend fun getUnsyncedLogs(): List<LifeLogEntity> =
@@ -105,7 +96,5 @@ class TestLifeLogDao : LifeLogDao {
 
     override suspend fun clearAll() {
         logsFlow.value = emptyList()
-        rowIdMap.clear()
-        rowIdCounter = 0L
     }
 }

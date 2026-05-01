@@ -17,20 +17,34 @@ package com.bossmg.android.data.datasource
 
 import com.bossmg.android.data.database.LifeLogDao
 import com.bossmg.android.data.model.LifeLogEntity
+import com.gyugle.hanfts.SearchEngine
 import javax.inject.Inject
 
 internal class SyncDataSourceImpl @Inject constructor(
     private val dao: LifeLogDao,
+    private val searchEngine: SearchEngine,
 ) : SyncDataSource {
     override suspend fun getUnsyncedLogs(): List<LifeLogEntity> = dao.getUnsyncedLogs()
 
     override suspend fun getDeletedUnsyncedLogs(): List<LifeLogEntity> = dao.getDeletedUnsyncedLogs()
 
-    override suspend fun upsertAll(logs: List<LifeLogEntity>) = dao.upsertAll(logs)
+    override suspend fun upsertAll(logs: List<LifeLogEntity>) {
+        dao.upsertAll(logs)
+        indexLogs(logs)
+    }
 
-    override suspend fun insertAllIgnoreConflict(logs: List<LifeLogEntity>) = dao.insertAllIgnoreConflict(logs)
+    override suspend fun insertAllIgnoreConflict(logs: List<LifeLogEntity>) {
+        dao.insertAllIgnoreConflict(logs)
+        indexLogs(logs)
+    }
 
     override suspend fun hardDeleteAll(ids: List<String>) = dao.hardDeleteLifeLogsByIds(ids)
 
     override suspend fun getSyncedLogs(): List<LifeLogEntity> = dao.getSyncedLogs()
+
+    private fun indexLogs(logs: List<LifeLogEntity>) {
+        logs.forEach { entity ->
+            searchEngine.indexDocument(entity.id, entity.title, entity.description)
+        }
+    }
 }

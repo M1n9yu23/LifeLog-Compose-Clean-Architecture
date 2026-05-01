@@ -37,7 +37,7 @@ class FtsIndexInitializer @Inject constructor(
             runCatching {
                 val docs =
                     readRepository.getLifeLogs().first()
-                        .map { Document(id = it.id.toLong(), title = it.title, body = it.description) }
+                        .map { Document(id = it.id, title = it.title, body = it.description) }
                 searchEngine.rebuildIndex(docs)
             }
         }

@@ -59,33 +59,35 @@ internal class LifeLogRepositoryImpl @Inject constructor(
 
     override suspend fun insertLifeLog(lifeLog: LifeLog) {
         val entity = mapper.mapBack(lifeLog)
-        val rowId = dao.insertLifeLog(entity)
+        dao.insertLifeLog(entity)
         withContext(ioDispatcher) {
-            searchEngine.indexDocument(rowId, lifeLog.title, lifeLog.description)
+            searchEngine.indexDocument(entity.id, lifeLog.title, lifeLog.description)
         }
     }
 
     override suspend fun upsertLifeLog(lifeLog: LifeLog) {
         val entity = mapper.mapBack(lifeLog)
-        val rowId = dao.upsertLifeLog(entity)
+        dao.upsertLifeLog(entity)
         withContext(ioDispatcher) {
-            searchEngine.indexDocument(rowId, lifeLog.title, lifeLog.description)
+            searchEngine.indexDocument(entity.id, lifeLog.title, lifeLog.description)
         }
     }
 
     override suspend fun deleteLifeLogById(id: String) {
         dao.deleteLifeLogById(id, System.currentTimeMillis())
+        withContext(ioDispatcher) { searchEngine.removeDocument(id) }
     }
 
     override suspend fun clearAllLifeLogs() {
         dao.clearAll()
+        searchEngine.clear()
     }
 
     override suspend fun searchLifeLogs(query: String): List<LifeLog> {
         if (query.isBlank()) return emptyList()
         val results = withContext(ioDispatcher) { searchEngine.search(query) }
         return results.mapNotNull { result ->
-            runCatching { dao.getLifeLogByRowId(result.id) }.getOrNull()?.let { mapper.map(it) }
+            runCatching { dao.getLifeLogById(result.id) }.getOrNull()?.let { mapper.map(it) }
         }
     }
 }

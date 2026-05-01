@@ -64,9 +64,6 @@ internal interface LifeLogDao {
     @Query("SELECT * FROM lifelogs WHERE id = :lifeLogId AND isDeleted = 0")
     suspend fun getLifeLogById(lifeLogId: String): LifeLogEntity
 
-    @Query("SELECT * FROM lifelogs WHERE rowid = :rowId AND isDeleted = 0")
-    suspend fun getLifeLogByRowId(rowId: Long): LifeLogEntity?
-
     @Insert(onConflict = REPLACE)
     suspend fun insertLifeLog(lifeLogEntity: LifeLogEntity): Long
 

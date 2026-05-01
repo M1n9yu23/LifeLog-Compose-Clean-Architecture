@@ -20,11 +20,11 @@ import com.gyugle.hanfts.SearchEngine
 import com.gyugle.hanfts.SearchResult
 
 class FakeSearchEngine : SearchEngine {
-    private val index = mutableMapOf<Long, Pair<String, String>>()
+    private val index = mutableMapOf<String, Pair<String, String>>()
 
     override val documentCount: Int get() = index.size
 
-    override fun indexDocument(id: Long, title: String, body: String) {
+    override fun indexDocument(id: String, title: String, body: String) {
         index[id] = title to body
     }
 
@@ -32,7 +32,7 @@ class FakeSearchEngine : SearchEngine {
         index[document.id] = document.title to document.body
     }
 
-    override fun removeDocument(id: Long) {
+    override fun removeDocument(id: String) {
         index.remove(id)
     }
 

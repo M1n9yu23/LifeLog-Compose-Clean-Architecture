@@ -35,6 +35,7 @@ class LifeLogRepositoryTest {
 
     private lateinit var dao: TestLifeLogDao
     private lateinit var mapper: LifeLogMapper
+    private lateinit var searchEngine: FakeSearchEngine
     private lateinit var repository: LifeLogRepositoryImpl
 
     private val dummyLogs =
@@ -49,7 +50,8 @@ class LifeLogRepositoryTest {
         runTest {
             dao = TestLifeLogDao()
             mapper = LifeLogMapper()
-            repository = LifeLogRepositoryImpl(dao, mapper, FakeSearchEngine(), testDispatcher)
+            searchEngine = FakeSearchEngine()
+            repository = LifeLogRepositoryImpl(dao, mapper, searchEngine, testDispatcher)
 
             dummyLogs.forEach {
                 dao.insertLifeLog(it)
@@ -212,5 +214,36 @@ class LifeLogRepositoryTest {
         scope.runTest {
             val result = repository.searchLifeLogs("  ")
             assertEquals(0, result.size)
+        }
+
+    @Test
+    fun givenExistingLog_whenDeleteById_thenRemovedFromResults() =
+        scope.runTest {
+            repository.deleteLifeLogById("1")
+            val logs = repository.getLifeLogs().first()
+            assertEquals(2, logs.size)
+            assertEquals(null, logs.find { it.id == "1" })
+        }
+
+    @Test
+    fun givenInsertedLog_whenDeleteById_thenRemovedFromSearchIndex() =
+        scope.runTest {
+            dummyLogs.forEach { repository.insertLifeLog(mapper.map(it)) }
+            assertEquals(3, searchEngine.documentCount)
+
+            repository.deleteLifeLogById("1")
+
+            assertEquals(2, searchEngine.documentCount)
+        }
+
+    @Test
+    fun givenInsertedLogs_whenClearAll_thenSearchIndexCleared() =
+        scope.runTest {
+            dummyLogs.forEach { repository.insertLifeLog(mapper.map(it)) }
+            assertEquals(3, searchEngine.documentCount)
+
+            repository.clearAllLifeLogs()
+
+            assertEquals(0, searchEngine.documentCount)
         }
 }
