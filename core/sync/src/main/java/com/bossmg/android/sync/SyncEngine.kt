@@ -77,14 +77,12 @@ internal class SyncEngine @Inject constructor(
         val syncedLocals = syncDataSource.getSyncedLogs().associateBy { it.id }
         val remoteIds = remoteLogs.map { it.id }.toSet()
 
-        // 서버 레코드 upsert - 로컬 dirty 레코드 보호, imgs 필드 보존
         val toUpsert =
             remoteLogs
                 .filter { it.id !in dirtyIds }
                 .map { remote -> remote.toEntity().copy(imgs = syncedLocals[remote.id]?.imgs ?: "") }
         if (toUpsert.isNotEmpty()) syncDataSource.upsertAll(toUpsert)
 
-        // 타 기기에서 삭제된 레코드 감지 후 로컬에서도 제거
         val ghostIds = syncedLocals.keys.filter { it !in remoteIds && it !in dirtyIds }
         if (ghostIds.isNotEmpty()) syncDataSource.hardDeleteAll(ghostIds)
     }
