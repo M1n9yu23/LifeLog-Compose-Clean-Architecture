@@ -39,8 +39,8 @@ internal class SyncManagerImpl @Inject constructor(
 ) : SyncRepository {
     override fun schedulePeriodicSync() {
         val request =
-            PeriodicWorkRequestBuilder<SyncWorker>(15, TimeUnit.MINUTES)
-                .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
+            PeriodicWorkRequestBuilder<SyncWorker>(3, TimeUnit.HOURS)
+                .setConstraints(Constraints(requiredNetworkType = NetworkType.UNMETERED))
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
                 .build()
         workManager.enqueueUniquePeriodicWork(
