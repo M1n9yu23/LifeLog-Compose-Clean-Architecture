@@ -15,9 +15,9 @@
  */
 package com.bossmg.android.sync
 
+import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.common.safeRunCatching
 import com.bossmg.android.data.datasource.SyncDataSource
-import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.sync.model.toEntity
 import com.bossmg.android.sync.remote.FirestoreDataSource
 import kotlinx.coroutines.CoroutineDispatcher

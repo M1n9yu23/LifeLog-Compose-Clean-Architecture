@@ -1,8 +1,23 @@
+/*
+ * Copyright 2026 Gyugle
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.bossmg.android.sync
 
+import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.common.safeRunCatching
 import com.bossmg.android.data.datasource.SyncDataSource
-import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.data.model.LifeLogEntity
 import com.bossmg.android.domain.repository.AuthRepository
 import com.bossmg.android.sync.model.LifeLogRemoteDto
@@ -63,9 +78,10 @@ internal class SyncEngine @Inject constructor(
         val remoteIds = remoteLogs.map { it.id }.toSet()
 
         // 서버 레코드 upsert - 로컬 dirty 레코드 보호, imgs 필드 보존
-        val toUpsert = remoteLogs
-            .filter { it.id !in dirtyIds }
-            .map { remote -> remote.toEntity().copy(imgs = syncedLocals[remote.id]?.imgs ?: "") }
+        val toUpsert =
+            remoteLogs
+                .filter { it.id !in dirtyIds }
+                .map { remote -> remote.toEntity().copy(imgs = syncedLocals[remote.id]?.imgs ?: "") }
         if (toUpsert.isNotEmpty()) syncDataSource.upsertAll(toUpsert)
 
         // 타 기기에서 삭제된 레코드 감지 후 로컬에서도 제거

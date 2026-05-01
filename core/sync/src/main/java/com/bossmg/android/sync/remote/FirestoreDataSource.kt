@@ -15,8 +15,8 @@
  */
 package com.bossmg.android.sync.remote
 
-import com.bossmg.android.sync.model.LifeLogRemoteDto
 import com.bossmg.android.common.safeRunCatching
+import com.bossmg.android.sync.model.LifeLogRemoteDto
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await

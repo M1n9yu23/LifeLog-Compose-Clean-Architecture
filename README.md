@@ -113,7 +113,6 @@ classDef native-lib fill:#B5EAD7,stroke:#000,stroke-width:2px,color:#000;
 - **:core:testing** - feature 모듈용 테스트 헬퍼(TestRepository, Rule, Runner 등) 제공하는 모듈
 - **:core:notifications** - 앱의 알림을 담당하는 모듈
 - **:feature** - 기능 단위로 나눠진 모듈, domain, designsystem, testing에 접근 하는 모듈
-    - **:feature:settings** - Google 계정 로그인 및 데이터 동기화 설정 화면 모듈
 - **:native** - Android NDK(C++17) 기반 Full-Text Search 엔진을 제공하는 모듈 → [자세히보기](native/README.md)
 - **:build-logic** - Gradle Convention Plugin으로 모듈별 빌드 설정을 통합 관리하는
   모듈 → [자세히보기](build-logic/README.md)
