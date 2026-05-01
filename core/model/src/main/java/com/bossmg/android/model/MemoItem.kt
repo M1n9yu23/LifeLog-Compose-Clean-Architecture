@@ -18,7 +18,7 @@ package com.bossmg.android.model
 import java.time.LocalDate
 
 data class MemoItem(
-    val id: Int,
+    val id: String,
     val date: LocalDate,
     val title: String,
     val mood: String,

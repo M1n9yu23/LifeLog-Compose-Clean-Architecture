@@ -24,9 +24,9 @@ import com.bossmg.android.memo.Memo
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MemoRoute(val id: Int?)
+data class MemoRoute(val id: String?)
 
-fun NavController.navigateToMemo(memoId: Int? = null, navOptions: NavOptions? = null) =
+fun NavController.navigateToMemo(memoId: String? = null, navOptions: NavOptions? = null) =
     navigate(MemoRoute(memoId), navOptions)
 
 fun NavGraphBuilder.memoScreen(

@@ -35,7 +35,7 @@ class LifeLogMapperTest {
     fun mapEntityToDomain() {
         val entity =
             LifeLogEntity(
-                id = 1,
+                id = "1",
                 date = "2025-10-05",
                 title = "Test Title",
                 description = "Test Description",
@@ -57,7 +57,7 @@ class LifeLogMapperTest {
     fun mapBackDomainToEntity() {
         val domainModel =
             LifeLog(
-                id = 2,
+                id = "2",
                 date = LocalDate.of(2025, 10, 6),
                 title = "Domain Title",
                 description = "Domain Description",
@@ -79,7 +79,7 @@ class LifeLogMapperTest {
     fun mapEntityToDomain_multipleImages() {
         val entity =
             LifeLogEntity(
-                id = 3,
+                id = "3",
                 date = "2025-10-07",
                 title = "Multi Image",
                 description = "여러 이미지 테스트",
@@ -96,7 +96,7 @@ class LifeLogMapperTest {
     fun mapBack_multipleImages() {
         val domainModel =
             LifeLog(
-                id = 4,
+                id = "4",
                 date = LocalDate.of(2025, 10, 8),
                 title = "Multi Image Back",
                 description = "여러 이미지 역매핑 테스트",
@@ -113,7 +113,7 @@ class LifeLogMapperTest {
     fun mapEntityToDomain_emptyImgs_returnsEmptyList() {
         val entity =
             LifeLogEntity(
-                id = 5,
+                id = "5",
                 date = "2025-10-09",
                 title = "No Image",
                 description = "이미지 없음",
@@ -130,7 +130,7 @@ class LifeLogMapperTest {
     fun mapBack_emptyImgs_returnsEmptyString() {
         val domainModel =
             LifeLog(
-                id = 6,
+                id = "6",
                 date = LocalDate.of(2025, 10, 10),
                 title = "No Image Back",
                 description = "이미지 없음 역매핑",

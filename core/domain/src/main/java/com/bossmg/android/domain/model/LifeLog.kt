@@ -19,7 +19,7 @@ import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
 
 data class LifeLog(
-    val id: Int = 0,
+    val id: String = "",
     val date: LocalDate = LocalDate.now(),
     val title: String = "",
     val description: String = "",

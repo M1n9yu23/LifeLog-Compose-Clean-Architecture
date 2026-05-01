@@ -5,6 +5,7 @@
 하루의 메모, 감정, 사진, 일정을 한 곳에서 기록하는 **Android 일상 기록 앱**입니다.  
 캘린더로 날짜별 기록을 한눈에 보고, 감정 변화를 추적하며, 사진 일기와 텍스트 메모를 자유롭게 남길 수 있습니다.
 
+- **인증 및 동기화** — Google 계정으로 로그인하고 Firebase Firestore를 통해 기기 간 데이터를 자동으로 동기화합니다. 이미지 파일 동기화는 Firebase Storage 유료 정책으로 인해 제외했습니다.
 - **테스트** — 모든 레이어 모듈은 단위 테스트와 통합 테스트로 검증 됐습니다.
 - **빌드 시스템** — Gradle Convention Plugin으로 모든 모듈의 빌드 설정을 관리합니다.
 - **Native FTS** — 한국어 검색을 위해 자체 개발한 오픈소스 라이브러리 **[hanfts](https://github.com/M1n9yu23/hanfts)**를 사용합니다.
@@ -22,9 +23,13 @@ graph TB
 subgraph :core
 direction TB
 :core:data[data]:::android-core
+:core:auth[auth]:::android-core
+:core:sync[sync]:::android-core
 :core:designsystem[designsystem]:::android-core
-:core:domain[domain]:::kotlin-library
 :core:notifications[notifications]:::android-core
+:core:domain[domain]:::kotlin-library
+:core:common[common]:::kotlin-library
+:core:model[model]:::kotlin-library
 :core:testing[testing]:::android-test
 end
 subgraph :feature
@@ -34,6 +39,7 @@ direction TB
 :feature:memo[memo]:::android-feature
 :feature:mood[mood]:::android-feature
 :feature:photo[photo]:::android-feature
+:feature:settings[settings]:::android-feature
 end
 :app[app]:::android-app
 :native[native]:::native-lib
@@ -43,18 +49,30 @@ end
 :app -.-> :feature:memo
 :app -.-> :feature:mood
 :app -.-> :feature:photo
+:app -.-> :feature:settings
 :app -.-> :core:data
 :app -.-> :core:domain
 :app -.-> :core:designsystem
 :app -.-> :core:notifications
+:app -.-> :core:auth
+:app -.-> :core:sync
 :core:data -.-> :core:domain
+:core:data -.-> :core:common
 :core:data -.-> :native
+:core:auth -.-> :core:common
+:core:auth -.-> :core:domain
+:core:sync -.-> :core:common
+:core:sync -.-> :core:domain
+:core:sync -.-> :core:data
+:core:sync -.-> :core:auth
+:core:model -.-> :core:domain
 :core:designsystem -.-> :core:domain
 :core:testing -.-> :core:domain
 :core:testing -.-> :core:data
 :core:testing -.-> :core:notifications
 :feature:home -.-> :core:designsystem
 :feature:home -.-> :core:domain
+:feature:home -.-> :core:model
 :feature:home -.-> :core:testing
 :feature:calendar -.-> :core:designsystem
 :feature:calendar -.-> :core:domain
@@ -68,6 +86,9 @@ end
 :feature:photo -.-> :core:designsystem
 :feature:photo -.-> :core:domain
 :feature:photo -.-> :core:testing
+:feature:settings -.-> :core:designsystem
+:feature:settings -.-> :core:domain
+:feature:settings -.-> :core:auth
 
 :core:domain ~~~ :native
 
@@ -83,7 +104,11 @@ classDef native-lib fill:#B5EAD7,stroke:#000,stroke-width:2px,color:#000;
 
 - **:app** - 모든 모듈에 접근할 수 있는 최상위 모듈
 - **:core:data** - 데이터 레이어 모듈, domain 및 native 모듈에 접근하는 모듈
+- **:core:auth** - Google/Firebase 인증을 담당하는 모듈
+- **:core:sync** - Firestore 기반 데이터 동기화 및 WorkManager 백그라운드 동기화 모듈
 - **:core:domain** - 레이어간 독립을 지원하는 모듈, 다른 모듈에 접근 할 수 없는 Kotlin 모듈
+- **:core:common** - Coroutine Dispatcher 등 모든 모듈이 공유하는 공통 유틸리티 Kotlin 모듈
+- **:core:model** - 도메인 모델을 확장하는 UI용 데이터 모델 Kotlin 모듈
 - **:core:designsystem** - 컴포넌트와 모든 UI 관련(Icons, Theme, Util)을 담당하는 모듈
 - **:core:testing** - feature 모듈용 테스트 헬퍼(TestRepository, Rule, Runner 등) 제공하는 모듈
 - **:core:notifications** - 앱의 알림을 담당하는 모듈
@@ -130,17 +155,19 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 
 ## Tech Stack
 
-| **분류**            | **내용**                                      |
-|-------------------|---------------------------------------------|
-| **Language**      | Kotlin, C++17 (NDK)                         |
-| **Jetpack**       | Compose, Navigation, ViewModel, WorkManager |
-| **Architecture**  | Clean Architecture, MVVM                    |
-| **Asynchronous**  | Coroutine, Flow(cold, hot)                  |
-| **Database**      | Room                                        |
-| **Search**        | hanfts                                      |
-| **Image Loading** | Coil                                        |
-| **DI**            | Hilt                                        |
-| **Build**         | Gradle Convention Plugin                    |
+| **분류**             | **내용**                                          |
+|--------------------|-------------------------------------------------|
+| **Language**       | Kotlin, C++17 (NDK)                             |
+| **Jetpack**        | Compose, Navigation, ViewModel, WorkManager     |
+| **Architecture**   | Clean Architecture, MVVM                        |
+| **Asynchronous**   | Coroutine, Flow                                 |
+| **Local Storage**  | Room, DataStore Preferences                     |
+| **Search**         | hanfts                                          |
+| **Authentication** | Firebase Auth, Google Sign-In (Credentials API) |
+| **Backend / Sync** | Firebase Firestore                              |
+| **Image Loading**  | Coil                                            |
+| **DI**             | Hilt                                            |
+| **Build**          | Gradle Convention Plugin                        |
 
 ## Previews
 

@@ -69,7 +69,7 @@ import kotlin.math.ceil
 
 @Composable
 internal fun Calendar(
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
     viewModel: CalendarViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -106,7 +106,7 @@ private fun CalendarScreen(
     onDateSelect: (LocalDate) -> Unit,
     onPrevMonth: () -> Unit,
     onNextMonth: () -> Unit,
-    onMemoItemClick: (Int) -> Unit,
+    onMemoItemClick: (String) -> Unit,
 ) {
     LazyColumn(
         modifier =
@@ -279,7 +279,7 @@ private fun CalendarGrid(
 }
 
 @Composable
-private fun MemoItemCard(item: MemoItem, onMemoItemClick: (Int) -> Unit) {
+private fun MemoItemCard(item: MemoItem, onMemoItemClick: (String) -> Unit) {
     CustomCard(
         modifier =
             Modifier
@@ -312,13 +312,13 @@ private fun CalendarScreenPreview() {
                 memoItems =
                     persistentListOf(
                         MemoItem(
-                            id = 1,
+                            id = "1",
                             date = sampleDate,
                             title = "오늘의 아침",
                             mood = "행복",
                         ),
                         MemoItem(
-                            id = 2,
+                            id = "2",
                             date = LocalDate.of(2025, 10, 2),
                             title = "점심시간",
                             mood = "피곤",

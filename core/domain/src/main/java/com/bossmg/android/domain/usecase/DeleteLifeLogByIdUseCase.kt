@@ -21,6 +21,6 @@ import javax.inject.Inject
 
 class DeleteLifeLogByIdUseCase @Inject constructor(
     private val lifeLogRepository: LifeLogWriteRepository,
-) : SuspendUseCase<Int, Unit>() {
-    override suspend fun execute(params: Int) = lifeLogRepository.deleteLifeLogById(params)
+) : SuspendUseCase<String, Unit>() {
+    override suspend fun execute(params: String) = lifeLogRepository.deleteLifeLogById(params)
 }

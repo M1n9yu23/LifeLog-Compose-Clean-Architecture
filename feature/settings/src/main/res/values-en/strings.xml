@@ -14,4 +14,17 @@
     <string name="settings_language_change_message">The app needs to restart to apply the language change.</string>
     <string name="settings_language_restart">Restart</string>
     <string name="settings_language_cancel">Cancel</string>
+    <string name="settings_account_section">Account</string>
+    <string name="settings_sign_in_with_google">Sign in with Google</string>
+    <string name="settings_sign_out">Sign out</string>
+    <string name="settings_sync_now">Sync now</string>
+    <string name="settings_sign_out_confirm_message">Signing out will delete unsynced data and disconnect images saved on this device. Do you want to continue?</string>
+    <string name="settings_sign_in_success">Signed in</string>
+    <string name="settings_sign_out_success">Signed out</string>
+    <string name="settings_sync_success">Sync complete</string>
+    <string name="settings_sync_failed">Sync failed</string>
+    <string name="settings_sign_in_failed">Sign in failed</string>
+    <string name="settings_sign_out_failed">Sign out failed</string>
+    <string name="settings_restore_failed">Failed to restore data</string>
+    <string name="settings_sign_out_sync_failed">Sync failed. Please check your network and try again.</string>
 </resources>

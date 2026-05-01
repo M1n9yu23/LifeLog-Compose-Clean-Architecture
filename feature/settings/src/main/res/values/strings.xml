@@ -14,4 +14,17 @@
     <string name="settings_language_change_message">언어를 변경하려면 앱을 재시작해야 합니다.</string>
     <string name="settings_language_restart">재시작</string>
     <string name="settings_language_cancel">취소</string>
+    <string name="settings_account_section">계정</string>
+    <string name="settings_sign_in_with_google">Google로 로그인</string>
+    <string name="settings_sign_out">로그아웃</string>
+    <string name="settings_sync_now">지금 동기화</string>
+    <string name="settings_sign_out_confirm_message">로그아웃하면 동기화되지 않은 데이터가 삭제되고, 이 기기에 저장된 이미지와의 연결이 해제됩니다. 계속하시겠습니까?</string>
+    <string name="settings_sign_in_success">로그인되었습니다</string>
+    <string name="settings_sign_out_success">로그아웃되었습니다</string>
+    <string name="settings_sync_success">동기화 완료</string>
+    <string name="settings_sync_failed">동기화 실패</string>
+    <string name="settings_sign_in_failed">로그인 실패</string>
+    <string name="settings_sign_out_failed">로그아웃 실패</string>
+    <string name="settings_restore_failed">데이터 복원 실패</string>
+    <string name="settings_sign_out_sync_failed">동기화에 실패했습니다. 네트워크를 확인 후 다시 시도해 주세요.</string>
 </resources>
