@@ -312,3 +312,6 @@ obj/
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,android,androidstudio,kotlin,java,firebase
+
+# Local developer notes (not part of the project)
+notes/
