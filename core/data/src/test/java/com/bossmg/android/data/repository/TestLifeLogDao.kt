@@ -94,6 +94,12 @@ class TestLifeLogDao : LifeLogDao {
         logs.filter { it.id !in existingIds }.forEach { insertLifeLog(it) }
     }
 
+    override suspend fun markAsSynced(ids: List<String>) {
+        logsFlow.update { current ->
+            current.map { if (it.id in ids) it.copy(isSynced = true) else it }
+        }
+    }
+
     override suspend fun clearAll() {
         logsFlow.value = emptyList()
     }

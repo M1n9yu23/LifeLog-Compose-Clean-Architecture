@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.settings
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.enums.LanguageConfig
@@ -34,7 +35,6 @@ import com.bossmg.android.domain.usecase.SignOutUseCase
 import com.bossmg.android.domain.usecase.SyncNowUseCase
 import com.bossmg.android.domain.usecase.SyncUploadUseCase
 import com.bossmg.android.domain.usecase.base.invoke
-import android.content.Context
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
