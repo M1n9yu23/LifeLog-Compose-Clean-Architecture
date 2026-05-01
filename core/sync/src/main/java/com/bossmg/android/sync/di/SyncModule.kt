@@ -16,6 +16,9 @@
 package com.bossmg.android.sync.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.work.WorkManager
 import com.bossmg.android.domain.repository.SyncRepository
 import com.bossmg.android.sync.SyncManagerImpl
@@ -30,6 +33,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+private val Context.syncDataStore: DataStore<Preferences> by preferencesDataStore(name = "sync_preferences")
+
 @Module
 @InstallIn(SingletonComponent::class)
 internal object SyncModule {
@@ -43,6 +48,13 @@ internal object SyncModule {
         @ApplicationContext context: Context,
     ): WorkManager =
         WorkManager.getInstance(context)
+
+    @Provides
+    @Singleton
+    @SyncDataStore
+    fun provideSyncDataStore(
+        @ApplicationContext context: Context,
+    ): DataStore<Preferences> = context.syncDataStore
 }
 
 @Module

@@ -70,7 +70,11 @@ internal class SyncEngine @Inject constructor(
 
     private suspend fun processPulls(uid: String) {
         val lastSyncTime = syncPreferences.getLastSyncTime(uid)
-        if (lastSyncTime == 0L) fullPull(uid) else incrementalPull(uid, lastSyncTime)
+        if (lastSyncTime == 0L) {
+            fullPull(uid)
+        } else {
+            incrementalPull(uid, lastSyncTime - CLOCK_SKEW_BUFFER_MS)
+        }
         syncPreferences.setLastSyncTime(uid, System.currentTimeMillis())
     }
 
@@ -113,6 +117,8 @@ internal class SyncEngine @Inject constructor(
             .map { it.id }
             .toSet()
 }
+
+private const val CLOCK_SKEW_BUFFER_MS = 60_000L
 
 private fun LifeLogEntity.toRemoteDto() =
     LifeLogRemoteDto(
