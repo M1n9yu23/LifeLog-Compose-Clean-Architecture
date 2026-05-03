@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Gyugle
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.bossmg.android.memo.camera
 
 import android.Manifest
@@ -55,10 +70,10 @@ import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP16
-import com.bossmg.android.designsystem.ui.theme.DP28
-import com.bossmg.android.designsystem.ui.theme.DP3
 import com.bossmg.android.designsystem.ui.theme.DP18
 import com.bossmg.android.designsystem.ui.theme.DP24
+import com.bossmg.android.designsystem.ui.theme.DP28
+import com.bossmg.android.designsystem.ui.theme.DP3
 import com.bossmg.android.designsystem.ui.theme.DP32
 import com.bossmg.android.designsystem.ui.theme.DP40
 import com.bossmg.android.designsystem.ui.theme.DP56
@@ -123,10 +138,11 @@ internal fun CameraScreen(
         containerColor = Color.Transparent,
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .padding(paddingValues),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(paddingValues),
         ) {
             when (val state = captureState) {
                 is CaptureState.Preview -> {
@@ -136,6 +152,7 @@ internal fun CameraScreen(
                         onRetake = viewModel::resetCaptureState,
                     )
                 }
+
                 else -> {
                     when {
                         cameraPermission.status.isGranted -> {
@@ -147,9 +164,10 @@ internal fun CameraScreen(
                             }
                             IconButton(
                                 onClick = onBack,
-                                modifier = Modifier
-                                    .align(Alignment.TopStart)
-                                    .padding(DP8),
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.TopStart)
+                                        .padding(DP8),
                             ) {
                                 Icon(
                                     imageVector = LifeIcons.ArrowLeft,
@@ -158,18 +176,20 @@ internal fun CameraScreen(
                                 )
                             }
                             Box(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .fillMaxWidth()
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Transparent,
-                                                Color.Black.copy(alpha = 0.5f),
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .fillMaxWidth()
+                                        .background(
+                                            Brush.verticalGradient(
+                                                colors =
+                                                    listOf(
+                                                        Color.Transparent,
+                                                        Color.Black.copy(alpha = 0.5f),
+                                                    ),
                                             ),
                                         )
-                                    )
-                                    .padding(top = DP24, bottom = DP40),
+                                        .padding(top = DP24, bottom = DP40),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 CaptureButton(
@@ -178,6 +198,7 @@ internal fun CameraScreen(
                                 )
                             }
                         }
+
                         else -> {
                             CameraPermissionRequired(
                                 shouldShowRationale = cameraPermission.status.shouldShowRationale,
@@ -206,20 +227,22 @@ private fun PhotoPreview(
             contentScale = ContentScale.Fit,
         )
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(DP80)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Black.copy(alpha = 0.5f), Color.Transparent),
-                    )
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(DP80)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Black.copy(alpha = 0.5f), Color.Transparent),
+                        ),
+                    ),
         )
         IconButton(
             onClick = onRetake,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(DP8),
+            modifier =
+                Modifier
+                    .align(Alignment.TopStart)
+                    .padding(DP8),
         ) {
             Icon(
                 imageVector = LifeIcons.ArrowLeft,
@@ -228,15 +251,16 @@ private fun PhotoPreview(
             )
         }
         Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f)),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f)),
+                        ),
                     )
-                )
-                .padding(top = DP56, bottom = DP32, start = DP24, end = DP24),
+                    .padding(top = DP56, bottom = DP32, start = DP24, end = DP24),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
@@ -285,10 +309,11 @@ private fun CaptureButton(
     val ringStrokeWidth = with(density) { DP3.toPx() }
     val innerRadius = with(density) { DP28.toPx() }
     Box(
-        modifier = modifier
-            .size(DP72)
-            .clip(CircleShape)
-            .clickable(enabled = !isCapturing, onClick = onClick),
+        modifier =
+            modifier
+                .size(DP72)
+                .clip(CircleShape)
+                .clickable(enabled = !isCapturing, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -314,9 +339,10 @@ private fun CameraPermissionRequired(
     val context = LocalContext.current
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -324,39 +350,50 @@ private fun CameraPermissionRequired(
             modifier = Modifier.padding(DP32),
         ) {
             Text(
-                text = stringResource(
-                    if (shouldShowRationale) R.string.memo_camera_permission_required
-                    else R.string.memo_camera_permission_denied,
-                ),
+                text =
+                    stringResource(
+                        if (shouldShowRationale) {
+                            R.string.memo_camera_permission_required
+                        } else {
+                            R.string.memo_camera_permission_denied
+                        },
+                    ),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Spacer(modifier = Modifier.height(DP16))
             Button(
-                onClick = if (shouldShowRationale) {
-                    onRequest
-                } else {
-                    {
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            data = Uri.fromParts("package", context.packageName, null)
+                onClick =
+                    if (shouldShowRationale) {
+                        onRequest
+                    } else {
+                        {
+                            val intent =
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = Uri.fromParts("package", context.packageName, null)
+                                }
+                            context.startActivity(intent)
                         }
-                        context.startActivity(intent)
-                    }
-                },
+                    },
             ) {
                 Text(
-                    text = stringResource(
-                        if (shouldShowRationale) R.string.memo_camera_permission_grant
-                        else R.string.memo_camera_open_settings,
-                    ),
+                    text =
+                        stringResource(
+                            if (shouldShowRationale) {
+                                R.string.memo_camera_permission_grant
+                            } else {
+                                R.string.memo_camera_open_settings
+                            },
+                        ),
                 )
             }
         }
         IconButton(
             onClick = onBack,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(DP8),
+            modifier =
+                Modifier
+                    .align(Alignment.TopStart)
+                    .padding(DP8),
         ) {
             Icon(
                 imageVector = LifeIcons.ArrowLeft,

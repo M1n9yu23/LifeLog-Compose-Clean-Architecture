@@ -105,5 +105,4 @@ internal class MemoViewModel @Inject constructor(
     companion object {
         const val CAMERA_RESULT_KEY = "camera_photo_uri"
     }
-
 }
