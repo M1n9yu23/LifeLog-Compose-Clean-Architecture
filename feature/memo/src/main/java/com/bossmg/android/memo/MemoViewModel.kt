@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.usecase.DeleteLifeLogByIdUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogByIdUseCase
-import com.bossmg.android.domain.usecase.InsertLifeLogUseCase
 import com.bossmg.android.domain.usecase.UpsertLifeLogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -36,17 +35,20 @@ import javax.inject.Inject
 internal class MemoViewModel @Inject constructor(
     private val mapper: MemoMapper,
     private val getLifeLogByIdUseCase: GetLifeLogByIdUseCase,
-    private val insertLifeLogUseCase: InsertLifeLogUseCase,
     private val upsertLifeLogUseCase: UpsertLifeLogUseCase,
     private val deleteLifeLogByIdUseCase: DeleteLifeLogByIdUseCase,
 ) : ViewModel() {
     private val _uiModel = MutableStateFlow(MemoUIModel())
     val uiModel = _uiModel.asStateFlow()
 
+    private var hasLoaded = false
+
     private val _events = Channel<MemoEvent>(Channel.BUFFERED)
     val events: Flow<MemoEvent> = _events.receiveAsFlow()
 
     fun load(id: String?) {
+        if (hasLoaded) return
+        hasLoaded = true
         if (id == null) {
             _uiModel.value = MemoUIModel()
         } else {
@@ -99,4 +101,9 @@ internal class MemoViewModel @Inject constructor(
             }
         }
     }
+
+    companion object {
+        const val CAMERA_RESULT_KEY = "camera_photo_uri"
+    }
+
 }

@@ -93,6 +93,9 @@ import java.util.Locale
 @Composable
 internal fun Memo(
     onBack: (String?) -> Unit,
+    onCamera: () -> Unit,
+    cameraResult: String?,
+    onCameraResultConsumed: () -> Unit,
     id: String? = null,
     viewModel: MemoViewModel = hiltViewModel(),
 ) {
@@ -102,6 +105,12 @@ internal fun Memo(
 
     var showDateDialog by remember { mutableStateOf(false) }
     var showGallery by remember { mutableStateOf(false) }
+
+    LaunchedEffect(cameraResult) {
+        val path = cameraResult ?: return@LaunchedEffect
+        viewModel.addImage(path)
+        onCameraResultConsumed()
+    }
 
     val galleryLauncher =
         rememberLauncherForActivityResult(
@@ -167,6 +176,7 @@ internal fun Memo(
         onBack = { currentOnBack(null) },
         onShowDateDialogChange = { showDateDialog = it },
         onShowGallery = { showGallery = it },
+        onCamera = onCamera,
         onTitleChange = { viewModel.updateTitle(it) },
         onDescriptionChange = { viewModel.updateDescription(it) },
         onMoodSelected = { viewModel.updateMood(it) },
@@ -184,6 +194,7 @@ private fun MemoScreen(
     onBack: () -> Unit,
     onShowDateDialogChange: (Boolean) -> Unit,
     onShowGallery: (Boolean) -> Unit,
+    onCamera: () -> Unit,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onMoodSelected: (String) -> Unit,
@@ -197,6 +208,7 @@ private fun MemoScreen(
                 onBack = onBack,
                 onSaveClick = onSaveClick,
                 onShowGallery = { onShowGallery(true) },
+                onCamera = onCamera,
                 onDeleteClick = onDeleteClick,
             )
         },
@@ -240,6 +252,7 @@ private fun MemoTopBar(
     onBack: () -> Unit,
     onSaveClick: () -> Unit,
     onShowGallery: () -> Unit,
+    onCamera: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
@@ -294,6 +307,25 @@ private fun MemoTopBar(
                         onClick = {
                             menuExpanded = false
                             onShowGallery()
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(R.string.memo_camera_take_photo),
+                                style = AppTypography.bodyMedium,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = LifeIcons.Photo,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        onClick = {
+                            menuExpanded = false
+                            onCamera()
                         },
                     )
                     DropdownMenuItem(
@@ -572,6 +604,7 @@ private fun MemoScreenPreview() {
         onBack = {},
         onShowDateDialogChange = {},
         onShowGallery = {},
+        onCamera = {},
         onTitleChange = {},
         onDescriptionChange = {},
         onMoodSelected = {},

@@ -18,4 +18,12 @@
     <string name="snackbar_memo_added">New memo added</string>
     <string name="snackbar_memo_edited">Memo updated</string>
     <string name="snackbar_memo_deleted">Memo deleted</string>
+    <string name="memo_camera_take_photo">Take Photo</string>
+    <string name="memo_camera_permission_required">Camera permission is required to take photos</string>
+    <string name="memo_camera_permission_grant">Grant Permission</string>
+    <string name="memo_camera_permission_denied">Camera permission is permanently denied. Please allow it in Settings</string>
+    <string name="memo_camera_open_settings">Open Settings</string>
+    <string name="memo_camera_capture_failed">Failed to save photo</string>
+    <string name="memo_camera_retake">Retake</string>
+    <string name="memo_camera_use">Use Photo</string>
 </resources>

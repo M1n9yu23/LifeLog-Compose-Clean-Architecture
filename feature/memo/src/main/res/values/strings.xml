@@ -18,4 +18,12 @@
     <string name="snackbar_memo_added">새 메모가 추가됐어요</string>
     <string name="snackbar_memo_edited">메모가 수정됐어요</string>
     <string name="snackbar_memo_deleted">메모가 삭제됐어요</string>
+    <string name="memo_camera_take_photo">카메라로 촬영</string>
+    <string name="memo_camera_permission_required">사진 촬영을 위해 카메라 권한이 필요합니다</string>
+    <string name="memo_camera_permission_grant">권한 허용</string>
+    <string name="memo_camera_permission_denied">카메라 권한이 영구적으로 거부되었습니다. 설정에서 허용해주세요</string>
+    <string name="memo_camera_open_settings">설정으로 이동</string>
+    <string name="memo_camera_capture_failed">사진 저장에 실패했습니다</string>
+    <string name="memo_camera_retake">다시 찍기</string>
+    <string name="memo_camera_use">사용</string>
 </resources>

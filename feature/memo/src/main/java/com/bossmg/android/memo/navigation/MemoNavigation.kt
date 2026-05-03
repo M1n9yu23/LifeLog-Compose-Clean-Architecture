@@ -15,12 +15,15 @@
  */
 package com.bossmg.android.memo.navigation
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.bossmg.android.memo.Memo
+import com.bossmg.android.memo.MemoViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -30,11 +33,33 @@ fun NavController.navigateToMemo(memoId: String? = null, navOptions: NavOptions?
     navigate(MemoRoute(memoId), navOptions)
 
 fun NavGraphBuilder.memoScreen(
+    navController: NavController,
     onBack: (String?) -> Unit,
 ) {
-    composable<MemoRoute> {
-        val id = it.toRoute<MemoRoute>().id
+    composable<MemoRoute> { entry ->
+        val id = entry.toRoute<MemoRoute>().id
 
-        Memo(id = id, onBack = onBack)
+        val cameraResult by entry.savedStateHandle
+            .getStateFlow<String?>(MemoViewModel.CAMERA_RESULT_KEY, null)
+            .collectAsStateWithLifecycle()
+
+        Memo(
+            id = id,
+            onBack = onBack,
+            onCamera = { navController.navigateToCamera() },
+            cameraResult = cameraResult,
+            onCameraResultConsumed = {
+                entry.savedStateHandle.remove<String>(MemoViewModel.CAMERA_RESULT_KEY)
+            },
+        )
     }
+    cameraScreen(
+        onPhotoCaptured = { absolutePath ->
+            navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.set(MemoViewModel.CAMERA_RESULT_KEY, absolutePath)
+            navController.popBackStack()
+        },
+        onBack = { navController.popBackStack() },
+    )
 }

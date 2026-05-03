@@ -57,6 +57,7 @@ fun LifeLogNavHost(
         moodScreen(navController::navigateToMemo)
         photoScreen()
         memoScreen(
+            navController = navController,
             onBack = { message ->
                 navController.popBackStack()
                 message?.let { scope.launch { snackbarHostState.showSnackbar(it) } }
