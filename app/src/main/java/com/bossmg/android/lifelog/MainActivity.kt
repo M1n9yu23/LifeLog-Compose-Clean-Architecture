@@ -16,7 +16,6 @@
 package com.bossmg.android.lifelog
 
 import android.Manifest
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -31,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.theme.LifeLogTheme
 import com.bossmg.android.domain.enums.ThemeConfig
