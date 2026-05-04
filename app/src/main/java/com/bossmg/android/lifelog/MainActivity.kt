@@ -16,6 +16,7 @@
 package com.bossmg.android.lifelog
 
 import android.Manifest
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         checkNotificationPermission()

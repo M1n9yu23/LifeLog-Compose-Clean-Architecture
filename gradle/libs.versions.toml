@@ -38,6 +38,7 @@ hanfts = "2.0.0"
 firebaseBom = "34.12.0"
 credentialsVersion = "1.3.0"
 googleidVersion = "1.1.1"
+coreSplashscreen = "1.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -92,6 +93,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentialsVersion" }
 credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsVersion" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleidVersion" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 
 # Dependencies for build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":core:auth"))
     implementation(project(":core:sync"))
 
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.hilt.work)

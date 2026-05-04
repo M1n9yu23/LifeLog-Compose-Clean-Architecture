@@ -27,7 +27,7 @@
             android:exported="true"
             android:label="@string/app_name"
             android:configChanges="locale|layoutDirection"
-            android:theme="@style/Theme.LifeLog">
+            android:theme="@style/Theme.LifeLog.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
