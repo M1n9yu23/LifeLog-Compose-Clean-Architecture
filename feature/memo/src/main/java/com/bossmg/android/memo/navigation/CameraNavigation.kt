@@ -22,6 +22,8 @@ import androidx.navigation.compose.composable
 import com.bossmg.android.memo.camera.CameraScreen
 import kotlinx.serialization.Serializable
 
+internal const val CAMERA_RESULT_KEY = "camera_photo_uri"
+
 @Serializable
 internal object CameraRoute
 

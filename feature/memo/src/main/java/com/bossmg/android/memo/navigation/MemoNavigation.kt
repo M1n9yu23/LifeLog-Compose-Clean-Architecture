@@ -23,7 +23,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.bossmg.android.memo.Memo
-import com.bossmg.android.memo.MemoViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -40,7 +39,7 @@ fun NavGraphBuilder.memoScreen(
         val id = entry.toRoute<MemoRoute>().id
 
         val cameraResult by entry.savedStateHandle
-            .getStateFlow<String?>(MemoViewModel.CAMERA_RESULT_KEY, null)
+            .getStateFlow<String?>(CAMERA_RESULT_KEY, null)
             .collectAsStateWithLifecycle()
 
         Memo(
@@ -49,7 +48,7 @@ fun NavGraphBuilder.memoScreen(
             onCamera = { navController.navigateToCamera() },
             cameraResult = cameraResult,
             onCameraResultConsumed = {
-                entry.savedStateHandle.remove<String>(MemoViewModel.CAMERA_RESULT_KEY)
+                entry.savedStateHandle.remove<String>(CAMERA_RESULT_KEY)
             },
         )
     }
@@ -57,7 +56,7 @@ fun NavGraphBuilder.memoScreen(
         onPhotoCaptured = { absolutePath ->
             navController.previousBackStackEntry
                 ?.savedStateHandle
-                ?.set(MemoViewModel.CAMERA_RESULT_KEY, absolutePath)
+                ?.set(CAMERA_RESULT_KEY, absolutePath)
             navController.popBackStack()
         },
         onBack = { navController.popBackStack() },

@@ -99,13 +99,17 @@ internal class CaptureController @Inject constructor(
                     contentValues,
                 ) ?: return@withContext Result.failure(IllegalStateException("MediaStore insert failed"))
             runCatching {
-                context.contentResolver.openOutputStream(uri)!!.use { out ->
+                val outputStream =
+                    context.contentResolver.openOutputStream(uri)
+                        ?: error("OutputStream is null for $uri")
+                outputStream.use { out ->
                     File(absolutePath).inputStream().use { it.copyTo(out) }
                 }
                 File(absolutePath).delete()
                 uri.toString()
             }.onFailure {
                 runCatching { context.contentResolver.delete(uri, null, null) }
+                runCatching { File(absolutePath).delete() }
             }
         }
 }

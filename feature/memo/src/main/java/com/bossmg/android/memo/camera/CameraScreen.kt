@@ -101,8 +101,10 @@ internal fun CameraScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val captureFailedMessage = stringResource(R.string.memo_camera_capture_failed)
 
-    BackHandler(enabled = captureState is CaptureState.Preview) {
-        viewModel.resetCaptureState()
+    BackHandler(enabled = captureState !is CaptureState.Idle) {
+        if (captureState is CaptureState.Preview) {
+            viewModel.resetCaptureState()
+        }
     }
 
     LaunchedEffect(Unit) {

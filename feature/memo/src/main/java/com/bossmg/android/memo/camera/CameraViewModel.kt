@@ -72,9 +72,11 @@ internal class CameraViewModel @Inject constructor(
     fun confirmCapture() {
         val absolutePath = (_captureState.value as? CaptureState.Preview)?.absolutePath ?: return
         viewModelScope.launch {
-            _captureState.update { CaptureState.Idle }
             captureController.confirmCapture(absolutePath)
-                .onSuccess { uri -> _events.send(CameraEvent.PhotoConfirmed(uri)) }
+                .onSuccess { uri ->
+                    _captureState.update { CaptureState.Idle }
+                    _events.send(CameraEvent.PhotoConfirmed(uri))
+                }
                 .onFailure { _events.send(CameraEvent.ConfirmFailed) }
         }
     }
