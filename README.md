@@ -165,6 +165,7 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 | **Search**         | hanfts                                          |
 | **Authentication** | Firebase Auth, Google Sign-In (Credentials API) |
 | **Backend / Sync** | Firebase Firestore                              |
+| **Camera**         | CameraX                                         |
 | **Image Loading**  | Coil                                            |
 | **DI**             | Hilt                                            |
 | **Build**          | Gradle Convention Plugin                        |
