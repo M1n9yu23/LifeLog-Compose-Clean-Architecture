@@ -17,7 +17,6 @@ package com.bossmg.android.memo
 
 import com.bossmg.android.domain.usecase.DeleteLifeLogByIdUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogByIdUseCase
-import com.bossmg.android.domain.usecase.InsertLifeLogUseCase
 import com.bossmg.android.domain.usecase.UpsertLifeLogUseCase
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
@@ -38,7 +37,6 @@ class MemoViewModelTest {
     private lateinit var testRepository: TestLifeLogRepository
     private lateinit var mapper: MemoMapper
     private lateinit var getLifeLogByIdUseCase: GetLifeLogByIdUseCase
-    private lateinit var insertLifeLogUseCase: InsertLifeLogUseCase
     private lateinit var upsertLifeLogUseCase: UpsertLifeLogUseCase
     private lateinit var deleteLifeLogByIdUseCase: DeleteLifeLogByIdUseCase
     private lateinit var viewModel: MemoViewModel
@@ -49,7 +47,6 @@ class MemoViewModelTest {
     fun setUp() {
         testRepository = TestLifeLogRepository()
         getLifeLogByIdUseCase = GetLifeLogByIdUseCase(testRepository)
-        insertLifeLogUseCase = InsertLifeLogUseCase(testRepository)
         upsertLifeLogUseCase = UpsertLifeLogUseCase(testRepository)
         deleteLifeLogByIdUseCase = DeleteLifeLogByIdUseCase(testRepository)
         mapper = MemoMapper()
@@ -57,7 +54,6 @@ class MemoViewModelTest {
             MemoViewModel(
                 mapper,
                 getLifeLogByIdUseCase,
-                insertLifeLogUseCase,
                 upsertLifeLogUseCase,
                 deleteLifeLogByIdUseCase,
             )

@@ -315,3 +315,6 @@ obj/
 
 # Local developer notes (not part of the project)
 notes/
+
+# Local Claude Code instructions (personal, not shared)
+CLAUDE.local.md
