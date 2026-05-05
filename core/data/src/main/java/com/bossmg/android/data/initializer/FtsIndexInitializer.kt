@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.data.initializer
 
+import com.bossmg.android.common.di.DefaultDispatcher
 import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.data.di.ApplicationScope
 import com.bossmg.android.domain.repository.LifeLogReadRepository
@@ -33,6 +34,7 @@ class FtsIndexInitializer @Inject constructor(
     private val searchEngine: SearchEngine,
     @ApplicationScope private val scope: CoroutineScope,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
 ) {
     fun initialize() {
         scope.launch(ioDispatcher) {
@@ -40,7 +42,7 @@ class FtsIndexInitializer @Inject constructor(
                 val docs =
                     readRepository.getLifeLogs().first()
                         .map { Document(id = it.id, title = it.title, body = it.description) }
-                withContext(Dispatchers.Default) {
+                withContext(defaultDispatcher) {
                     searchEngine.rebuildIndex(docs)
                 }
             }
