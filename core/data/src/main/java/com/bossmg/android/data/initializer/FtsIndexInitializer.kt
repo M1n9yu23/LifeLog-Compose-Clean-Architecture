@@ -22,8 +22,10 @@ import com.gyugle.hanfts.Document
 import com.gyugle.hanfts.SearchEngine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FtsIndexInitializer @Inject constructor(
@@ -38,7 +40,9 @@ class FtsIndexInitializer @Inject constructor(
                 val docs =
                     readRepository.getLifeLogs().first()
                         .map { Document(id = it.id, title = it.title, body = it.description) }
-                searchEngine.rebuildIndex(docs)
+                withContext(Dispatchers.Default) {
+                    searchEngine.rebuildIndex(docs)
+                }
             }
         }
     }

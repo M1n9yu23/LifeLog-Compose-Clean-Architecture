@@ -17,12 +17,14 @@ package com.bossmg.android.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bossmg.android.common.di.DefaultDispatcher
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
 import com.bossmg.android.domain.usecase.SearchLifeLogsUseCase
 import com.bossmg.android.domain.usecase.base.invoke
 import com.bossmg.android.model.MemoItem
 import com.bossmg.android.model.MemoItemMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -41,12 +44,14 @@ internal class HomeViewModel @Inject constructor(
     private val getLifeLogsUseCase: GetLifeLogsUseCase,
     private val searchLifeLogsUseCase: SearchLifeLogsUseCase,
     private val mapper: MemoItemMapper,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val uiState: StateFlow<HomeUIState> =
         getLifeLogsUseCase()
             .map { lifeLogs ->
                 HomeUIState.Success(lifeLogs.map { mapper.map(it) })
             }
+            .flowOn(defaultDispatcher)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -63,7 +68,7 @@ internal class HomeViewModel @Inject constructor(
                 flow {
                     val results = searchLifeLogsUseCase(query).map { mapper.map(it) }
                     emit(results)
-                }
+                }.flowOn(defaultDispatcher)
             }
             .stateIn(
                 scope = viewModelScope,

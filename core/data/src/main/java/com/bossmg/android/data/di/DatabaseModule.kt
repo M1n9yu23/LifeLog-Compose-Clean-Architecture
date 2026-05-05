@@ -17,6 +17,7 @@ package com.bossmg.android.data.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.bossmg.android.data.database.LifeLogDatabase
 import dagger.Module
 import dagger.Provides
@@ -42,5 +43,6 @@ internal object DatabaseModule {
             LifeLogDatabase.MIGRATION_2_3,
             LifeLogDatabase.MIGRATION_3_4,
             LifeLogDatabase.MIGRATION_4_5,
-        ).build()
+        ).setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
+            .build()
 }
