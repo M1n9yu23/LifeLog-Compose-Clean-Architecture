@@ -15,16 +15,20 @@
  */
 package com.bossmg.android.mood
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -32,20 +36,22 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.components.CustomCard
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
+import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
@@ -54,8 +60,10 @@ import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP24
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.DP800
-import com.bossmg.android.designsystem.ui.theme.LightOnSurface
+import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
 import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.domain.enums.MoodType
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.model.MemoItem
 import java.time.LocalDate
 
@@ -111,14 +119,18 @@ private fun MoodScreen(
                 if (uiModel.moods.isNotEmpty()) {
                     Spacer(Modifier.height(DP16))
 
-                    MoodsBox(uiModel.moods, onMoodSelected)
+                    MoodsBox(
+                        moods = uiModel.moods,
+                        selectedMood = selectedMood,
+                        onMoodSelected = onMoodSelected,
+                    )
 
                     Spacer(Modifier.height(DP24))
                 }
             }
         }
 
-        items(uiModel.memoItem.filter { it.mood.contains(selectedMood) }) {
+        items(uiModel.memoItem) {
             MemoItemCard(it, onMemoItemClick)
         }
     }
@@ -148,6 +160,7 @@ private fun MemoItemCard(item: MemoItem, onMemoItemClick: (String) -> Unit) {
 @Composable
 private fun MoodsBox(
     moods: Map<String, Int>,
+    selectedMood: String,
     onMoodSelected: (String) -> Unit,
 ) {
     CustomCard(
@@ -160,35 +173,95 @@ private fun MoodsBox(
         elevation = DP10,
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(2),
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .heightIn(max = DP800)
                     .padding(DP12),
+            horizontalArrangement = Arrangement.spacedBy(DP8),
+            verticalArrangement = Arrangement.spacedBy(DP8),
+            userScrollEnabled = false,
         ) {
-            items(moods.entries.toList()) { entry ->
-                val emoji = entry.key.split(" ")[0]
-                val count = entry.value
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier =
-                        Modifier
-                            .clickable { onMoodSelected(entry.key) }
-                            .padding(DP16),
-                ) {
-                    Text(
-                        text = emoji,
-                        fontSize = 40.sp,
-                    )
-                    Text(
-                        text = count.toString(),
-                        fontSize = 30.sp,
-                        color = LightOnSurface,
-                    )
-                }
+            items(moods.entries.toList(), key = { it.key }) { (label, count) ->
+                MoodStatCard(
+                    label = label,
+                    count = count,
+                    isSelected = label == selectedMood,
+                    onClick = { onMoodSelected(label) },
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun MoodStatCard(
+    label: String,
+    count: Int,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+) {
+    val lifeLogColors = LocalLifeLogColors.current
+    val moodType =
+        MoodProvider.Moods.firstOrNull { it.str == label }?.type ?: MoodType.MEMO
+
+    val bgColor =
+        when (moodType) {
+            MoodType.POSITIVE -> lifeLogColors.moodPositiveBg
+            MoodType.NEUTRAL -> lifeLogColors.moodNeutralBg
+            MoodType.NEGATIVE -> lifeLogColors.moodNegativeBg
+            MoodType.MEMO -> lifeLogColors.moodMemoBg
+        }
+    val strokeColor =
+        when (moodType) {
+            MoodType.POSITIVE -> lifeLogColors.moodPositiveStroke
+            MoodType.NEUTRAL -> lifeLogColors.moodNeutralStroke
+            MoodType.NEGATIVE -> lifeLogColors.moodNegativeStroke
+            MoodType.MEMO -> lifeLogColors.moodMemoStroke
+        }
+
+    val animatedBorderColor by animateColorAsState(
+        targetValue = if (isSelected) strokeColor else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+        label = "moodCardBorder",
+    )
+    val animatedBg by animateColorAsState(
+        targetValue = if (isSelected) bgColor else MaterialTheme.colorScheme.surfaceVariant,
+        label = "moodCardBg",
+    )
+
+    Row(
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(DP10))
+                .border(DP1, animatedBorderColor, RoundedCornerShape(DP10))
+                .background(animatedBg)
+                .clickable(onClick = onClick)
+                .padding(horizontal = DP16, vertical = DP12),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(DP10),
+    ) {
+        Icon(
+            imageVector = MoodIcons.forLabel(label),
+            contentDescription = label,
+            modifier = Modifier.size(DP24),
+            tint = if (isSelected) strokeColor else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                style =
+                    AppTypography.bodyMedium.copy(
+                        color = if (isSelected) strokeColor else MaterialTheme.colorScheme.onSurface,
+                    ),
+            )
+            Text(
+                text = count.toString(),
+                style =
+                    AppTypography.labelSmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+            )
         }
     }
 }
@@ -200,11 +273,11 @@ private fun MoodScreenPreview() {
         MoodUIModel(
             moods =
                 mapOf(
-                    "\uD83D\uDCDD 메모" to 1,
-                    "\uD83D\uDE0A 기쁨" to 2,
-                    "\uD83D\uDE22 슬픔" to 3,
-                    "\uD83D\uDE04 즐거움" to 1,
-                    "\uD83D\uDE2D 우울" to 2,
+                    "메모" to 1,
+                    "기쁨" to 2,
+                    "슬픔" to 3,
+                    "설렘" to 1,
+                    "불안함" to 2,
                 ),
             memoItem =
                 listOf(
@@ -212,7 +285,7 @@ private fun MoodScreenPreview() {
                         id = "1",
                         date = LocalDate.of(2025, 10, 1),
                         title = "오늘의 아침",
-                        mood = "\uD83D\uDE0A 기쁨",
+                        mood = "기쁨",
                     ),
                     MemoItem(
                         id = "2",
@@ -224,13 +297,13 @@ private fun MoodScreenPreview() {
                         id = "3",
                         date = LocalDate.of(2025, 10, 3),
                         title = "저녁 산책",
-                        mood = "\uD83D\uDE0A 기쁨",
+                        mood = "기쁨",
                         img = "https://picsum.photos/id/237/200/300",
                     ),
                 ),
         ),
-        "\uD83D\uDE0A 기쁨",
-        {},
-    ) {
-    }
+        selectedMood = "기쁨",
+        onMoodSelected = {},
+        onMemoItemClick = {},
+    )
 }

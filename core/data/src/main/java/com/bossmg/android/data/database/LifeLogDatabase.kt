@@ -21,7 +21,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.bossmg.android.data.model.LifeLogEntity
 
-@Database(entities = [LifeLogEntity::class], version = 5)
+@Database(entities = [LifeLogEntity::class], version = 6)
 internal abstract class LifeLogDatabase : RoomDatabase() {
     abstract fun lifeLogDao(): LifeLogDao
 
@@ -94,6 +94,33 @@ internal abstract class LifeLogDatabase : RoomDatabase() {
                     )
                     db.execSQL("DROP TABLE lifelogs")
                     db.execSQL("ALTER TABLE lifelogs_new RENAME TO lifelogs")
+                }
+            }
+
+        val MIGRATION_5_6 =
+            object : Migration(5, 6) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        UPDATE lifelogs SET mood = CASE mood
+                            WHEN '📝 메모' THEN '메모'
+                            WHEN '😊 기쁨' THEN '기쁨'
+                            WHEN '🥰 행복' THEN '행복'
+                            WHEN '🤩 설렘' THEN '설렘'
+                            WHEN '😍 사랑' THEN '사랑'
+                            WHEN '😎 뿌듯함' THEN '뿌듯함'
+                            WHEN '😐 무난함' THEN '무난함'
+                            WHEN '🤔 고민' THEN '고민'
+                            WHEN '😴 피곤' THEN '피곤'
+                            WHEN '😢 슬픔' THEN '슬픔'
+                            WHEN '😡 화남' THEN '화남'
+                            WHEN '😰 불안함' THEN '불안함'
+                            WHEN '😞 실망함' THEN '실망함'
+                            WHEN '😩 피곤함' THEN '피곤함'
+                            ELSE mood
+                        END
+                        """.trimIndent(),
+                    )
                 }
             }
     }

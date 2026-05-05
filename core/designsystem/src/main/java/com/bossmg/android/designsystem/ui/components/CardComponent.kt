@@ -16,6 +16,7 @@
 package com.bossmg.android.designsystem.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP16
@@ -153,10 +156,21 @@ fun MemoCardItem(
             )
             Spacer(modifier = Modifier.height(DP4))
 
-            Text(
-                text = mood,
-                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(DP4),
+            ) {
+                Icon(
+                    imageVector = MoodIcons.forLabel(mood),
+                    contentDescription = null,
+                    modifier = Modifier.size(DP16),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = mood,
+                    style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                )
+            }
         }
 
         img?.let {

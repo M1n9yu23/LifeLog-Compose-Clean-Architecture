@@ -32,9 +32,29 @@ internal fun LifeLogRemoteDto.toEntity() =
         date = date,
         title = title,
         description = description,
-        mood = mood,
+        mood = sanitizeMood(mood),
         imgs = "",
         updatedAt = updatedAt,
         isSynced = true,
         isDeleted = false,
     )
+
+private val legacyMoodMap =
+    mapOf(
+        "📝 메모" to "메모",
+        "😊 기쁨" to "기쁨",
+        "🥰 행복" to "행복",
+        "🤩 설렘" to "설렘",
+        "😍 사랑" to "사랑",
+        "😎 뿌듯함" to "뿌듯함",
+        "😐 무난함" to "무난함",
+        "🤔 고민" to "고민",
+        "😴 피곤" to "피곤",
+        "😢 슬픔" to "슬픔",
+        "😡 화남" to "화남",
+        "😰 불안함" to "불안함",
+        "😞 실망함" to "실망함",
+        "😩 피곤함" to "피곤함",
+    )
+
+private fun sanitizeMood(raw: String): String = legacyMoodMap[raw] ?: raw

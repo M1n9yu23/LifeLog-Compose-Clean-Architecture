@@ -54,7 +54,7 @@ class LifeLogDatabaseTest {
                         date = "2025-10-05",
                         title = "제목 $i",
                         description = "내용 $i",
-                        mood = if (i % 2 == 0) "\uD83D\uDE0A 기쁨" else "\uD83D\uDE22 슬픔",
+                        mood = if (i % 2 == 0) "기쁨" else "슬픔",
                         imgs = if (i % 2 != 0) "image$i.jpg" else "",
                     )
                 dao.insertLifeLog(log)
@@ -76,7 +76,7 @@ class LifeLogDatabaseTest {
                     date = "2025-10-06",
                     title = "제목 추가",
                     description = "내용 추가",
-                    mood = "\uD83D\uDE34 피곤",
+                    mood = "피곤",
                 )
             dao.insertLifeLog(newLog)
 
@@ -85,7 +85,7 @@ class LifeLogDatabaseTest {
 
             assertEquals("제목 추가", insert.title)
             assertEquals("내용 추가", insert.description)
-            assertEquals("\uD83D\uDE34 피곤", insert.mood)
+            assertEquals("피곤", insert.mood)
         }
 
     @Test
@@ -112,7 +112,7 @@ class LifeLogDatabaseTest {
                     title = "추가 되는 제목",
                     description = "추가 되는 내용",
                     date = "2025-10-06",
-                    mood = "\uD83D\uDE0A 기쁨",
+                    mood = "기쁨",
                     imgs = "추가.jpg",
                 )
 
@@ -156,14 +156,14 @@ class LifeLogDatabaseTest {
     @Test
     fun getLifeLogsByMood() =
         runTest {
-            val happy = dao.getLifeLogsByMood("\uD83D\uDE0A 기쁨").first()
-            val sad = dao.getLifeLogsByMood("\uD83D\uDE22 슬픔").first()
+            val happy = dao.getLifeLogsByMood("기쁨").first()
+            val sad = dao.getLifeLogsByMood("슬픔").first()
 
             val happyMoods = happy.map { it.mood }
             val sadMoods = sad.map { it.mood }
 
-            assertEquals(List(happy.size) { "\uD83D\uDE0A 기쁨" }, happyMoods)
-            assertEquals(List(sad.size) { "\uD83D\uDE22 슬픔" }, sadMoods)
+            assertEquals(List(happy.size) { "기쁨" }, happyMoods)
+            assertEquals(List(sad.size) { "슬픔" }, sadMoods)
         }
 
     @Test

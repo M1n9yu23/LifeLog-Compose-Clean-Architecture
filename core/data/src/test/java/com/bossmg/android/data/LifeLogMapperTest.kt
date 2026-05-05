@@ -39,7 +39,7 @@ class LifeLogMapperTest {
                 date = "2025-10-05",
                 title = "Test Title",
                 description = "Test Description",
-                mood = "\uD83D\uDE0A 기쁨",
+                mood = "기쁨",
                 imgs = "image.png",
             )
 
@@ -61,7 +61,7 @@ class LifeLogMapperTest {
                 date = LocalDate.of(2025, 10, 6),
                 title = "Domain Title",
                 description = "Domain Description",
-                mood = "\uD83D\uDE22 슬픔",
+                mood = "슬픔",
                 imgs = listOf("test.png"),
             )
 
@@ -83,7 +83,7 @@ class LifeLogMapperTest {
                 date = "2025-10-07",
                 title = "Multi Image",
                 description = "여러 이미지 테스트",
-                mood = "\uD83D\uDE0A 기쁨",
+                mood = "기쁨",
                 imgs = "a.jpg|b.jpg",
             )
 
@@ -100,7 +100,7 @@ class LifeLogMapperTest {
                 date = LocalDate.of(2025, 10, 8),
                 title = "Multi Image Back",
                 description = "여러 이미지 역매핑 테스트",
-                mood = "\uD83D\uDE22 슬픔",
+                mood = "슬픔",
                 imgs = listOf("a.jpg", "b.jpg"),
             )
 
@@ -117,7 +117,7 @@ class LifeLogMapperTest {
                 date = "2025-10-09",
                 title = "No Image",
                 description = "이미지 없음",
-                mood = "\uD83D\uDE10 무난함",
+                mood = "무난함",
                 imgs = "",
             )
 
@@ -134,7 +134,7 @@ class LifeLogMapperTest {
                 date = LocalDate.of(2025, 10, 10),
                 title = "No Image Back",
                 description = "이미지 없음 역매핑",
-                mood = "\uD83D\uDE10 무난함",
+                mood = "무난함",
                 imgs = emptyList(),
             )
 

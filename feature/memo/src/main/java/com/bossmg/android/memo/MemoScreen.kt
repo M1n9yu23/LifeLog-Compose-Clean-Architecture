@@ -68,6 +68,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.bossmg.android.designsystem.ui.components.CalendarDialog
 import com.bossmg.android.designsystem.ui.components.DefaultTextField
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
+import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
@@ -412,13 +413,13 @@ private fun MemoDateMoodRow(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MoodChip(
     selectedMood: String,
     onMoodSelected: (String) -> Unit,
 ) {
-    val moods = MoodProvider.Moods.map { it.str }
-    var expanded by remember { mutableStateOf(false) }
+    var showPicker by remember { mutableStateOf(false) }
 
     val moodType =
         remember(selectedMood) {
@@ -433,50 +434,42 @@ private fun MoodChip(
             MoodType.MEMO -> lifeLogColors.moodMemoStroke
         }
 
-    Box {
-        Row(
-            modifier =
-                Modifier
-                    .clip(RoundedCornerShape(DP8))
-                    .background(MaterialTheme.colorScheme.background)
-                    .border(DP1, strokeColor, RoundedCornerShape(DP8))
-                    .clickable { expanded = true }
-                    .padding(horizontal = DP12, vertical = DP6),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(DP4),
-        ) {
-            Text(
-                text = selectedMood,
-                style = AppTypography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Icon(
-                imageVector = LifeIcons.Mood,
-                contentDescription = null,
-                modifier = Modifier.size(DP16),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) {
-            moods.forEach { mood ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = mood,
-                            style = AppTypography.bodyMedium,
-                        )
-                    },
-                    onClick = {
-                        onMoodSelected(mood)
-                        expanded = false
-                    },
-                )
-            }
-        }
+    Row(
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(DP8))
+                .background(MaterialTheme.colorScheme.background)
+                .border(DP1, strokeColor, RoundedCornerShape(DP8))
+                .clickable { showPicker = true }
+                .padding(horizontal = DP12, vertical = DP6),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(DP4),
+    ) {
+        Icon(
+            imageVector = MoodIcons.forLabel(selectedMood),
+            contentDescription = null,
+            modifier = Modifier.size(DP16),
+            tint = strokeColor,
+        )
+        Text(
+            text = selectedMood,
+            style = AppTypography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Icon(
+            imageVector = LifeIcons.Mood,
+            contentDescription = null,
+            modifier = Modifier.size(DP16),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+
+    if (showPicker) {
+        MoodPickerBottomSheet(
+            selectedMood = selectedMood,
+            onMoodSelected = onMoodSelected,
+            onDismiss = { showPicker = false },
+        )
     }
 }
 
