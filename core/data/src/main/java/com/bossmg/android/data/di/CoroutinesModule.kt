@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.data.di
 
+import com.bossmg.android.common.di.DefaultDispatcher
 import com.bossmg.android.common.di.IoDispatcher
 import dagger.Module
 import dagger.Provides
@@ -39,4 +40,9 @@ internal object CoroutinesModule {
     @Singleton
     @IoDispatcher
     fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @Singleton
+    @DefaultDispatcher
+    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }

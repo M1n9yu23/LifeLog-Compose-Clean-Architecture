@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.data.initializer
 
+import com.bossmg.android.common.di.DefaultDispatcher
 import com.bossmg.android.common.di.IoDispatcher
 import com.bossmg.android.data.di.ApplicationScope
 import com.bossmg.android.domain.repository.LifeLogReadRepository
@@ -22,8 +23,10 @@ import com.gyugle.hanfts.Document
 import com.gyugle.hanfts.SearchEngine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FtsIndexInitializer @Inject constructor(
@@ -31,6 +34,7 @@ class FtsIndexInitializer @Inject constructor(
     private val searchEngine: SearchEngine,
     @ApplicationScope private val scope: CoroutineScope,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
 ) {
     fun initialize() {
         scope.launch(ioDispatcher) {
@@ -38,7 +42,9 @@ class FtsIndexInitializer @Inject constructor(
                 val docs =
                     readRepository.getLifeLogs().first()
                         .map { Document(id = it.id, title = it.title, body = it.description) }
-                searchEngine.rebuildIndex(docs)
+                withContext(defaultDispatcher) {
+                    searchEngine.rebuildIndex(docs)
+                }
             }
         }
     }

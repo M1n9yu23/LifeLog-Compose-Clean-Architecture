@@ -36,11 +36,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP16
@@ -157,8 +160,15 @@ fun MemoCardItem(
         }
 
         img?.let {
+            val density = LocalDensity.current
+            val sizeInPx = with(density) { DP80.toPx().toInt() }
             AsyncImage(
-                model = it,
+                model =
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(it)
+                        .size(sizeInPx, sizeInPx)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = null,
                 modifier =
                     Modifier

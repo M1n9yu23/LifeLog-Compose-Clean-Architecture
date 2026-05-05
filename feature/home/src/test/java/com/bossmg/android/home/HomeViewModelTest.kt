@@ -52,7 +52,13 @@ class HomeViewModelTest {
         getLifeLogsUseCase = GetLifeLogsUseCase(testLifeLogRepository)
         searchLifeLogsUseCase = SearchLifeLogsUseCase(testLifeLogRepository)
         mapper = MemoItemMapper()
-        viewModel = HomeViewModel(getLifeLogsUseCase, searchLifeLogsUseCase, mapper)
+        viewModel =
+            HomeViewModel(
+                getLifeLogsUseCase,
+                searchLifeLogsUseCase,
+                mapper,
+                UnconfinedTestDispatcher(),
+            )
     }
 
     @Test
