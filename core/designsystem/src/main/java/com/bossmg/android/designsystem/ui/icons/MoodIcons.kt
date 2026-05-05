@@ -16,6 +16,7 @@
 package com.bossmg.android.designsystem.ui.icons
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Help
 import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.EmojiEvents
@@ -43,7 +44,7 @@ object MoodIcons {
             MoodProvider.Keys.LOVE -> Icons.Rounded.FavoriteBorder
             MoodProvider.Keys.PROUD -> Icons.Rounded.EmojiEvents
             MoodProvider.Keys.OKAY -> Icons.Rounded.SentimentNeutral
-            MoodProvider.Keys.WORRIED -> Icons.Rounded.Help
+            MoodProvider.Keys.WORRIED -> Icons.AutoMirrored.Rounded.Help
             MoodProvider.Keys.TIRED -> Icons.Rounded.Hotel
             MoodProvider.Keys.SAD -> Icons.Rounded.SentimentDissatisfied
             MoodProvider.Keys.ANGRY -> Icons.Rounded.SentimentVeryDissatisfied

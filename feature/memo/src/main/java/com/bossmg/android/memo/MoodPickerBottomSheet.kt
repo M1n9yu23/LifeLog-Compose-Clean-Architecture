@@ -50,7 +50,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.util.moodLabel
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -59,6 +58,7 @@ import com.bossmg.android.designsystem.ui.theme.DP24
 import com.bossmg.android.designsystem.ui.theme.DP32
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
+import com.bossmg.android.designsystem.ui.util.moodLabel
 import com.bossmg.android.domain.enums.MoodType
 import com.bossmg.android.domain.util.MoodProvider
 

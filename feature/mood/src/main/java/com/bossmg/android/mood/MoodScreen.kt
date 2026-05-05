@@ -53,7 +53,6 @@ import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
-import com.bossmg.android.designsystem.ui.util.moodLabel
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -63,6 +62,7 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.DP800
 import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
 import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.designsystem.ui.util.moodLabel
 import com.bossmg.android.domain.enums.MoodType
 import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.model.MemoItem
