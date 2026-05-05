@@ -16,6 +16,7 @@
 package com.bossmg.android.designsystem.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,12 +46,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP80
 import com.bossmg.android.designsystem.ui.theme.LightSurface
+import com.bossmg.android.designsystem.ui.util.moodLabel
+import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -153,10 +158,21 @@ fun MemoCardItem(
             )
             Spacer(modifier = Modifier.height(DP4))
 
-            Text(
-                text = mood,
-                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(DP4),
+            ) {
+                Icon(
+                    imageVector = MoodIcons.forLabel(mood),
+                    contentDescription = null,
+                    modifier = Modifier.size(DP16),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = moodLabel(mood),
+                    style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                )
+            }
         }
 
         img?.let {
@@ -187,7 +203,7 @@ private fun CustomCardPreview() {
         MemoCardItem(
             date = LocalDate.of(2025, 10, 3),
             title = "저녁 산책",
-            mood = "편안",
+            mood = MoodProvider.Keys.JOY,
             img = "https://picsum.photos/id/237/200/300",
         )
     }

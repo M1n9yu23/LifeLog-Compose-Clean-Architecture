@@ -26,4 +26,9 @@
     <string name="memo_camera_capture_failed">사진 저장에 실패했습니다</string>
     <string name="memo_camera_retake">다시 찍기</string>
     <string name="memo_camera_use">사용</string>
+    <string name="mood_picker_title">기분 선택</string>
+    <string name="mood_section_positive">긍정</string>
+    <string name="mood_section_neutral">중립</string>
+    <string name="mood_section_negative">부정</string>
+    <string name="mood_section_memo">기타</string>
 </resources>

@@ -4,4 +4,18 @@
     <string name="dialog_confirm">Confirm</string>
     <string name="cd_prev_month">Previous month</string>
     <string name="cd_next_month">Next month</string>
+    <string name="mood_label_memo">Memo</string>
+    <string name="mood_label_joy">Joy</string>
+    <string name="mood_label_happy">Happy</string>
+    <string name="mood_label_excited">Excited</string>
+    <string name="mood_label_love">Love</string>
+    <string name="mood_label_proud">Proud</string>
+    <string name="mood_label_okay">Okay</string>
+    <string name="mood_label_worried">Worried</string>
+    <string name="mood_label_tired">Tired</string>
+    <string name="mood_label_sad">Sad</string>
+    <string name="mood_label_angry">Angry</string>
+    <string name="mood_label_anxious">Anxious</string>
+    <string name="mood_label_disappointed">Disappointed</string>
+    <string name="mood_label_exhausted">Exhausted</string>
 </resources>

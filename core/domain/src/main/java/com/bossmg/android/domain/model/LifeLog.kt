@@ -23,6 +23,6 @@ data class LifeLog(
     val date: LocalDate = LocalDate.now(),
     val title: String = "",
     val description: String = "",
-    val mood: String = MoodProvider.Moods.first().str,
+    val mood: String = MoodProvider.Moods.first().key,
     val imgs: List<String> = emptyList(),
 )

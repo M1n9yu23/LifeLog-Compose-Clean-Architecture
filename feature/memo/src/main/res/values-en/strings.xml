@@ -26,4 +26,9 @@
     <string name="memo_camera_capture_failed">Failed to save photo</string>
     <string name="memo_camera_retake">Retake</string>
     <string name="memo_camera_use">Use Photo</string>
+    <string name="mood_picker_title">Select Mood</string>
+    <string name="mood_section_positive">Positive</string>
+    <string name="mood_section_neutral">Neutral</string>
+    <string name="mood_section_negative">Negative</string>
+    <string name="mood_section_memo">Memo</string>
 </resources>

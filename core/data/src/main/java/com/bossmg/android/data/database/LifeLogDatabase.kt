@@ -20,8 +20,9 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.bossmg.android.data.model.LifeLogEntity
+import com.bossmg.android.domain.util.MoodProvider
 
-@Database(entities = [LifeLogEntity::class], version = 5)
+@Database(entities = [LifeLogEntity::class], version = 6)
 internal abstract class LifeLogDatabase : RoomDatabase() {
     abstract fun lifeLogDao(): LifeLogDao
 
@@ -94,6 +95,33 @@ internal abstract class LifeLogDatabase : RoomDatabase() {
                     )
                     db.execSQL("DROP TABLE lifelogs")
                     db.execSQL("ALTER TABLE lifelogs_new RENAME TO lifelogs")
+                }
+            }
+
+        val MIGRATION_5_6 =
+            object : Migration(5, 6) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        """
+                        UPDATE lifelogs SET mood = CASE mood
+                            WHEN '📝 메모' THEN '${MoodProvider.Keys.MEMO}'
+                            WHEN '😊 기쁨' THEN '${MoodProvider.Keys.JOY}'
+                            WHEN '🥰 행복' THEN '${MoodProvider.Keys.HAPPY}'
+                            WHEN '🤩 설렘' THEN '${MoodProvider.Keys.EXCITED}'
+                            WHEN '😍 사랑' THEN '${MoodProvider.Keys.LOVE}'
+                            WHEN '😎 뿌듯함' THEN '${MoodProvider.Keys.PROUD}'
+                            WHEN '😐 무난함' THEN '${MoodProvider.Keys.OKAY}'
+                            WHEN '🤔 고민' THEN '${MoodProvider.Keys.WORRIED}'
+                            WHEN '😴 피곤' THEN '${MoodProvider.Keys.TIRED}'
+                            WHEN '😢 슬픔' THEN '${MoodProvider.Keys.SAD}'
+                            WHEN '😡 화남' THEN '${MoodProvider.Keys.ANGRY}'
+                            WHEN '😰 불안함' THEN '${MoodProvider.Keys.ANXIOUS}'
+                            WHEN '😞 실망함' THEN '${MoodProvider.Keys.DISAPPOINTED}'
+                            WHEN '😩 피곤함' THEN '${MoodProvider.Keys.EXHAUSTED}'
+                            ELSE mood
+                        END
+                        """.trimIndent(),
+                    )
                 }
             }
     }

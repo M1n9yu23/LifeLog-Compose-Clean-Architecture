@@ -17,6 +17,7 @@ package com.bossmg.android.mood
 
 import com.bossmg.android.domain.usecase.GetLifeLogsByMoodUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.model.MemoItemMapper
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
@@ -77,7 +78,7 @@ class MoodViewModelTest {
     fun selectMood_whenCalled_shouldUpdateSelectedMoodAndFetchFilteredLogs() =
         runTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-            val mood = "\uD83E\uDD29 설렘"
+            val mood = MoodProvider.Keys.EXCITED
 
             testRepository.sendLogs(testLifeLogs)
             viewModel.selectMood(mood)
@@ -93,7 +94,7 @@ class MoodViewModelTest {
     fun getLifeLogsByMoodUseCase_whenEmitsLogs_shouldMapToUiModelCorrectly() =
         runTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-            val mood = "\uD83D\uDE0A 기쁨"
+            val mood = MoodProvider.Keys.JOY
             viewModel.selectMood(mood)
 
             val filterLogs = testLifeLogs.filter { it.mood == mood }

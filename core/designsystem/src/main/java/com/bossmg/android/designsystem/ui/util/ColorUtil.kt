@@ -24,7 +24,7 @@ import com.bossmg.android.domain.util.MoodProvider
 @Composable
 fun cardColor(mood: String): Color {
     val colors = LocalLifeLogColors.current
-    val moodType = MoodProvider.Moods.firstOrNull { it.str == mood }?.type ?: MoodType.MEMO
+    val moodType = MoodProvider.Moods.firstOrNull { it.key == mood }?.type ?: MoodType.MEMO
     return when (moodType) {
         MoodType.POSITIVE -> colors.moodPositiveBg
         MoodType.NEUTRAL -> colors.moodNeutralBg

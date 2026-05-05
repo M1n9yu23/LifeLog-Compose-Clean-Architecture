@@ -18,6 +18,7 @@ package com.bossmg.android.memo
 import com.bossmg.android.domain.usecase.DeleteLifeLogByIdUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogByIdUseCase
 import com.bossmg.android.domain.usecase.UpsertLifeLogUseCase
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.MainDispatcherRule
@@ -110,7 +111,7 @@ class MemoViewModelTest {
 
     @Test
     fun given_mood_when_updateMood_then_uiModelUpdated() {
-        val mood = "\uD83E\uDD29 설렘"
+        val mood = MoodProvider.Keys.EXCITED
         viewModel.updateMood(mood)
         assertEquals(mood, viewModel.uiModel.value.selectedMood)
     }
@@ -151,7 +152,7 @@ class MemoViewModelTest {
             viewModel.updateTitle("제목 입력")
             viewModel.updateDescription("내용 입력")
             viewModel.updateDate(LocalDate.of(2025, 10, 7))
-            viewModel.updateMood("\uD83E\uDD29 설렘")
+            viewModel.updateMood(MoodProvider.Keys.EXCITED)
             viewModel.addImage("이미지추가.jpg")
 
             viewModel.saveMemo()

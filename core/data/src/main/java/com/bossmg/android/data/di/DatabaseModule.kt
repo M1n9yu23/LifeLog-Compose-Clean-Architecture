@@ -43,6 +43,7 @@ internal object DatabaseModule {
             LifeLogDatabase.MIGRATION_2_3,
             LifeLogDatabase.MIGRATION_3_4,
             LifeLogDatabase.MIGRATION_4_5,
+            LifeLogDatabase.MIGRATION_5_6,
         ).setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
             .build()
 }

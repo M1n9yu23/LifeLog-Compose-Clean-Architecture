@@ -23,6 +23,6 @@ internal data class MemoUIModel(
     val title: String = "",
     val description: String = "",
     val selectedDate: LocalDate = LocalDate.now(),
-    val selectedMood: String = MoodProvider.Moods.first().str,
+    val selectedMood: String = MoodProvider.Moods.first().key,
     val imgs: List<String> = emptyList(),
 )
