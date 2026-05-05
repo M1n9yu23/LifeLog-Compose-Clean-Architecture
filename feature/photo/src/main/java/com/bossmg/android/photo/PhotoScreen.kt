@@ -80,11 +80,12 @@ private fun PhotoScreen(
     val context = LocalContext.current
     val density = LocalDensity.current
 
-    val cellSizePx = with(density) {
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-        val availableWidth = screenWidth - DP12 * 2 - DP6 * 2
-        (availableWidth / 3).toPx().toInt()
-    }
+    val cellSizePx =
+        with(density) {
+            val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+            val availableWidth = screenWidth - DP12 * 2 - DP6 * 2
+            (availableWidth / 3).toPx().toInt()
+        }
 
     LazyVerticalGrid(
         modifier =
@@ -99,11 +100,12 @@ private fun PhotoScreen(
     ) {
         items(photos) {
             AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(it)
-                    .size(cellSizePx, cellSizePx)
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest.Builder(context)
+                        .data(it)
+                        .size(cellSizePx, cellSizePx)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = stringResource(R.string.cd_used_image),
                 modifier = Modifier.aspectRatio(1f),
                 alignment = Alignment.Center,

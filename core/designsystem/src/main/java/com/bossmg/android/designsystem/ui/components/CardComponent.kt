@@ -163,11 +163,12 @@ fun MemoCardItem(
             val density = LocalDensity.current
             val sizeInPx = with(density) { DP80.toPx().toInt() }
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(it)
-                    .size(sizeInPx, sizeInPx)
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(it)
+                        .size(sizeInPx, sizeInPx)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = null,
                 modifier =
                     Modifier
