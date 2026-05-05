@@ -59,7 +59,7 @@ class MigrationTest {
 
         helper.runMigrationsAndValidate(testDb, 6, true, LifeLogDatabase.MIGRATION_5_6).use { db ->
             fun queryMood(id: String): String {
-                val cursor = db.query("SELECT mood FROM lifelogs WHERE id = '$id'")
+                val cursor = db.query("SELECT mood FROM lifelogs WHERE id = ?", arrayOf(id))
                 cursor.moveToFirst()
                 return cursor.getString(0).also { cursor.close() }
             }
@@ -80,7 +80,7 @@ class MigrationTest {
         }
 
         helper.runMigrationsAndValidate(testDb, 6, true, LifeLogDatabase.MIGRATION_5_6).use { db ->
-            val cursor = db.query("SELECT mood FROM lifelogs WHERE id = '10'")
+            val cursor = db.query("SELECT mood FROM lifelogs WHERE id = ?", arrayOf("10"))
             cursor.moveToFirst()
             assertEquals(MoodProvider.Keys.JOY, cursor.getString(0))
             cursor.close()

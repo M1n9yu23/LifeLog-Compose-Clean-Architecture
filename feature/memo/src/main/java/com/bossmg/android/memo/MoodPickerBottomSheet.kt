@@ -117,7 +117,7 @@ private fun MoodPickerGrid(
         contentPadding = PaddingValues(horizontal = DP16, vertical = DP8),
         horizontalArrangement = Arrangement.spacedBy(DP8),
         verticalArrangement = Arrangement.spacedBy(DP8),
-        userScrollEnabled = false,
+        userScrollEnabled = true,
     ) {
         sections.forEach { type ->
             val sectionMoods = MoodProvider.Moods.filter { it.type == type }
