@@ -70,6 +70,7 @@ import com.bossmg.android.designsystem.ui.components.DefaultTextField
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
+import com.bossmg.android.designsystem.ui.util.moodLabel
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -423,7 +424,7 @@ private fun MoodChip(
 
     val moodType =
         remember(selectedMood) {
-            MoodProvider.Moods.firstOrNull { it.str == selectedMood }?.type ?: MoodType.MEMO
+            MoodProvider.Moods.firstOrNull { it.key == selectedMood }?.type ?: MoodType.MEMO
         }
     val lifeLogColors = LocalLifeLogColors.current
     val strokeColor =
@@ -452,7 +453,7 @@ private fun MoodChip(
             tint = strokeColor,
         )
         Text(
-            text = selectedMood,
+            text = moodLabel(selectedMood),
             style = AppTypography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )

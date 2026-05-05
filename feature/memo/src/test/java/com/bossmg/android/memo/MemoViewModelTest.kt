@@ -1,23 +1,9 @@
-/*
- * Copyright 2026 Gyugle
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.bossmg.android.memo
 
 import com.bossmg.android.domain.usecase.DeleteLifeLogByIdUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogByIdUseCase
 import com.bossmg.android.domain.usecase.UpsertLifeLogUseCase
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.MainDispatcherRule
@@ -110,7 +96,7 @@ class MemoViewModelTest {
 
     @Test
     fun given_mood_when_updateMood_then_uiModelUpdated() {
-        val mood = "\uD83E\uDD29 설렘"
+        val mood = MoodProvider.Keys.EXCITED
         viewModel.updateMood(mood)
         assertEquals(mood, viewModel.uiModel.value.selectedMood)
     }
@@ -151,7 +137,7 @@ class MemoViewModelTest {
             viewModel.updateTitle("제목 입력")
             viewModel.updateDescription("내용 입력")
             viewModel.updateDate(LocalDate.of(2025, 10, 7))
-            viewModel.updateMood("\uD83E\uDD29 설렘")
+            viewModel.updateMood(MoodProvider.Keys.EXCITED)
             viewModel.addImage("이미지추가.jpg")
 
             viewModel.saveMemo()

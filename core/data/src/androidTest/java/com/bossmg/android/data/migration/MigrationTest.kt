@@ -4,6 +4,7 @@ import androidx.room.testing.MigrationTestHelper
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.bossmg.android.data.database.LifeLogDatabase
+import com.bossmg.android.domain.util.MoodProvider
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -48,9 +49,9 @@ class MigrationTest {
                 return cursor.getString(0).also { cursor.close() }
             }
 
-            assertEquals("기쁨", queryMood("1"))
-            assertEquals("슬픔", queryMood("2"))
-            assertEquals("피곤", queryMood("3"))
+            assertEquals(MoodProvider.Keys.JOY, queryMood("1"))
+            assertEquals(MoodProvider.Keys.SAD, queryMood("2"))
+            assertEquals(MoodProvider.Keys.TIRED, queryMood("3"))
         }
     }
 
@@ -59,14 +60,14 @@ class MigrationTest {
         helper.createDatabase(testDb, 5).use { db ->
             db.execSQL(
                 "INSERT INTO lifelogs (id, date, title, description, mood, imgs, updatedAt, isSynced, isDeleted) " +
-                    "VALUES ('10', '2025-01-01', 'T', '', '기쁨', '', 0, 0, 0)",
+                    "VALUES ('10', '2025-01-01', 'T', '', '${MoodProvider.Keys.JOY}', '', 0, 0, 0)",
             )
         }
 
         helper.runMigrationsAndValidate(testDb, 6, true, LifeLogDatabase.MIGRATION_5_6).use { db ->
             val cursor = db.query("SELECT mood FROM lifelogs WHERE id = '10'")
             cursor.moveToFirst()
-            assertEquals("기쁨", cursor.getString(0))
+            assertEquals(MoodProvider.Keys.JOY, cursor.getString(0))
             cursor.close()
         }
     }

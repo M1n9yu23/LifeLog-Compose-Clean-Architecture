@@ -19,21 +19,38 @@ import com.bossmg.android.domain.enums.MoodType
 import com.bossmg.android.domain.model.Mood
 
 object MoodProvider {
+    object Keys {
+        const val MEMO = "메모"
+        const val JOY = "기쁨"
+        const val HAPPY = "행복"
+        const val EXCITED = "설렘"
+        const val LOVE = "사랑"
+        const val PROUD = "뿌듯함"
+        const val OKAY = "무난함"
+        const val WORRIED = "고민"
+        const val TIRED = "피곤"
+        const val SAD = "슬픔"
+        const val ANGRY = "화남"
+        const val ANXIOUS = "불안함"
+        const val DISAPPOINTED = "실망함"
+        const val EXHAUSTED = "피곤함"
+    }
+
     val Moods =
         listOf(
-            Mood("메모", MoodType.MEMO),
-            Mood("기쁨", MoodType.POSITIVE),
-            Mood("행복", MoodType.POSITIVE),
-            Mood("설렘", MoodType.POSITIVE),
-            Mood("사랑", MoodType.POSITIVE),
-            Mood("뿌듯함", MoodType.POSITIVE),
-            Mood("무난함", MoodType.NEUTRAL),
-            Mood("고민", MoodType.NEUTRAL),
-            Mood("피곤", MoodType.NEUTRAL),
-            Mood("슬픔", MoodType.NEGATIVE),
-            Mood("화남", MoodType.NEGATIVE),
-            Mood("불안함", MoodType.NEGATIVE),
-            Mood("실망함", MoodType.NEGATIVE),
-            Mood("피곤함", MoodType.NEGATIVE),
+            Mood(Keys.MEMO, MoodType.MEMO),
+            Mood(Keys.JOY, MoodType.POSITIVE),
+            Mood(Keys.HAPPY, MoodType.POSITIVE),
+            Mood(Keys.EXCITED, MoodType.POSITIVE),
+            Mood(Keys.LOVE, MoodType.POSITIVE),
+            Mood(Keys.PROUD, MoodType.POSITIVE),
+            Mood(Keys.OKAY, MoodType.NEUTRAL),
+            Mood(Keys.WORRIED, MoodType.NEUTRAL),
+            Mood(Keys.TIRED, MoodType.NEUTRAL),
+            Mood(Keys.SAD, MoodType.NEGATIVE),
+            Mood(Keys.ANGRY, MoodType.NEGATIVE),
+            Mood(Keys.ANXIOUS, MoodType.NEGATIVE),
+            Mood(Keys.DISAPPOINTED, MoodType.NEGATIVE),
+            Mood(Keys.EXHAUSTED, MoodType.NEGATIVE),
         )
 }

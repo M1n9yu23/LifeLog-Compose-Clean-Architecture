@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
+import com.bossmg.android.designsystem.ui.util.moodLabel
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -117,12 +118,12 @@ private fun MoodPickerGrid(
                 MoodSectionHeader(type = type)
             }
 
-            items(sectionMoods, key = { it.str }) { mood ->
+            items(sectionMoods, key = { it.key }) { mood ->
                 MoodCell(
-                    label = mood.str,
+                    label = mood.key,
                     type = mood.type,
-                    isSelected = mood.str == selectedMood,
-                    onClick = { onMoodSelected(mood.str) },
+                    isSelected = mood.key == selectedMood,
+                    onClick = { onMoodSelected(mood.key) },
                 )
             }
         }
@@ -196,14 +197,15 @@ private fun MoodCell(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(DP8),
     ) {
+        val displayLabel = moodLabel(label)
         Icon(
             imageVector = MoodIcons.forLabel(label),
-            contentDescription = label,
+            contentDescription = displayLabel,
             modifier = Modifier.size(DP24),
             tint = if (isSelected) strokeColor else MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            text = label,
+            text = displayLabel,
             style =
                 AppTypography.labelSmall.copy(
                     color = if (isSelected) strokeColor else MaterialTheme.colorScheme.onSurfaceVariant,

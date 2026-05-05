@@ -60,6 +60,7 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
 import com.bossmg.android.designsystem.ui.util.cardColor
 import com.bossmg.android.designsystem.ui.util.currentJavaLocale
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.model.MemoItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -315,13 +316,13 @@ private fun CalendarScreenPreview() {
                             id = "1",
                             date = sampleDate,
                             title = "오늘의 아침",
-                            mood = "행복",
+                            mood = MoodProvider.Keys.HAPPY,
                         ),
                         MemoItem(
                             id = "2",
                             date = LocalDate.of(2025, 10, 2),
                             title = "점심시간",
-                            mood = "피곤",
+                            mood = MoodProvider.Keys.TIRED,
                         ),
                     ),
             ),

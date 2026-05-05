@@ -18,6 +18,7 @@ package com.bossmg.android.data
 import com.bossmg.android.data.mapper.LifeLogMapper
 import com.bossmg.android.data.model.LifeLogEntity
 import com.bossmg.android.domain.model.LifeLog
+import com.bossmg.android.domain.util.MoodProvider
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +40,7 @@ class LifeLogMapperTest {
                 date = "2025-10-05",
                 title = "Test Title",
                 description = "Test Description",
-                mood = "기쁨",
+                mood = MoodProvider.Keys.JOY,
                 imgs = "image.png",
             )
 
@@ -61,7 +62,7 @@ class LifeLogMapperTest {
                 date = LocalDate.of(2025, 10, 6),
                 title = "Domain Title",
                 description = "Domain Description",
-                mood = "슬픔",
+                mood = MoodProvider.Keys.SAD,
                 imgs = listOf("test.png"),
             )
 
@@ -83,7 +84,7 @@ class LifeLogMapperTest {
                 date = "2025-10-07",
                 title = "Multi Image",
                 description = "여러 이미지 테스트",
-                mood = "기쁨",
+                mood = MoodProvider.Keys.JOY,
                 imgs = "a.jpg|b.jpg",
             )
 
@@ -100,7 +101,7 @@ class LifeLogMapperTest {
                 date = LocalDate.of(2025, 10, 8),
                 title = "Multi Image Back",
                 description = "여러 이미지 역매핑 테스트",
-                mood = "슬픔",
+                mood = MoodProvider.Keys.SAD,
                 imgs = listOf("a.jpg", "b.jpg"),
             )
 
@@ -117,7 +118,7 @@ class LifeLogMapperTest {
                 date = "2025-10-09",
                 title = "No Image",
                 description = "이미지 없음",
-                mood = "무난함",
+                mood = MoodProvider.Keys.OKAY,
                 imgs = "",
             )
 
@@ -134,7 +135,7 @@ class LifeLogMapperTest {
                 date = LocalDate.of(2025, 10, 10),
                 title = "No Image Back",
                 description = "이미지 없음 역매핑",
-                mood = "무난함",
+                mood = MoodProvider.Keys.OKAY,
                 imgs = emptyList(),
             )
 

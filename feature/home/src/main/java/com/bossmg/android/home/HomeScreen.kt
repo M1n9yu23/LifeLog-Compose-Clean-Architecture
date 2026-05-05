@@ -52,6 +52,7 @@ import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP32
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.util.cardColor
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.model.MemoItem
 import java.time.LocalDate
 
@@ -256,9 +257,9 @@ private fun HomeScreenPreview() {
     HomeScreen(
         uiModels =
             listOf(
-                MemoItem(id = "1", date = LocalDate.of(2025, 10, 1), title = "오늘의 아침", mood = "행복"),
-                MemoItem(id = "2", date = LocalDate.of(2025, 10, 2), title = "점심시간", mood = "피곤"),
-                MemoItem(id = "3", date = LocalDate.of(2025, 10, 3), title = "저녁 산책", mood = "편안"),
+                MemoItem(id = "1", date = LocalDate.of(2025, 10, 1), title = "오늘의 아침", mood = MoodProvider.Keys.HAPPY),
+                MemoItem(id = "2", date = LocalDate.of(2025, 10, 2), title = "점심시간", mood = MoodProvider.Keys.TIRED),
+                MemoItem(id = "3", date = LocalDate.of(2025, 10, 3), title = "저녁 산책", mood = MoodProvider.Keys.OKAY),
             ),
         searchQuery = "",
         searchResults = emptyList(),

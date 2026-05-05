@@ -48,6 +48,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
+import com.bossmg.android.designsystem.ui.util.moodLabel
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP4
@@ -167,7 +169,7 @@ fun MemoCardItem(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = mood,
+                    text = moodLabel(mood),
                     style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                 )
             }
@@ -201,7 +203,7 @@ private fun CustomCardPreview() {
         MemoCardItem(
             date = LocalDate.of(2025, 10, 3),
             title = "저녁 산책",
-            mood = "편안",
+            mood = MoodProvider.Keys.JOY,
             img = "https://picsum.photos/id/237/200/300",
         )
     }

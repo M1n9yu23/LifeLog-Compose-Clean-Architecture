@@ -53,6 +53,7 @@ import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
+import com.bossmg.android.designsystem.ui.util.moodLabel
 import com.bossmg.android.designsystem.ui.theme.DP1
 import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -204,7 +205,7 @@ private fun MoodStatCard(
 ) {
     val lifeLogColors = LocalLifeLogColors.current
     val moodType =
-        MoodProvider.Moods.firstOrNull { it.str == label }?.type ?: MoodType.MEMO
+        MoodProvider.Moods.firstOrNull { it.key == label }?.type ?: MoodType.MEMO
 
     val bgColor =
         when (moodType) {
@@ -241,15 +242,16 @@ private fun MoodStatCard(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(DP10),
     ) {
+        val displayLabel = moodLabel(label)
         Icon(
             imageVector = MoodIcons.forLabel(label),
-            contentDescription = label,
+            contentDescription = displayLabel,
             modifier = Modifier.size(DP24),
             tint = if (isSelected) strokeColor else MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = label,
+                text = displayLabel,
                 style =
                     AppTypography.bodyMedium.copy(
                         color = if (isSelected) strokeColor else MaterialTheme.colorScheme.onSurface,
@@ -273,11 +275,11 @@ private fun MoodScreenPreview() {
         MoodUIModel(
             moods =
                 mapOf(
-                    "메모" to 1,
-                    "기쁨" to 2,
-                    "슬픔" to 3,
-                    "설렘" to 1,
-                    "불안함" to 2,
+                    MoodProvider.Keys.MEMO to 1,
+                    MoodProvider.Keys.JOY to 2,
+                    MoodProvider.Keys.SAD to 3,
+                    MoodProvider.Keys.EXCITED to 1,
+                    MoodProvider.Keys.ANXIOUS to 2,
                 ),
             memoItem =
                 listOf(
@@ -285,24 +287,24 @@ private fun MoodScreenPreview() {
                         id = "1",
                         date = LocalDate.of(2025, 10, 1),
                         title = "오늘의 아침",
-                        mood = "기쁨",
+                        mood = MoodProvider.Keys.JOY,
                     ),
                     MemoItem(
                         id = "2",
                         date = LocalDate.of(2025, 10, 2),
                         title = "점심시간",
-                        mood = "피곤",
+                        mood = MoodProvider.Keys.TIRED,
                     ),
                     MemoItem(
                         id = "3",
                         date = LocalDate.of(2025, 10, 3),
                         title = "저녁 산책",
-                        mood = "기쁨",
+                        mood = MoodProvider.Keys.JOY,
                         img = "https://picsum.photos/id/237/200/300",
                     ),
                 ),
         ),
-        selectedMood = "기쁨",
+        selectedMood = MoodProvider.Keys.JOY,
         onMoodSelected = {},
         onMemoItemClick = {},
     )

@@ -31,24 +31,25 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.ThumbDown
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.bossmg.android.domain.util.MoodProvider
 
 object MoodIcons {
-    fun forLabel(label: String): ImageVector =
-        when (label) {
-            "메모" -> Icons.Rounded.Edit
-            "기쁨" -> Icons.Rounded.SentimentVerySatisfied
-            "행복" -> Icons.Rounded.Favorite
-            "설렘" -> Icons.Rounded.Star
-            "사랑" -> Icons.Rounded.FavoriteBorder
-            "뿌듯함" -> Icons.Rounded.EmojiEvents
-            "무난함" -> Icons.Rounded.SentimentNeutral
-            "고민" -> Icons.Rounded.Help
-            "피곤" -> Icons.Rounded.Hotel
-            "슬픔" -> Icons.Rounded.SentimentDissatisfied
-            "화남" -> Icons.Rounded.SentimentVeryDissatisfied
-            "불안함" -> Icons.Rounded.Warning
-            "실망함" -> Icons.Rounded.ThumbDown
-            "피곤함" -> Icons.Rounded.Bedtime
+    fun forLabel(key: String): ImageVector =
+        when (key) {
+            MoodProvider.Keys.MEMO -> Icons.Rounded.Edit
+            MoodProvider.Keys.JOY -> Icons.Rounded.SentimentVerySatisfied
+            MoodProvider.Keys.HAPPY -> Icons.Rounded.Favorite
+            MoodProvider.Keys.EXCITED -> Icons.Rounded.Star
+            MoodProvider.Keys.LOVE -> Icons.Rounded.FavoriteBorder
+            MoodProvider.Keys.PROUD -> Icons.Rounded.EmojiEvents
+            MoodProvider.Keys.OKAY -> Icons.Rounded.SentimentNeutral
+            MoodProvider.Keys.WORRIED -> Icons.Rounded.Help
+            MoodProvider.Keys.TIRED -> Icons.Rounded.Hotel
+            MoodProvider.Keys.SAD -> Icons.Rounded.SentimentDissatisfied
+            MoodProvider.Keys.ANGRY -> Icons.Rounded.SentimentVeryDissatisfied
+            MoodProvider.Keys.ANXIOUS -> Icons.Rounded.Warning
+            MoodProvider.Keys.DISAPPOINTED -> Icons.Rounded.ThumbDown
+            MoodProvider.Keys.EXHAUSTED -> Icons.Rounded.Bedtime
             else -> Icons.Rounded.Edit
         }
 }

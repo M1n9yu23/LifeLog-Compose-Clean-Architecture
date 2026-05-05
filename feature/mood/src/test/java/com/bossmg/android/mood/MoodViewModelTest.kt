@@ -1,22 +1,8 @@
-/*
- * Copyright 2026 Gyugle
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.bossmg.android.mood
 
 import com.bossmg.android.domain.usecase.GetLifeLogsByMoodUseCase
 import com.bossmg.android.domain.usecase.GetLifeLogsUseCase
+import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.model.MemoItemMapper
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
@@ -77,7 +63,7 @@ class MoodViewModelTest {
     fun selectMood_whenCalled_shouldUpdateSelectedMoodAndFetchFilteredLogs() =
         runTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-            val mood = "\uD83E\uDD29 설렘"
+            val mood = MoodProvider.Keys.EXCITED
 
             testRepository.sendLogs(testLifeLogs)
             viewModel.selectMood(mood)
@@ -93,7 +79,7 @@ class MoodViewModelTest {
     fun getLifeLogsByMoodUseCase_whenEmitsLogs_shouldMapToUiModelCorrectly() =
         runTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-            val mood = "\uD83D\uDE0A 기쁨"
+            val mood = MoodProvider.Keys.JOY
             viewModel.selectMood(mood)
 
             val filterLogs = testLifeLogs.filter { it.mood == mood }

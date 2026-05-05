@@ -1,23 +1,9 @@
-/*
- * Copyright 2026 Gyugle
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.bossmg.android.data.repository
 
 import com.bossmg.android.data.mapper.LifeLogMapper
 import com.bossmg.android.data.model.LifeLogEntity
 import com.bossmg.android.domain.model.LifeLog
+import com.bossmg.android.domain.util.MoodProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
@@ -40,9 +26,9 @@ class LifeLogRepositoryTest {
 
     private val dummyLogs =
         listOf(
-            LifeLogEntity("1", "2025-10-01", "아침 산책", "공원에서 산책", "\uD83D\uDE0A 기쁨", imgs = "산책.jpg"),
-            LifeLogEntity("2", "2025-10-02", "새 프로젝트 시작", "안드로이드 프로젝트 시작", "\uD83E\uDD29 설렘"),
-            LifeLogEntity("3", "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", "\uD83E\uDD70 행복", imgs = "음식.jpg"),
+            LifeLogEntity("1", "2025-10-01", "아침 산책", "공원에서 산책", MoodProvider.Keys.JOY, imgs = "산책.jpg"),
+            LifeLogEntity("2", "2025-10-02", "새 프로젝트 시작", "안드로이드 프로젝트 시작", MoodProvider.Keys.EXCITED),
+            LifeLogEntity("3", "2025-10-02", "친구와 저녁", "오랜만에 친구와 저녁식사", MoodProvider.Keys.HAPPY, imgs = "음식.jpg"),
         )
 
     @Before
@@ -76,7 +62,7 @@ class LifeLogRepositoryTest {
     @Test
     fun givenMood_whenGetLifeLogsByMood_thenReturnsFilteredList() =
         scope.runTest {
-            val result = repository.getLifeLogsByMood("\uD83D\uDE0A 기쁨").first()
+            val result = repository.getLifeLogsByMood(MoodProvider.Keys.JOY).first()
             assertEquals(1, result.size)
         }
 
@@ -86,7 +72,7 @@ class LifeLogRepositoryTest {
             val result = repository.getLifeLogById("3")
             assertEquals("친구와 저녁", result.title)
             assertEquals(LocalDate.of(2025, 10, 2), result.date)
-            assertEquals("\uD83E\uDD70 행복", result.mood)
+            assertEquals(MoodProvider.Keys.HAPPY, result.mood)
             assertEquals("오랜만에 친구와 저녁식사", result.description)
             assertEquals("3", result.id)
         }
@@ -100,7 +86,7 @@ class LifeLogRepositoryTest {
                     date = LocalDate.of(2025, 10, 3),
                     title = "저녁 독서",
                     description = "책 읽기",
-                    mood = "\uD83D\uDCDD 메모",
+                    mood = MoodProvider.Keys.MEMO,
                     imgs = listOf("book.jpg"),
                 )
             repository.insertLifeLog(newLog)
@@ -124,7 +110,7 @@ class LifeLogRepositoryTest {
                     date = LocalDate.of(2025, 10, 4),
                     title = "새 기록",
                     description = "업데이트가 아닌 새로운 기록",
-                    mood = "\uD83D\uDE0A 기쁨",
+                    mood = MoodProvider.Keys.JOY,
                 )
 
             repository.upsertLifeLog(newLog)
@@ -149,7 +135,7 @@ class LifeLogRepositoryTest {
                     date = LocalDate.of(2025, 10, 1),
                     title = "id 1 수정",
                     description = "축구를 했다.",
-                    mood = "\uD83D\uDE0A 기쁨",
+                    mood = MoodProvider.Keys.JOY,
                     imgs = listOf("축구.jpg"),
                 )
 
@@ -162,7 +148,7 @@ class LifeLogRepositoryTest {
             assertEquals("id 1 수정", log.title)
             assertEquals("축구를 했다.", log.description)
             assertEquals(listOf("축구.jpg"), log.imgs)
-            assertEquals("\uD83D\uDE0A 기쁨", log.mood)
+            assertEquals(MoodProvider.Keys.JOY, log.mood)
 
             assertEquals(0, logs.indexOf(log))
         }
@@ -186,7 +172,7 @@ class LifeLogRepositoryTest {
                     date = LocalDate.of(2025, 10, 3),
                     title = "다중 이미지",
                     description = "여러 이미지",
-                    mood = "\uD83D\uDE0A 기쁨",
+                    mood = MoodProvider.Keys.JOY,
                     imgs = listOf("a.jpg", "b.jpg"),
                 )
             repository.insertLifeLog(multiLog)

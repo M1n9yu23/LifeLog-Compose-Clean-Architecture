@@ -4,4 +4,18 @@
     <string name="dialog_confirm">확인</string>
     <string name="cd_prev_month">이전 달</string>
     <string name="cd_next_month">다음 달</string>
+    <string name="mood_label_memo">메모</string>
+    <string name="mood_label_joy">기쁨</string>
+    <string name="mood_label_happy">행복</string>
+    <string name="mood_label_excited">설렘</string>
+    <string name="mood_label_love">사랑</string>
+    <string name="mood_label_proud">뿌듯함</string>
+    <string name="mood_label_okay">무난함</string>
+    <string name="mood_label_worried">고민</string>
+    <string name="mood_label_tired">피곤</string>
+    <string name="mood_label_sad">슬픔</string>
+    <string name="mood_label_angry">화남</string>
+    <string name="mood_label_anxious">불안함</string>
+    <string name="mood_label_disappointed">실망함</string>
+    <string name="mood_label_exhausted">피곤함</string>
 </resources>

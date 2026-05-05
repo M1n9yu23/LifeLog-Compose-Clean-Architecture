@@ -20,6 +20,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.bossmg.android.data.model.LifeLogEntity
+import com.bossmg.android.domain.util.MoodProvider
 
 @Database(entities = [LifeLogEntity::class], version = 6)
 internal abstract class LifeLogDatabase : RoomDatabase() {
@@ -103,20 +104,20 @@ internal abstract class LifeLogDatabase : RoomDatabase() {
                     db.execSQL(
                         """
                         UPDATE lifelogs SET mood = CASE mood
-                            WHEN '📝 메모' THEN '메모'
-                            WHEN '😊 기쁨' THEN '기쁨'
-                            WHEN '🥰 행복' THEN '행복'
-                            WHEN '🤩 설렘' THEN '설렘'
-                            WHEN '😍 사랑' THEN '사랑'
-                            WHEN '😎 뿌듯함' THEN '뿌듯함'
-                            WHEN '😐 무난함' THEN '무난함'
-                            WHEN '🤔 고민' THEN '고민'
-                            WHEN '😴 피곤' THEN '피곤'
-                            WHEN '😢 슬픔' THEN '슬픔'
-                            WHEN '😡 화남' THEN '화남'
-                            WHEN '😰 불안함' THEN '불안함'
-                            WHEN '😞 실망함' THEN '실망함'
-                            WHEN '😩 피곤함' THEN '피곤함'
+                            WHEN '📝 메모' THEN '${MoodProvider.Keys.MEMO}'
+                            WHEN '😊 기쁨' THEN '${MoodProvider.Keys.JOY}'
+                            WHEN '🥰 행복' THEN '${MoodProvider.Keys.HAPPY}'
+                            WHEN '🤩 설렘' THEN '${MoodProvider.Keys.EXCITED}'
+                            WHEN '😍 사랑' THEN '${MoodProvider.Keys.LOVE}'
+                            WHEN '😎 뿌듯함' THEN '${MoodProvider.Keys.PROUD}'
+                            WHEN '😐 무난함' THEN '${MoodProvider.Keys.OKAY}'
+                            WHEN '🤔 고민' THEN '${MoodProvider.Keys.WORRIED}'
+                            WHEN '😴 피곤' THEN '${MoodProvider.Keys.TIRED}'
+                            WHEN '😢 슬픔' THEN '${MoodProvider.Keys.SAD}'
+                            WHEN '😡 화남' THEN '${MoodProvider.Keys.ANGRY}'
+                            WHEN '😰 불안함' THEN '${MoodProvider.Keys.ANXIOUS}'
+                            WHEN '😞 실망함' THEN '${MoodProvider.Keys.DISAPPOINTED}'
+                            WHEN '😩 피곤함' THEN '${MoodProvider.Keys.EXHAUSTED}'
                             ELSE mood
                         END
                         """.trimIndent(),
