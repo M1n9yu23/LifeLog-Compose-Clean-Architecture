@@ -35,12 +35,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP12
@@ -72,6 +77,15 @@ internal fun Photo(
 private fun PhotoScreen(
     photos: List<String> = emptyList(),
 ) {
+    val context = LocalContext.current
+    val density = LocalDensity.current
+
+    val cellSizePx = with(density) {
+        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+        val availableWidth = screenWidth - DP12 * 2 - DP6 * 2
+        (availableWidth / 3).toPx().toInt()
+    }
+
     LazyVerticalGrid(
         modifier =
             Modifier
@@ -85,7 +99,11 @@ private fun PhotoScreen(
     ) {
         items(photos) {
             AsyncImage(
-                model = it,
+                model = ImageRequest.Builder(context)
+                    .data(it)
+                    .size(cellSizePx, cellSizePx)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = stringResource(R.string.cd_used_image),
                 modifier = Modifier.aspectRatio(1f),
                 alignment = Alignment.Center,
