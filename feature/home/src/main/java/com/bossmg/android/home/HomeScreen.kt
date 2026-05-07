@@ -41,7 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bossmg.android.designsystem.ui.components.CustomCard
+import com.bossmg.android.designsystem.ui.components.LifeLogCard
 import com.bossmg.android.designsystem.ui.components.LifeLogSearchBar
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
@@ -202,7 +202,7 @@ private fun SearchContent(
 
 @Composable
 private fun HomeCard(item: MemoItem, onMemoItemClick: (String) -> Unit) {
-    CustomCard(
+    LifeLogCard(
         modifier =
             Modifier
                 .fillMaxWidth()

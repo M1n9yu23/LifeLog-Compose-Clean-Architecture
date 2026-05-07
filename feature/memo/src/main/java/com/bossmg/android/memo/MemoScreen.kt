@@ -66,7 +66,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.bossmg.android.designsystem.ui.components.CalendarDialog
-import com.bossmg.android.designsystem.ui.components.DefaultTextField
+import com.bossmg.android.designsystem.ui.components.LifeLogTextField
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
@@ -479,7 +479,7 @@ private fun TitleInputField(
     title: String,
     onTitleChange: (String) -> Unit,
 ) {
-    DefaultTextField(
+    LifeLogTextField(
         value = title,
         onValueChange = onTitleChange,
         modifier =
@@ -497,7 +497,7 @@ private fun DescriptionInputField(
     description: String,
     onDescriptionChange: (String) -> Unit,
 ) {
-    DefaultTextField(
+    LifeLogTextField(
         value = description,
         onValueChange = onDescriptionChange,
         modifier =

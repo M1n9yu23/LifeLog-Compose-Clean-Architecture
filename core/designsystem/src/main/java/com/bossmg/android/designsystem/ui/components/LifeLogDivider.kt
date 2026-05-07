@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.Dp
 import com.bossmg.android.designsystem.ui.theme.DP1
 
 @Composable
-fun CustomDivider(
+fun LifeLogDivider(
     height: Dp = DP1,
     backgroundColor: Color = MaterialTheme.colorScheme.outline,
 ) {

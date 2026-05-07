@@ -56,7 +56,6 @@ import com.bossmg.android.designsystem.ui.theme.DP10
 import com.bossmg.android.designsystem.ui.theme.DP12
 import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP2
-import com.bossmg.android.designsystem.ui.theme.DP24
 import com.bossmg.android.designsystem.ui.theme.DP320
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.util.currentJavaLocale
@@ -65,85 +64,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.format.TextStyle
-import java.util.Locale
 import kotlin.math.ceil
-
-@Composable
-fun ConfirmDialog(
-    title: String,
-    message: String,
-    confirmText: String,
-    dismissText: String,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties =
-            DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-            ),
-    ) {
-        CustomCard(
-            shapeTop = DP10,
-            shapeBottom = DP10,
-            elevation = DP10,
-            backgroundColor = MaterialTheme.colorScheme.surface,
-        ) {
-            Column(
-                modifier =
-                    Modifier
-                        .width(DP320)
-                        .padding(DP16)
-                        .wrapContentSize(),
-            ) {
-                Text(
-                    text = title,
-                    style = AppTypography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurface),
-                )
-
-                Spacer(Modifier.height(DP10))
-
-                Text(
-                    text = message,
-                    style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                )
-
-                Spacer(Modifier.height(DP24))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    TextButton(
-                        onClick = onDismiss,
-                        colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onBackground,
-                            ),
-                    ) {
-                        Text(dismissText)
-                    }
-
-                    Spacer(Modifier.width(DP8))
-
-                    TextButton(
-                        onClick = onConfirm,
-                        colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
-                    ) {
-                        Text(confirmText)
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun CalendarDialog(
@@ -162,7 +83,7 @@ fun CalendarDialog(
                 dismissOnClickOutside = true,
             ),
     ) {
-        CustomCard(
+        LifeLogCard(
             shapeTop = DP10,
             shapeBottom = DP10,
             elevation = DP10,
@@ -185,7 +106,7 @@ fun CalendarDialog(
 
                 Spacer(Modifier.height(DP10))
 
-                CustomDivider()
+                LifeLogDivider()
 
                 CalenderHeader(
                     month = displayedMonth,
@@ -337,17 +258,6 @@ private fun CalendarGrid(
 
 @Preview
 @Composable
-private fun DialogPreview() {
-    Column {
-        ConfirmDialog(
-            title = "언어 변경",
-            message = "언어를 변경하시겠습니까? 변경 사항을 적용하려면 앱을 다시 시작해야 합니다.",
-            confirmText = "다시 시작",
-            dismissText = "취소",
-            onConfirm = {},
-            onDismiss = {},
-        )
-        Spacer(Modifier.height(DP16))
-        CalendarDialog()
-    }
+private fun CalendarDialogPreview() {
+    CalendarDialog()
 }
