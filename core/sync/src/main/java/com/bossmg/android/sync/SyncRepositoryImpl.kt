@@ -31,9 +31,9 @@ import kotlinx.coroutines.flow.combine
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-internal class SyncManagerImpl @Inject constructor(
+internal class SyncRepositoryImpl @Inject constructor(
     private val workManager: WorkManager,
-    private val restoreManager: RestoreManager,
+    private val cloudRestorer: CloudRestorer,
     private val syncDataSource: SyncDataSource,
     private val syncEngine: SyncEngine,
 ) : SyncRepository {
@@ -69,7 +69,7 @@ internal class SyncManagerImpl @Inject constructor(
     }
 
     override suspend fun restoreFromCloud(uid: String): Result<Unit> =
-        restoreManager.restoreFromCloud(uid)
+        cloudRestorer.restoreFromCloud(uid)
 
     override suspend fun hasUnsyncedData(): Boolean =
         syncDataSource.getUnsyncedLogs().isNotEmpty()
