@@ -15,7 +15,6 @@
  */
 package com.bossmg.android.settings
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bossmg.android.domain.enums.LanguageConfig
@@ -36,7 +35,6 @@ import com.bossmg.android.domain.usecase.SyncNowUseCase
 import com.bossmg.android.domain.usecase.SyncUploadUseCase
 import com.bossmg.android.domain.usecase.base.invoke
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +52,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class SettingsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val getThemeConfigUseCase: GetThemeConfigUseCase,
     private val setThemeConfigUseCase: SetThemeConfigUseCase,
     private val getLanguageConfigUseCase: GetLanguageConfigUseCase,
@@ -97,8 +94,8 @@ internal class SettingsViewModel @Inject constructor(
                 initialValue = AuthUiState.Idle,
             )
 
-    private val _events = Channel<String>(Channel.BUFFERED)
-    val events: Flow<String> = _events.receiveAsFlow()
+    private val _events = Channel<SettingsEvent>(Channel.BUFFERED)
+    val events: Flow<SettingsEvent> = _events.receiveAsFlow()
 
     private val _isAuthLoading = MutableStateFlow(false)
     val isAuthLoading: StateFlow<Boolean> = _isAuthLoading.asStateFlow()
@@ -133,15 +130,15 @@ internal class SettingsViewModel @Inject constructor(
             val user =
                 signInWithGoogleUseCase().getOrElse { error ->
                     _isAuthLoading.value = false
-                    _events.send(error.localizedMessage ?: context.getString(R.string.settings_sign_in_failed))
+                    _events.send(SettingsEvent.SignInFailed(error))
                     return@launch
                 }
             val restoreResult = restoreFromCloudUseCase(user.uid)
             _isAuthLoading.value = false
             if (restoreResult.isFailure) {
-                _events.send(restoreResult.exceptionOrNull()?.localizedMessage ?: context.getString(R.string.settings_restore_failed))
+                _events.send(SettingsEvent.RestoreFailed(restoreResult.exceptionOrNull()))
             } else {
-                _events.send(context.getString(R.string.settings_sign_in_success))
+                _events.send(SettingsEvent.SignInSuccess)
             }
             scheduleImmediateSyncUseCase()
         }
@@ -165,18 +162,18 @@ internal class SettingsViewModel @Inject constructor(
         val uploadResult = withTimeoutOrNull(10_000L) { syncUploadUseCase() }
         if (uploadResult == null || uploadResult.isFailure) {
             _isAuthLoading.value = false
-            _events.send(context.getString(R.string.settings_sign_out_sync_failed))
+            _events.send(SettingsEvent.SignOutSyncFailed)
             return
         }
         cancelSyncUseCase()
         signOutUseCase()
             .onSuccess {
                 _isAuthLoading.value = false
-                _events.send(context.getString(R.string.settings_sign_out_success))
+                _events.send(SettingsEvent.SignOutSuccess)
             }
             .onFailure { error ->
                 _isAuthLoading.value = false
-                _events.send(error.localizedMessage ?: context.getString(R.string.settings_sign_out_failed))
+                _events.send(SettingsEvent.SignOutFailed(error))
             }
     }
 
@@ -184,8 +181,8 @@ internal class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             _isManualSyncing.value = true
             syncNowUseCase()
-                .onSuccess { _events.send(context.getString(R.string.settings_sync_success)) }
-                .onFailure { _events.send(it.localizedMessage ?: context.getString(R.string.settings_sync_failed)) }
+                .onSuccess { _events.send(SettingsEvent.SyncSuccess) }
+                .onFailure { _events.send(SettingsEvent.SyncFailed(it)) }
             _isManualSyncing.value = false
         }
     }
