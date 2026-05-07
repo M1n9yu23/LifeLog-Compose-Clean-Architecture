@@ -75,15 +75,15 @@ internal fun Mood(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when {
-        uiState.isLoading -> {
+    when (val state = uiState) {
+        is MoodUIState.Loading -> {
             LoadingScreen()
         }
 
-        else -> {
+        is MoodUIState.Success -> {
             MoodScreen(
-                uiModel = uiState.uiModel,
-                selectedMood = uiState.selectedMood,
+                uiModel = state.uiModel,
+                selectedMood = state.selectedMood,
                 onMoodSelected = {
                     viewModel.selectMood(it)
                 },
