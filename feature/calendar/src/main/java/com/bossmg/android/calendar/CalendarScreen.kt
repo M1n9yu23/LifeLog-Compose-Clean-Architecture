@@ -75,14 +75,14 @@ internal fun Calendar(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when (uiState) {
+    when (val state = uiState) {
         is CalendarUiState.Loading -> {
             LoadingScreen()
         }
 
         is CalendarUiState.Success -> {
             CalendarScreen(
-                state = uiState as CalendarUiState.Success,
+                state = state,
                 onDateSelect = {
                     viewModel.onDateSelect(it)
                 },

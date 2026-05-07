@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.data.di
+package com.bossmg.android.common.di
 
 import javax.inject.Qualifier
 

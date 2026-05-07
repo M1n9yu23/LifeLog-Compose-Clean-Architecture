@@ -58,14 +58,14 @@ internal fun Photo(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when (uiState) {
+    when (val state = uiState) {
         PhotoUIState.Loading -> {
             LoadingScreen()
         }
 
         is PhotoUIState.Success -> {
-            if ((uiState as PhotoUIState.Success).uiModel.photos.isNotEmpty()) {
-                PhotoScreen((uiState as PhotoUIState.Success).uiModel.photos)
+            if (state.uiModel.photos.isNotEmpty()) {
+                PhotoScreen(state.uiModel.photos)
             } else {
                 EmptyScreen()
             }
