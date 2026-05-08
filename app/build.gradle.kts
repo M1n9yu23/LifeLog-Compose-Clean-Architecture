@@ -51,7 +51,7 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":auth"))
-    implementation(project(":core:sync"))
+    implementation(project(":sync"))
 
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
