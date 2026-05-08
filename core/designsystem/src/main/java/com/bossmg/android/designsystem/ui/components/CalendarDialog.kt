@@ -60,10 +60,9 @@ import com.bossmg.android.designsystem.ui.theme.DP320
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.util.currentJavaLocale
 import com.bossmg.android.designsystem.ui.util.rememberLongDateFormatter
+import com.bossmg.android.designsystem.ui.util.rememberMonthYearFormatter
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import kotlin.math.ceil
 
@@ -188,8 +187,9 @@ private fun CalenderHeader(
             Icon(LifeIcons.ArrowLeft, contentDescription = stringResource(R.string.cd_prev_month))
         }
 
+        val monthYearFormatter = rememberMonthYearFormatter()
         Text(
-            text = month.format(DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(currentJavaLocale)),
+            text = month.format(monthYearFormatter),
             style = AppTypography.titleMedium,
             textAlign = TextAlign.Center,
         )

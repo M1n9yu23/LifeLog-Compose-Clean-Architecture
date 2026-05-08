@@ -31,3 +31,9 @@ fun rememberFullDateFormatter(): DateTimeFormatter {
     val locale = currentJavaLocale
     return remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }
 }
+
+@Composable
+fun rememberMonthYearFormatter(): DateTimeFormatter {
+    val locale = currentJavaLocale
+    return remember(locale) { DateTimeFormatter.ofPattern("MMMM yyyy", locale) }
+}

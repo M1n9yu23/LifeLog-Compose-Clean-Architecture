@@ -86,11 +86,10 @@ import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
 import com.bossmg.android.designsystem.ui.util.cardColor
 import com.bossmg.android.designsystem.ui.util.moodLabel
+import com.bossmg.android.designsystem.ui.util.rememberLongDateFormatter
 import com.bossmg.android.domain.enums.MoodType
 import com.bossmg.android.domain.util.MoodProvider
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 internal fun Memo(
@@ -367,8 +366,8 @@ private fun MemoDateMoodRow(
     onShowDateDialogChange: (Boolean) -> Unit,
     onMoodSelected: (String) -> Unit,
 ) {
-    val formatter = remember { DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN) }
-    val formattedDate = remember(selectedDate) { selectedDate.format(formatter) }
+    val formatter = rememberLongDateFormatter()
+    val formattedDate = remember(selectedDate, formatter) { selectedDate.format(formatter) }
 
     Row(
         modifier =
