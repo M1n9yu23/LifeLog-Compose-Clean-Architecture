@@ -73,18 +73,21 @@ end
 :core:testing -.-> :core:domain
 :core:testing -.-> :core:data
 :core:testing -.-> :notifications
+:feature:home -.-> :core:common
 :feature:home -.-> :core:designsystem
 :feature:home -.-> :core:domain
 :feature:home -.-> :core:model
 :feature:home -.-> :core:testing
 :feature:calendar -.-> :core:designsystem
 :feature:calendar -.-> :core:domain
+:feature:calendar -.-> :core:model
 :feature:calendar -.-> :core:testing
 :feature:memo -.-> :core:designsystem
 :feature:memo -.-> :core:domain
 :feature:memo -.-> :core:testing
 :feature:mood -.-> :core:designsystem
 :feature:mood -.-> :core:domain
+:feature:mood -.-> :core:model
 :feature:mood -.-> :core:testing
 :feature:photo -.-> :core:designsystem
 :feature:photo -.-> :core:domain
@@ -119,6 +122,15 @@ classDef native-lib fill:#B5EAD7,stroke:#000,stroke-width:2px,color:#000;
 - **:native** - Android NDK(C++17) 기반 Full-Text Search 엔진을 제공하는 모듈 → [자세히보기](native/README.md)
 - **:build-logic** - Gradle Convention Plugin으로 모듈별 빌드 설정을 통합 관리하는
   모듈 → [자세히보기](build-logic/README.md)
+
+## Sync
+
+Firebase Firestore + WorkManager 기반의 백그라운드 동기화입니다.
+
+- **주기**: 3시간 단위 periodic sync + 사용자 액션 직후 immediate sync. 둘 다 unique work 로 등록되며 exponential backoff 적용
+- **충돌 해결**: 레코드별 `updatedAt` 타임스탬프 기준 last-write-wins. 60초 clock-skew 버퍼로 시계 오차 보정
+- **로컬 dirty record 보호**: 아직 푸시되지 않은 (`isSynced = false`) 로컬 편집은 원격 pull 시 덮어쓰기에서 제외
+- **삭제**: 즉시 hard-delete 가 아닌 soft-delete (`isDeleted = true`) tombstone 방식. Firestore 에 삭제가 반영된 시점에 로컬에서 hard-delete
 
 ## Testing
 
