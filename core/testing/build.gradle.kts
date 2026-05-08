@@ -10,7 +10,7 @@ android {
 dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
-    implementation(project(":core:notifications"))
+    implementation(project(":notifications"))
 
     implementation(libs.bundles.room)
     implementation(libs.androidx.runner)

@@ -23,14 +23,17 @@ graph TB
 subgraph :core
 direction TB
 :core:data[data]:::android-core
-:core:auth[auth]:::android-core
-:core:sync[sync]:::android-core
 :core:designsystem[designsystem]:::android-core
-:core:notifications[notifications]:::android-core
 :core:domain[domain]:::kotlin-library
 :core:common[common]:::kotlin-library
 :core:model[model]:::kotlin-library
 :core:testing[testing]:::android-test
+end
+subgraph :capability
+direction TB
+:auth[auth]:::android-core
+:sync[sync]:::android-core
+:notifications[notifications]:::android-core
 end
 subgraph :feature
 direction TB
@@ -53,23 +56,23 @@ end
 :app -.-> :core:data
 :app -.-> :core:domain
 :app -.-> :core:designsystem
-:app -.-> :core:notifications
-:app -.-> :core:auth
-:app -.-> :core:sync
+:app -.-> :notifications
+:app -.-> :auth
+:app -.-> :sync
 :core:data -.-> :core:domain
 :core:data -.-> :core:common
 :core:data -.-> :native
-:core:auth -.-> :core:common
-:core:auth -.-> :core:domain
-:core:sync -.-> :core:common
-:core:sync -.-> :core:domain
-:core:sync -.-> :core:data
-:core:sync -.-> :core:auth
+:auth -.-> :core:common
+:auth -.-> :core:domain
+:sync -.-> :core:common
+:sync -.-> :core:domain
+:sync -.-> :core:data
+:sync -.-> :auth
 :core:model -.-> :core:domain
 :core:designsystem -.-> :core:domain
 :core:testing -.-> :core:domain
 :core:testing -.-> :core:data
-:core:testing -.-> :core:notifications
+:core:testing -.-> :notifications
 :feature:home -.-> :core:designsystem
 :feature:home -.-> :core:domain
 :feature:home -.-> :core:model
@@ -88,7 +91,7 @@ end
 :feature:photo -.-> :core:testing
 :feature:settings -.-> :core:designsystem
 :feature:settings -.-> :core:domain
-:feature:settings -.-> :core:auth
+:feature:settings -.-> :auth
 
 :core:domain ~~~ :native
 
@@ -104,14 +107,14 @@ classDef native-lib fill:#B5EAD7,stroke:#000,stroke-width:2px,color:#000;
 
 - **:app** - 모든 모듈에 접근할 수 있는 최상위 모듈
 - **:core:data** - 데이터 레이어 모듈, domain 및 native 모듈에 접근하는 모듈
-- **:core:auth** - Google/Firebase 인증을 담당하는 모듈
-- **:core:sync** - Firestore 기반 데이터 동기화 및 WorkManager 백그라운드 동기화 모듈
 - **:core:domain** - 레이어간 독립을 지원하는 모듈, 다른 모듈에 접근 할 수 없는 Kotlin 모듈
 - **:core:common** - Coroutine Dispatcher 등 모든 모듈이 공유하는 공통 유틸리티 Kotlin 모듈
 - **:core:model** - 도메인 모델을 확장하는 UI용 데이터 모델 Kotlin 모듈
 - **:core:designsystem** - 컴포넌트와 모든 UI 관련(Icons, Theme, Util)을 담당하는 모듈
 - **:core:testing** - feature 모듈용 테스트 헬퍼(TestRepository, Rule, Runner 등) 제공하는 모듈
-- **:core:notifications** - 앱의 알림을 담당하는 모듈
+- **:auth** - Google/Firebase 인증을 담당하는 모듈
+- **:sync** - Firestore 기반 데이터 동기화 및 WorkManager 백그라운드 동기화 모듈
+- **:notifications** - 앱의 알림을 담당하는 모듈
 - **:feature** - 기능 단위로 나눠진 모듈, domain, designsystem, testing에 접근 하는 모듈
 - **:native** - Android NDK(C++17) 기반 Full-Text Search 엔진을 제공하는 모듈 → [자세히보기](native/README.md)
 - **:build-logic** - Gradle Convention Plugin으로 모듈별 빌드 설정을 통합 관리하는
