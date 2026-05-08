@@ -47,7 +47,7 @@ dependencies {
     implementation(project(":feature:memo"))
     implementation(project(":feature:photo"))
     implementation(project(":core:designsystem"))
-    implementation(project(":core:notifications"))
+    implementation(project(":notifications"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
     implementation(project(":auth"))
