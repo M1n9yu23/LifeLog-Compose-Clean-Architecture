@@ -15,6 +15,7 @@
  */
 package com.bossmg.android.data.di
 
+import com.bossmg.android.common.di.ApplicationScope
 import com.bossmg.android.common.di.DefaultDispatcher
 import com.bossmg.android.common.di.IoDispatcher
 import dagger.Module

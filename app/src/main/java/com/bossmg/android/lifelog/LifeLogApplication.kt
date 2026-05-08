@@ -18,7 +18,6 @@ package com.bossmg.android.lifelog
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.bossmg.android.auth.AuthInitializer
 import com.bossmg.android.data.initializer.FtsIndexInitializer
 import com.bossmg.android.domain.repository.SyncRepository
 import dagger.hilt.android.HiltAndroidApp
@@ -36,7 +35,7 @@ class LifeLogApplication : Application(), Configuration.Provider {
     lateinit var syncRepository: SyncRepository
 
     @Inject
-    lateinit var authInitializer: AuthInitializer
+    lateinit var authActivityCallbacks: ActivityLifecycleCallbacks
 
     override val workManagerConfiguration: Configuration
         get() =
@@ -46,7 +45,7 @@ class LifeLogApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-        authInitializer.initialize(this)
+        registerActivityLifecycleCallbacks(authActivityCallbacks)
         ftsIndexInitializer.initialize()
         syncRepository.schedulePeriodicSync()
     }

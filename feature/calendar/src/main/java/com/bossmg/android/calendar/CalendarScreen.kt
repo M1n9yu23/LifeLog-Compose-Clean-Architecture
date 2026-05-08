@@ -47,7 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bossmg.android.designsystem.ui.components.CustomCard
+import com.bossmg.android.designsystem.ui.components.LifeLogCard
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
@@ -59,13 +59,12 @@ import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.theme.LocalLifeLogColors
 import com.bossmg.android.designsystem.ui.util.cardColor
-import com.bossmg.android.designsystem.ui.util.currentJavaLocale
+import com.bossmg.android.designsystem.ui.util.rememberMonthYearFormatter
 import com.bossmg.android.domain.util.MoodProvider
 import com.bossmg.android.model.MemoItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlin.math.ceil
 
 @Composable
@@ -75,14 +74,14 @@ internal fun Calendar(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when (uiState) {
+    when (val state = uiState) {
         is CalendarUiState.Loading -> {
             LoadingScreen()
         }
 
         is CalendarUiState.Success -> {
             CalendarScreen(
-                state = uiState as CalendarUiState.Success,
+                state = state,
                 onDateSelect = {
                     viewModel.onDateSelect(it)
                 },
@@ -166,8 +165,9 @@ private fun CalenderHeader(
             )
         }
 
+        val monthYearFormatter = rememberMonthYearFormatter()
         Text(
-            text = month.format(DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(currentJavaLocale)),
+            text = month.format(monthYearFormatter),
             style = AppTypography.titleMedium,
         )
 
@@ -281,7 +281,7 @@ private fun CalendarGrid(
 
 @Composable
 private fun MemoItemCard(item: MemoItem, onMemoItemClick: (String) -> Unit) {
-    CustomCard(
+    LifeLogCard(
         modifier =
             Modifier
                 .fillMaxWidth()

@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,10 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
 import com.bossmg.android.designsystem.ui.theme.DP0
@@ -48,67 +44,6 @@ import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP24
 import com.bossmg.android.designsystem.ui.theme.DP28
 import com.bossmg.android.designsystem.ui.theme.DP52
-
-@Composable
-fun DefaultTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    placeholder: String = "",
-    textStyle: TextStyle = TextStyle.Default,
-    hintStyle: TextStyle = TextStyle.Default,
-    singleLine: Boolean = true,
-) {
-    val resolvedTextStyle =
-        if (textStyle == TextStyle.Default) {
-            AppTypography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
-        } else {
-            textStyle
-        }
-    val resolvedHintStyle =
-        if (hintStyle == TextStyle.Default) {
-            AppTypography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
-        } else {
-            hintStyle
-        }
-    val cursorColor = MaterialTheme.colorScheme.primary
-
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = singleLine,
-        textStyle = resolvedTextStyle,
-        cursorBrush = SolidColor(cursorColor),
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-        decorationBox = { innerTextField ->
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.TopStart,
-            ) {
-                if (value.isEmpty()) {
-                    Text(
-                        text = placeholder,
-                        style = resolvedHintStyle,
-                    )
-                }
-                innerTextField()
-            }
-        },
-    )
-}
-
-@Preview
-@Composable
-private fun TextFieldPreview() {
-    DefaultTextField(
-        "",
-        {},
-        placeholder = "힌트입니다",
-    )
-}
 
 @Composable
 fun LifeLogSearchBar(

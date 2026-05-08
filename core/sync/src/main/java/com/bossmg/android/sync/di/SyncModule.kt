@@ -21,7 +21,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.work.WorkManager
 import com.bossmg.android.domain.repository.SyncRepository
-import com.bossmg.android.sync.SyncManagerImpl
+import com.bossmg.android.sync.SyncRepositoryImpl
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -62,5 +62,5 @@ internal object SyncModule {
 internal abstract class SyncBindingModule {
     @Binds
     @Singleton
-    abstract fun bindSyncRepository(impl: SyncManagerImpl): SyncRepository
+    abstract fun bindSyncRepository(impl: SyncRepositoryImpl): SyncRepository
 }

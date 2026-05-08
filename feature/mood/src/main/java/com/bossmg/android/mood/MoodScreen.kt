@@ -48,7 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bossmg.android.designsystem.ui.components.CustomCard
+import com.bossmg.android.designsystem.ui.components.LifeLogCard
 import com.bossmg.android.designsystem.ui.components.LoadingScreen
 import com.bossmg.android.designsystem.ui.components.MemoCardItem
 import com.bossmg.android.designsystem.ui.icons.MoodIcons
@@ -75,15 +75,15 @@ internal fun Mood(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when {
-        uiState.isLoading -> {
+    when (val state = uiState) {
+        is MoodUIState.Loading -> {
             LoadingScreen()
         }
 
-        else -> {
+        is MoodUIState.Success -> {
             MoodScreen(
-                uiModel = uiState.uiModel,
-                selectedMood = uiState.selectedMood,
+                uiModel = state.uiModel,
+                selectedMood = state.selectedMood,
                 onMoodSelected = {
                     viewModel.selectMood(it)
                 },
@@ -139,7 +139,7 @@ private fun MoodScreen(
 
 @Composable
 private fun MemoItemCard(item: MemoItem, onMemoItemClick: (String) -> Unit) {
-    CustomCard(
+    LifeLogCard(
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -164,7 +164,7 @@ private fun MoodsBox(
     selectedMood: String,
     onMoodSelected: (String) -> Unit,
 ) {
-    CustomCard(
+    LifeLogCard(
         modifier =
             Modifier
                 .fillMaxWidth()

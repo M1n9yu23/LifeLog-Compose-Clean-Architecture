@@ -51,8 +51,7 @@ internal class MoodViewModel @Inject constructor(
             },
             _selectedMood,
         ) { allLogs, filteredLogs, selectedMood ->
-            MoodUIState(
-                isLoading = false,
+            MoodUIState.Success(
                 uiModel =
                     MoodUIModel(
                         moods = allLogs.map { mapper.map(it) }.groupingBy { it.mood }.eachCount(),
@@ -64,7 +63,7 @@ internal class MoodViewModel @Inject constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = MoodUIState(isLoading = true),
+                initialValue = MoodUIState.Loading,
             )
 
     fun selectMood(mood: String) {
@@ -74,8 +73,11 @@ internal class MoodViewModel @Inject constructor(
     }
 }
 
-internal data class MoodUIState(
-    val isLoading: Boolean = false,
-    val uiModel: MoodUIModel = MoodUIModel(),
-    val selectedMood: String = "",
-)
+internal sealed interface MoodUIState {
+    data object Loading : MoodUIState
+
+    data class Success(
+        val uiModel: MoodUIModel,
+        val selectedMood: String,
+    ) : MoodUIState
+}

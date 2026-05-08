@@ -24,7 +24,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-internal class RestoreManager @Inject constructor(
+internal class CloudRestorer @Inject constructor(
     private val syncDataSource: SyncDataSource,
     private val firestoreDataSource: FirestoreDataSource,
     private val syncPreferences: SyncPreferences,

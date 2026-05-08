@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bossmg.android.auth
+package com.bossmg.android.settings
 
-import android.app.Application
-import javax.inject.Inject
+internal sealed interface SettingsEvent {
+    data object SignInSuccess : SettingsEvent
 
-class AuthInitializer @Inject constructor(
-    private val activityLifecycleCallbacks: Application.ActivityLifecycleCallbacks,
-) {
-    fun initialize(application: Application) {
-        application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
-    }
+    data class SignInFailed(val cause: Throwable?) : SettingsEvent
+
+    data class RestoreFailed(val cause: Throwable?) : SettingsEvent
+
+    data object SignOutSuccess : SettingsEvent
+
+    data class SignOutFailed(val cause: Throwable?) : SettingsEvent
+
+    data object SignOutSyncFailed : SettingsEvent
+
+    data object SyncSuccess : SettingsEvent
+
+    data class SyncFailed(val cause: Throwable?) : SettingsEvent
 }

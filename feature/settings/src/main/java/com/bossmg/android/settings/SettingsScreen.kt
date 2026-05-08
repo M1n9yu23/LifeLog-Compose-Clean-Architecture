@@ -53,7 +53,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.bossmg.android.designsystem.ui.components.ConfirmDialog
 import com.bossmg.android.designsystem.ui.icons.LifeIcons
 import com.bossmg.android.designsystem.ui.theme.AppTypography
@@ -86,12 +89,35 @@ internal fun Settings(
     val showSignOutConfirm by viewModel.showSignOutConfirm.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val signInSuccess = stringResource(R.string.settings_sign_in_success)
+    val signInFailedFallback = stringResource(R.string.settings_sign_in_failed)
+    val restoreFailedFallback = stringResource(R.string.settings_restore_failed)
+    val signOutSuccess = stringResource(R.string.settings_sign_out_success)
+    val signOutFailedFallback = stringResource(R.string.settings_sign_out_failed)
+    val signOutSyncFailed = stringResource(R.string.settings_sign_out_sync_failed)
+    val syncSuccess = stringResource(R.string.settings_sync_success)
+    val syncFailedFallback = stringResource(R.string.settings_sync_failed)
+
+    val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(Unit) {
-        viewModel.events.collect { message ->
-            snackbarHostState.showSnackbar(
-                message = message,
-                duration = SnackbarDuration.Short,
-            )
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.events.collect { event ->
+                val message =
+                    when (event) {
+                        SettingsEvent.SignInSuccess -> signInSuccess
+                        is SettingsEvent.SignInFailed -> event.cause?.localizedMessage ?: signInFailedFallback
+                        is SettingsEvent.RestoreFailed -> event.cause?.localizedMessage ?: restoreFailedFallback
+                        SettingsEvent.SignOutSuccess -> signOutSuccess
+                        is SettingsEvent.SignOutFailed -> event.cause?.localizedMessage ?: signOutFailedFallback
+                        SettingsEvent.SignOutSyncFailed -> signOutSyncFailed
+                        SettingsEvent.SyncSuccess -> syncSuccess
+                        is SettingsEvent.SyncFailed -> event.cause?.localizedMessage ?: syncFailedFallback
+                    }
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short,
+                )
+            }
         }
     }
 

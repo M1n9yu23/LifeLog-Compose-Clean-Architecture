@@ -22,7 +22,6 @@ import com.bossmg.android.model.MemoItemMapper
 import com.bossmg.android.testing.data.lifeLogTestData
 import com.bossmg.android.testing.repository.TestLifeLogRepository
 import com.bossmg.android.testing.rule.MainDispatcherRule
-import junit.framework.TestCase.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -61,12 +60,11 @@ class MoodViewModelTest {
         runTest {
             val job = launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-            assertTrue(viewModel.uiState.value.isLoading)
+            assertTrue(viewModel.uiState.value is MoodUIState.Loading)
 
             testRepository.sendLogs(testLifeLogs)
 
-            val state = viewModel.uiState.value
-            assertFalse(state.isLoading)
+            val state = viewModel.uiState.value as MoodUIState.Success
 
             val moodCount = testLifeLogs.groupingBy { it.mood }.eachCount()
             assertEquals(moodCount, state.uiModel.moods)
@@ -83,7 +81,7 @@ class MoodViewModelTest {
             testRepository.sendLogs(testLifeLogs)
             viewModel.selectMood(mood)
 
-            val state = viewModel.uiState.value
+            val state = viewModel.uiState.value as MoodUIState.Success
             assertEquals(mood, state.selectedMood)
             assertTrue(state.uiModel.memoItem.all { it.mood == mood })
 
@@ -100,7 +98,7 @@ class MoodViewModelTest {
             val filterLogs = testLifeLogs.filter { it.mood == mood }
             testRepository.sendLogs(filterLogs)
 
-            val state = viewModel.uiState.value
+            val state = viewModel.uiState.value as MoodUIState.Success
             val memoItems = state.uiModel.memoItem
             assertEquals(filterLogs.size, memoItems.size)
 
