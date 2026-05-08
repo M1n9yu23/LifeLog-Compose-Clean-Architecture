@@ -15,12 +15,9 @@
  */
 package com.bossmg.android.lifelog
 
-import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
@@ -29,7 +26,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
-import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bossmg.android.designsystem.ui.theme.LifeLogTheme
@@ -38,6 +34,7 @@ import com.bossmg.android.domain.repository.ThemeRepository
 import com.bossmg.android.lifelog.ui.LifeLogApp
 import com.bossmg.android.lifelog.ui.rememberLifeLogAppState
 import com.bossmg.android.notifications.MorningNotificationScheduler
+import com.bossmg.android.notifications.requestNotificationPermissionIfNeeded
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -64,7 +61,11 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        checkNotificationPermission()
+        requestNotificationPermissionIfNeeded(
+            launcher = requestPermissionLauncher,
+            onGranted = ::scheduleNotifications,
+            onDenied = ::showPermissionRationale,
+        )
 
         enableEdgeToEdge()
         setContent {
@@ -81,29 +82,6 @@ class MainActivity : AppCompatActivity() {
                 val appState = rememberLifeLogAppState()
                 LifeLogApp(appState)
             }
-        }
-    }
-
-    private fun checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS,
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    scheduleNotifications()
-                }
-
-                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                    showPermissionRationale()
-                }
-
-                else -> {
-                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-            }
-        } else {
-            scheduleNotifications()
         }
     }
 

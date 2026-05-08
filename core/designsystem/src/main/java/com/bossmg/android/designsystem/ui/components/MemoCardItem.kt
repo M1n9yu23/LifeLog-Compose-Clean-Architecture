@@ -46,9 +46,8 @@ import com.bossmg.android.designsystem.ui.theme.DP16
 import com.bossmg.android.designsystem.ui.theme.DP4
 import com.bossmg.android.designsystem.ui.theme.DP80
 import com.bossmg.android.designsystem.ui.util.moodLabel
+import com.bossmg.android.designsystem.ui.util.rememberFullDateFormatter
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -90,12 +89,9 @@ fun MemoCardItem(
                 Modifier
                     .weight(1f),
         ) {
+            val fullFormatter = rememberFullDateFormatter()
             Text(
-                text =
-                    date.format(
-                        DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
-                            .withLocale(Locale.getDefault()),
-                    ),
+                text = date.format(fullFormatter),
                 style =
                     AppTypography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface,

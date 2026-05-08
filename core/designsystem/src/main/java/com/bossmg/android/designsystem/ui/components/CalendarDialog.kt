@@ -59,6 +59,7 @@ import com.bossmg.android.designsystem.ui.theme.DP2
 import com.bossmg.android.designsystem.ui.theme.DP320
 import com.bossmg.android.designsystem.ui.theme.DP8
 import com.bossmg.android.designsystem.ui.util.currentJavaLocale
+import com.bossmg.android.designsystem.ui.util.rememberLongDateFormatter
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -96,11 +97,9 @@ fun CalendarDialog(
                         .padding(DP16)
                         .wrapContentSize(),
             ) {
+                val longFormatter = rememberLongDateFormatter()
                 Text(
-                    text =
-                        selectedDate.format(
-                            DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(currentJavaLocale),
-                        ),
+                    text = selectedDate.format(longFormatter),
                     style = AppTypography.titleMedium.copy(MaterialTheme.colorScheme.onSurface),
                 )
 
