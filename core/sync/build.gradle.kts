@@ -12,7 +12,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
-    implementation(project(":core:auth"))
+    implementation(project(":auth"))
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.work.runtime.ktx)

@@ -50,7 +50,7 @@ dependencies {
     implementation(project(":core:notifications"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
-    implementation(project(":core:auth"))
+    implementation(project(":auth"))
     implementation(project(":core:sync"))
 
     implementation(libs.androidx.core.splashscreen)
