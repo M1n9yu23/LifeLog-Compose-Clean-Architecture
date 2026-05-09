@@ -15,26 +15,25 @@
  */
 package com.bossmg.android.notifications
 
+import android.content.BroadcastReceiver
 import android.content.Context
-import androidx.hilt.work.HiltWorker
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import android.content.Intent
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-@HiltWorker
-class MorningNotificationWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted workerParams: WorkerParameters,
-    private val notificationSender: NotificationSender,
-    private val scheduler: MorningNotificationScheduler,
-) : CoroutineWorker(context, workerParams) {
-    override suspend fun doWork(): Result {
+@AndroidEntryPoint
+class MorningAlarmReceiver : BroadcastReceiver() {
+    @Inject
+    lateinit var notificationSender: NotificationSender
+
+    @Inject
+    lateinit var scheduler: MorningNotificationScheduler
+
+    override fun onReceive(context: Context, intent: Intent) {
         notificationSender.send(
-            applicationContext.getString(R.string.notification_title),
-            applicationContext.getString(R.string.notification_message),
+            context.getString(R.string.notification_title),
+            context.getString(R.string.notification_message),
         )
         scheduler.scheduleDailyNotification()
-        return Result.success()
     }
 }
