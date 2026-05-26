@@ -187,21 +187,28 @@ LifeLog App은 모든 레이어에 대한 테스트를 수행하며, Mock 라이
 
 ## Previews
 
-[//]: # (<p align="center">)
-
-[//]: # (<img src="https://github.com/user-attachments/assets/e7afe3c9-bc1d-456e-bf47-12de91d18d46" alt="img1" width="200" />)
-
-[//]: # (<img src="https://github.com/user-attachments/assets/23b3baad-3861-4c10-a024-b61ae4990d95" alt="img2" width="200" />)
-
-[//]: # (<img src="https://github.com/user-attachments/assets/7977808c-6203-40eb-80db-5eef1aba9ac5" alt="img3" width="200" /><br>)
-
-[//]: # (<img src="https://github.com/user-attachments/assets/15fa726d-f823-479c-a204-edad145a7ca0" alt="img4" width="200" />)
-
-[//]: # (<img src="https://github.com/user-attachments/assets/beae9055-3664-433b-80fa-cbbcdc39a2b2" alt="img5" width="200" />)
-
-[//]: # (<img src="https://github.com/user-attachments/assets/6b5ec8f8-bad2-4707-b938-842c3807b9be" alt="img6" width="200" />)
-
-[//]: # (</p>)
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="assets/1.png" width="220" alt="스플래시" /><br/><sub><b>스플래시</b></sub></td>
+    <td align="center" width="33%"><img src="assets/2.png" width="220" alt="홈" /><br/><sub><b>홈 · 일기 목록</b></sub></td>
+    <td align="center" width="33%"><img src="assets/11.png" width="220" alt="검색" /><br/><sub><b>검색</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><img src="assets/4.png" width="220" alt="캘린더" /><br/><sub><b>캘린더</b></sub></td>
+    <td align="center" width="33%"><img src="assets/5.png" width="220" alt="기분 통계" /><br/><sub><b>기분 · 감정 통계</b></sub></td>
+    <td align="center" width="33%"><img src="assets/6.png" width="220" alt="사진 갤러리" /><br/><sub><b>사진 갤러리</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><img src="assets/7.png" width="220" alt="메모 작성" /><br/><sub><b>메모 작성</b></sub></td>
+    <td align="center" width="33%"><img src="assets/8.png" width="220" alt="기분 선택" /><br/><sub><b>기분 선택</b></sub></td>
+    <td align="center" width="33%"><img src="assets/9.png" width="220" alt="카메라" /><br/><sub><b>카메라 · CameraX</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><img src="assets/10.png" width="220" alt="기록 상세" /><br/><sub><b>기록 상세</b></sub></td>
+    <td align="center" width="33%"><img src="assets/3.png" width="220" alt="설정" /><br/><sub><b>설정 · 테마/언어/계정</b></sub></td>
+    <td align="center" width="33%"></td>
+  </tr>
+</table>
 
 ## License
 
